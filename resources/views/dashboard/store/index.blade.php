@@ -35,6 +35,7 @@
             </div>
             <div class="card-body collapse in">
                 <div class="card-block">
+                    @include('common.msg')
                     <!-- Invoices List table -->
                     <div class="table-responsive">
                         <table class="table table-striped table-hover">

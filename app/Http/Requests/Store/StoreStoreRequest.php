@@ -28,19 +28,12 @@ class StoreStoreRequest extends FormRequest
         return [
             'name'  =>  'required|string|max:200',
             'site_id'   =>  'required|numeric|in:' . $site_ids,
-            'site_mode' =>  'required|string|in:sandbox,production',
 
-            'sandbox_dev_id'    =>  'required|string|max:200',
-            'sandbox_app_id'    =>  'required|string|max:200',
-            'sandbox_cert_id'    =>  'required|string|max:200',
-            'sandbox_auth_token'    =>  'required|string|max:4000',
-            'sandbox_oauth_token'    =>  'required|string|max:4000',
-
-            'production_dev_id'    =>  'required|string|max:200',
-            'production_app_id'    =>  'required|string|max:200',
-            'production_cert_id'    =>  'required|string|max:200',
-            'production_auth_token'    =>  'required|string|max:4000',
-            'production_oauth_token'    =>  'required|string|max:4000',
+            'dev_id'    =>  'required|string|max:200',
+            'app_id'    =>  'required|string|max:200',
+            'cert_id'    =>  'required|string|max:200',
+            'auth_token'    =>  'required|string|max:4000',
+            'oauth_token'    =>  'required|string|max:4000',
         ];
     }
 }

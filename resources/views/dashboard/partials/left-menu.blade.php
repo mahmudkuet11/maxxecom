@@ -15,7 +15,7 @@
                 <a href="#"><i class="icon-cart4"></i><span class="menu-title">My Store</span></a>
                 <ul class="menu-content">
                     <li class="{{ active_menu('store.index', $active_menu) }}">
-                        <a href="#" class="menu-item">All Stores</a>
+                        <a href="{{ route('store.index') }}" class="menu-item">All Stores</a>
                     </li>
                     <li class="{{ active_menu('store.create', $active_menu) }}">
                         <a href="{{ route('store.create') }}" class="menu-item">New Store</a>

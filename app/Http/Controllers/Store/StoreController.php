@@ -32,9 +32,15 @@ class StoreController extends Controller
     {
         $res = $this->service->store($request);
         if($res){
-            return 'success';
+            return redirect(route('store.index'))->with([
+                'status'    =>  'success',
+                'msg'   =>  'Store is added successfully'
+            ]);
         }else{
-            return 'error';
+            return redirect(route('store.index'))->with([
+                'status'    =>  'error',
+                'msg'   =>  'Please try again'
+            ]);
         }
     }
 
@@ -45,12 +51,24 @@ class StoreController extends Controller
 
     public function edit($id)
     {
-        //
+        $store = $this->service->get($id)->first();
+        return view('dashboard.store.edit', ['store'=>$store]);
     }
 
     public function update(Request $request, $id)
     {
-        //
+        $res = $this->service->update($request, $id);
+        if($res){
+            return redirect(route('store.index'))->with([
+                'status'    =>  'success',
+                'msg'   =>  'Store is updated successfully'
+            ]);
+        }else{
+            return redirect(route('store.index'))->with([
+                'status'    =>  'error',
+                'msg'   =>  'Please try again'
+            ]);
+        }
     }
 
     public function destroy($id)

@@ -10,23 +10,34 @@ class StoreService
     public function store(Request $request){
         return Store::create([
             'owner_id'  =>  Auth::user()->id,
-            'site_mode'  =>  $request->get('site_mode'),
             'name'  =>  $request->get('name'),
             'site_id'  =>  $request->get('site_id'),
-            'sandbox_dev_id'  =>  $request->get('sandbox_dev_id'),
-            'sandbox_app_id'  =>  $request->get('sandbox_app_id'),
-            'sandbox_cert_id'  =>  $request->get('sandbox_cert_id'),
-            'sandbox_auth_token'  =>  $request->get('sandbox_auth_token'),
-            'sandbox_oauth_token'  =>  $request->get('sandbox_oauth_token'),
-            'production_dev_id'  =>  $request->get('production_dev_id'),
-            'production_app_id'  =>  $request->get('production_app_id'),
-            'production_cert_id'  =>  $request->get('production_cert_id'),
-            'production_auth_token'  =>  $request->get('production_auth_token'),
-            'production_oauth_token'  =>  $request->get('production_oauth_token'),
+            'dev_id'  =>  $request->get('dev_id'),
+            'app_id'  =>  $request->get('app_id'),
+            'cert_id'  =>  $request->get('cert_id'),
+            'auth_token'  =>  $request->get('auth_token'),
+            'oauth_token'  =>  $request->get('oauth_token'),
         ]);
+    }
+
+    public function update(Request $request, $id){
+        $store = self::get($id)->update([
+            'name'  =>  $request->get('name'),
+            'site_id'  =>  $request->get('site_id'),
+            'dev_id'  =>  $request->get('dev_id'),
+            'app_id'  =>  $request->get('app_id'),
+            'cert_id'  =>  $request->get('cert_id'),
+            'auth_token'  =>  $request->get('auth_token'),
+            'oauth_token'  =>  $request->get('oauth_token'),
+        ]);
+        return $store;
     }
 
     public function getAll(){
         return new Store();
+    }
+
+    public function get($id){
+        return Store::where('id', $id);
     }
 }

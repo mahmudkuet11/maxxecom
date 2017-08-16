@@ -15,7 +15,7 @@
                     <a href="{{ route('store.index') }}">Store</a>
                 </li>
                 <li class="breadcrumb-item active">
-                    New Store
+                    Edit
                 </li>
             </ol>
         </div>
@@ -28,7 +28,7 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title">Add New Store</h4>
+                <h4 class="card-title">Edit Store</h4>
                 <a class="heading-elements-toggle"><i class="icon-ellipsis font-medium-3"></i></a>
                 <div class="heading-elements">
                     <ul class="list-inline mb-0">
@@ -44,9 +44,10 @@
 
                     @include('common.form-errors')
 
-                    <form class="form form-horizontal" method="post" action="{{ route('store.store') }}">
+                    <form class="form form-horizontal" method="post" action="{{ route('store.update', $store->id) }}">
 
                         {{ csrf_field() }}
+                        {{ method_field('PUT') }}
 
                         <div class="form-body">
 
@@ -55,7 +56,7 @@
                             <div class="form-group row">
                                 <label class="col-md-3 label-control">Store Name</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" placeholder="Enter store name" name="name" value="{{ old('name') }}">
+                                    <input type="text" class="form-control" placeholder="Enter store name" name="name" value="{{ old('name', $store->name) }}">
                                 </div>
                             </div>
 
@@ -63,12 +64,12 @@
                                 <label class="col-md-3 label-control">Site ID</label>
                                 <div class="col-md-9">
                                     <?php
-                                    $sites = \App\Enum\Ebay\Site::toArray();
+                                        $sites = \App\Enum\Ebay\Site::toArray();
                                     ?>
                                     <select name="site_id" class="form-control">
                                         <option value="" selected="" disabled="">-- Select Site ID --</option>
                                         @foreach($sites as $site)
-                                        <option value="{{ $site['site_id'] }}" {{ option_selected($site['site_id'], old('site_id')) }}>{{ $site['site_name'] }}</option>
+                                        <option value="{{ $site['site_id'] }}" {{ option_selected($site['site_id'], old('site_id', $store->site_id)) }}>{{ $site['site_name'] }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -80,41 +81,41 @@
                             <div class="form-group row">
                                 <label class="col-md-3 label-control">Dev ID</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" placeholder="Enter dev ID" name="dev_id" value="{{ old('dev_id') }}">
+                                    <input type="text" class="form-control" placeholder="Enter dev ID" name="dev_id" value="{{ old('dev_id', $store->dev_id) }}">
                                 </div>
                             </div>
 
                             <div class="form-group row">
                                 <label class="col-md-3 label-control">App ID</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" placeholder="Enter app ID" name="app_id" value="{{ old('app_id') }}">
+                                    <input type="text" class="form-control" placeholder="Enter app ID" name="app_id" value="{{ old('app_id', $store->app_id) }}">
                                 </div>
                             </div>
 
                             <div class="form-group row">
                                 <label class="col-md-3 label-control">Cert ID</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" placeholder="Enter cert ID" name="cert_id" value="{{ old('cert_id') }}">
+                                    <input type="text" class="form-control" placeholder="Enter cert ID" name="cert_id" value="{{ old('cert_id', $store->cert_id) }}">
                                 </div>
                             </div>
 
                             <div class="form-group row">
                                 <label class="col-md-3 label-control">Auth Token</label>
                                 <div class="col-md-9">
-                                    <textarea class="form-control" name="auth_token" rows="3">{{ old('auth_token') }}</textarea>
+                                    <textarea class="form-control" name="auth_token" rows="3">{{ old('auth_token', $store->auth_token) }}</textarea>
                                 </div>
                             </div>
 
                             <div class="form-group row">
                                 <label class="col-md-3 label-control">OAuth Token</label>
                                 <div class="col-md-9">
-                                    <textarea class="form-control" name="oauth_token" rows="3">{{ old('oauth_token') }}</textarea>
+                                    <textarea class="form-control" name="oauth_token" rows="3">{{ old('oauth_token', $store->oauth_token) }}</textarea>
                                 </div>
                             </div>
 
                             <div class="form-actions">
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="icon-check2"></i> Save
+                                    <i class="icon-check2"></i> Update
                                 </button>
                             </div>
                         </div>
