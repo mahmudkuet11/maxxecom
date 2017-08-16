@@ -1,3 +1,6 @@
+<?php
+    if(!isset($active_menu)) $active_menu = '';
+?>
 <div class="main-menu menu-static menu-light menu-accordion menu-shadow">
     <!-- main menu header-->
     <!-- / main menu header-->
@@ -11,11 +14,11 @@
             <li class=" nav-item">
                 <a href="#"><i class="icon-cart4"></i><span class="menu-title">My Store</span></a>
                 <ul class="menu-content">
-                    <li>
+                    <li class="{{ active_menu('store.index', $active_menu) }}">
                         <a href="#" class="menu-item">All Stores</a>
                     </li>
-                    <li>
-                        <a href="#" class="menu-item">New Store</a>
+                    <li class="{{ active_menu('store.create', $active_menu) }}">
+                        <a href="{{ route('store.create') }}" class="menu-item">New Store</a>
                     </li>
                 </ul>
             </li>
@@ -37,7 +40,7 @@
             <li class=" nav-item">
                 <a href="#"><i class="icon-clipboard2"></i><span class="menu-title">Selling Manager Pro</span></a>
                 <ul class="menu-content">
-                    <li class="active">
+                    <li>
                         <a href="active-listing.html" class="menu-item">Active</a>
                     </li>
                     <li class="">
