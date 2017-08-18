@@ -24,10 +24,10 @@
             </li>
 
             <li class=" nav-item">
-                <a href="#"><i class="icon-cart4"></i><span class="menu-title">Buy</span></a>
+                <a href="#"><i class="icon-cart4"></i><span class="menu-title">Order Management</span></a>
                 <ul class="menu-content">
                     <li>
-                        <a href="#" class="menu-item">Watch</a>
+                        <a href="{{ route('orders.all') }}" class="menu-item">All</a>
                     </li>
                     <li>
                         <a href="#" class="menu-item">Bids/Offers</a>

@@ -127,3 +127,8 @@
 </div>
 
 @endsection
+
+@section('scripts')
+@parent
+<script src="/app-assets/js/scripts/tables/datatables-extensions/datatable-select.min.js" type="text/javascript"></script>
+@endsection

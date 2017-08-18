@@ -8,6 +8,7 @@
     <meta name="description" content="Maxxecom">
     <meta name="keywords" content="Maxxecom">
     <meta name="author" content="Maxxecom">
+    @yield('meta')
     <title>Maxeecom: Home</title>
     <link rel="apple-touch-icon" sizes="60x60" href="/app-assets/images/ico/60x60.png">
     <link rel="apple-touch-icon" sizes="76x76" href="/app-assets/images/ico/76x76.png">
@@ -39,6 +40,7 @@
     <!-- BEGIN Custom CSS-->
     <link rel="stylesheet" type="text/css" href="/assets/css/style.css">
     <!-- END Custom CSS-->
+    @yield('css')
 </head>
 <body data-open="click" data-menu="vertical-content-menu" data-col="2-columns" class="vertical-layout vertical-content-menu 2-columns  fixed-navbar">
 <!-- navbar-fixed-top-->
@@ -109,16 +111,15 @@
 <script src="/app-assets/vendors/js/extensions/pace.min.js" type="text/javascript"></script>
 
 <script src="/app-assets/vendors/js/ui/headroom.min.js" type="text/javascript"></script>
-
+<script src="../../../app-assets/vendors/js/tables/jquery.dataTables.min.js" type="text/javascript"></script>
+<script src="../../../app-assets/vendors/js/tables/datatable/dataTables.bootstrap4.min.js" type="text/javascript"></script>
+<script src="../../../app-assets/vendors/js/tables/datatable/dataTables.responsive.min.js" type="text/javascript"></script>
 
 <script src="/app-assets/js/core/app-menu.min.js" type="text/javascript"></script>
 <script src="/app-assets/js/core/app.min.js" type="text/javascript"></script>
 <script src="/app-assets/js/scripts/ui/fullscreenSearch.min.js" type="text/javascript"></script>
 
-<!-- BEGIN PAGE LEVEL JS-->
-<script src="/app-assets/js/scripts/tables/datatables-extensions/datatable-select.min.js" type="text/javascript"></script>
-<!-- END PAGE LEVEL JS-->
-
+@yield('scripts')
 
 </body>
 

@@ -20,3 +20,4 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/dashboard', 'DashboardController@getDashboard')->name('dashboard');
 Route::resource('/dashboard/store', 'Store\StoreController');
+Route::get('/orders', 'Order\OrderController@getAll')->name('orders.all');
