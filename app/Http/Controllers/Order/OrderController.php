@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Order;
 
-use App\Models\Store;
+use App\Jobs\SyncOrder;
 use App\Service\Order\OrderService;
 use App\Http\Controllers\Controller;
 
@@ -16,7 +16,7 @@ class OrderController extends Controller
     }
 
     public function getAll(){
-        $this->service->fetchUnSynced(Store::first()->id);
+        $this->service->fetchUnSynced(1);
         return view('dashboard.orders.index');
     }
 }

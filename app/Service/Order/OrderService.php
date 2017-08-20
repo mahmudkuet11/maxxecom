@@ -7,7 +7,6 @@ use App\Models\Order\Order;
 use App\Models\Order\ShippingAddress;
 use App\Models\Order\Transaction;
 use App\Models\Store;
-use App\Models\Synchronization;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use DB;
@@ -19,13 +18,12 @@ class OrderService
         DB::beginTransaction();
         try{
             $store = Store::find($store_id);
-            $sync = Synchronization::where('store_id', $store_id)->first();
-            if($sync){
-                $last_synced_time = $sync->last_synced_at;
-            }else{
-                $last_synced_time = Carbon::now()->subDays(90);
+            $now = Carbon::now('UTC');
+            $last_synced_time = Carbon::parse(Order::where('store_id', $store_id)->max('created_time'));
+            if($last_synced_time == null){
+                $last_synced_time = $now->subDays(30);
             }
-            $now = Carbon::now();
+
             $current_page = 1;
             $orders = self::_getPage($current_page, $store->auth_token, $store->site_id, $last_synced_time, $now);
             if($orders->Ack == 'Success'){
@@ -44,7 +42,7 @@ class OrderService
             return true;
         }catch (\Exception $e){
             DB::rollback();
-            return false;
+            throw new \Exception($e->getMessage());
         }
     }
 
@@ -62,11 +60,11 @@ class OrderService
         $request_body = '\
             <?xml version="1.0" encoding="utf-8"?> 
             <GetOrdersRequest xmlns="urn:ebay:apis:eBLBaseComponents">
-              <RequesterCredentials>
-                <eBayAuthToken>'. $auth_token .'</eBayAuthToken>
-              </RequesterCredentials>
-            <CreateTimeFrom>'. $create_time_from->toIso8601String() .'</CreateTimeFrom>
-            <CreateTimeTo>'. $create_time_to->toIso8601String() .'</CreateTimeTo>
+                <RequesterCredentials>
+                    <eBayAuthToken>'. $auth_token .'</eBayAuthToken>
+                </RequesterCredentials>
+                <ModTimeFrom>'. $create_time_from->toIso8601String() .'</ModTimeFrom>
+                <ModTimeTo>'. $create_time_to->toIso8601String() .'</ModTimeTo>
             <Pagination>
                 <EntriesPerPage>2</EntriesPerPage>
                 <PageNumber>'. $page_no .'</PageNumber>
@@ -104,15 +102,18 @@ class OrderService
 
     private function _saveOrders($store_id, \SimpleXMLElement $orders){
         $order_array = $orders->OrderArray->Order;
+        dd($order_array);
         foreach ($order_array as $order){
             self::_save($store_id, $order);
         }
     }
 
     private function _save($store_id, $order){
-        $orderModel = Order::create([
+        dd('_save');
+        $orderModel = Order::updateOrCreate([
             'store_id' =>  $store_id,
-            'ebay_order_id'    =>  (string)$order->OrderID,
+            'ebay_order_id'    =>  (string)$order->OrderID
+        ], [
             'order_status' =>  (string)$order->OrderStatus,
             'adjustment_amount'    =>  (double)$order->AdjustmentAmount,
             'amount_paid'  =>  (double)$order->AmountPaid,
@@ -127,13 +128,15 @@ class OrderService
             'payment_hold_status'  =>  (string)$order->PaymentHoldStatus,
             'extended_order_id'    =>  (string)$order->ExtendedOrderID,
         ]);
-        CheckoutStatus::create([
-            'order_id'  =>  $orderModel->id,
+        CheckoutStatus::updateOrCreate([
+            'order_id'  =>  $orderModel->id
+        ], [
             'ebay_payment_status'   =>  (string)$order->CheckoutStatus->eBayPaymentStatus,
             'status'    =>  (string)$order->CheckoutStatus->Status
         ]);
-        ShippingAddress::create([
-            'order_id'  =>  $orderModel->id,
+        ShippingAddress::updateOrCreate([
+            'order_id'  =>  $orderModel->id
+        ], [
             'name'  =>  (string)$order->ShippingAddress->Name,
             'street1'   =>  (string)$order->ShippingAddress->Street1,
             'street2'   =>  (string)$order->ShippingAddress->Street2,
@@ -148,8 +151,9 @@ class OrderService
             'shipping_service_cost' =>  (double)$order->ShippingServiceSelected->ShippingServiceCost,
         ]);
         foreach($order->TransactionArray->Transaction as $transaction){
-            Transaction::create([
-                'order_id'  =>  $orderModel->id,
+            Transaction::updateOrCreate([
+                'order_id'  =>  $orderModel->id
+            ], [
                 'buyer_email'   =>  (string)$transaction->Buyer->Email,
                 'buyer_user_first_name' =>  (string)$transaction->Buyer->UserFirstName,
                 'buyer_user_last_name'  =>  (string)$transaction->Buyer->UserLastName,
@@ -165,5 +169,9 @@ class OrderService
                 'order_line_item_id'    =>  (string)$transaction->OrderLineItemID,
             ]);
         }
+        dd($orderModel);
+        $client = new Client();
+        $client->request('GET', 'http://127.0.0.1:3000?a=test');
+        dd($orderModel);
     }
 }
