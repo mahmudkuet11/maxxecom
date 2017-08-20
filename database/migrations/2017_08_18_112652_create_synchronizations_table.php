@@ -29,6 +29,6 @@ class CreateSynchronizationsTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('synchronizations');
     }
 }

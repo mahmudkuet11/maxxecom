@@ -13,7 +13,7 @@ class Order extends Model
         'adjustment_amount',
         'amount_paid',
         'amount_saved',
-        'order_created_at',
+        'created_time',
         'payment_method',
         'sub_total',
         'total',

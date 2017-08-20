@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Order;
 
+use App\Models\Store;
 use App\Service\Order\OrderService;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class OrderController extends Controller
@@ -16,7 +16,7 @@ class OrderController extends Controller
     }
 
     public function getAll(){
-        $this->service->fetchUnSynced(4);
+        $this->service->fetchUnSynced(Store::first()->id);
         return view('dashboard.orders.index');
     }
 }

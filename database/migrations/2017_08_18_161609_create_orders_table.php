@@ -21,7 +21,7 @@ class CreateOrdersTable extends Migration
             $table->decimal('adjustment_amount');
             $table->decimal('amount_paid');
             $table->decimal('amount_saved');
-            $table->timestamp('order_created_at');
+            $table->timestamp('created_time')->nullable();
             $table->string('payment_method');
             $table->decimal('sub_total');
             $table->decimal('total');
