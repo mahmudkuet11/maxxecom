@@ -3,6 +3,9 @@ namespace App\Service\Store;
 
 use App\Jobs\SyncOrder;
 use App\Models\Store;
+use App\Service\eBay\GetOrderService;
+use App\Service\Order\OrderService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Auth;
 
@@ -41,5 +44,23 @@ class StoreService
         foreach ($stores as $store){
             dispatch(new SyncOrder($store));
         }
+    }
+
+    public function setUp($store){
+        $from = Carbon::now()->subDays(7);
+        $to = Carbon::now();
+        $getOrderService = new GetOrderService();
+        $orderService = new OrderService();
+        $pageNum = 1;
+        do{
+            $response = $getOrderService->getCreatedBetween($store, $from, $to, $pageNum);
+            if($response->Ack == 'Success' && isset($response->OrderArray->Order)){
+                $orderService->SaveOrders($store, $response);
+            }else{
+                dd($response);
+                throw new \Exception('Failed');
+            }
+            $pageNum++;
+        }while($response->HasMoreOrders == 'true' && ((int)$response->PageNumber <= (int)$response->PaginationResult->TotalNumberOfPages));
     }
 }
