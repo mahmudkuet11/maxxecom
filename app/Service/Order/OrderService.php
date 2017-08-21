@@ -2,6 +2,7 @@
 
 namespace App\Service\Order;
 
+use App\Event\StoreSyncProgress;
 use App\Models\Order\CheckoutStatus;
 use App\Models\Order\Order;
 use App\Models\Order\ShippingAddress;
@@ -13,36 +14,36 @@ use DB;
 
 class OrderService
 {
-
     public function fetchUnSynced($store_id){
-        DB::beginTransaction();
         try{
             $store = Store::find($store_id);
-            $now = Carbon::now('UTC');
-            $last_synced_time = Carbon::parse(Order::where('store_id', $store_id)->max('created_time'));
+            $last_synced_time = Order::where('store_id', $store_id)->max('created_time');
             if($last_synced_time == null){
-                $last_synced_time = $now->subDays(30);
+                $last_synced_time = Carbon::now('UTC')->subDays(30);
+            }else{
+                $last_synced_time = Carbon::parse($last_synced_time);
             }
-
             $current_page = 1;
+            $now = Carbon::now('UTC');
+            dd($last_synced_time, $now);
             $orders = self::_getPage($current_page, $store->auth_token, $store->site_id, $last_synced_time, $now);
-            if($orders->Ack == 'Success'){
-                self::_saveOrders($store_id, $orders);
-                while($orders->HasMoreOrders){
+            dd($orders);
+            if((string)$orders->Ack == 'Success'){
+                self::_saveOrders($store, $orders);
+                dd($orders->HasMoreOrders);
+                while((boolean)$orders->HasMoreOrders){
                     $current_page++;
                     $orders = self::_getPage($current_page, $store->auth_token, $store->site_id, $last_synced_time, $now);
-                    if($orders->Ack == 'Success'){
-                        self::_saveOrders($store_id, $orders);
+                    if((string)$orders->Ack == 'Success'){
+                        self::_saveOrders($store, $orders);
                     }else{
                         break;
                     }
                 }
             }
-            DB::commit();
             return true;
         }catch (\Exception $e){
-            DB::rollback();
-            throw new \Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -66,7 +67,7 @@ class OrderService
                 <ModTimeFrom>'. $create_time_from->toIso8601String() .'</ModTimeFrom>
                 <ModTimeTo>'. $create_time_to->toIso8601String() .'</ModTimeTo>
             <Pagination>
-                <EntriesPerPage>2</EntriesPerPage>
+                <EntriesPerPage>5</EntriesPerPage>
                 <PageNumber>'. $page_no .'</PageNumber>
              </Pagination>
             </GetOrdersRequest>';
@@ -100,78 +101,81 @@ class OrderService
         return $response;
     }
 
-    private function _saveOrders($store_id, \SimpleXMLElement $orders){
+    private function _saveOrders(Store $store, \SimpleXMLElement $orders){
         $order_array = $orders->OrderArray->Order;
-        dd($order_array);
         foreach ($order_array as $order){
-            self::_save($store_id, $order);
+            self::_save($store->id, $order);
         }
+        event(new StoreSyncProgress($orders, $store));
     }
 
     private function _save($store_id, $order){
-        dd('_save');
-        $orderModel = Order::updateOrCreate([
-            'store_id' =>  $store_id,
-            'ebay_order_id'    =>  (string)$order->OrderID
-        ], [
-            'order_status' =>  (string)$order->OrderStatus,
-            'adjustment_amount'    =>  (double)$order->AdjustmentAmount,
-            'amount_paid'  =>  (double)$order->AmountPaid,
-            'amount_saved' =>  (double)$order->AmountSaved,
-            'created_time' =>  Carbon::parse($order->CreatedTime)->toDateTimeString(),
-            'payment_method'   =>  (string)$order->PaymentMethods,
-            'sub_total'    =>  (double)$order->Subtotal,
-            'total'    =>  (double)$order->Total,
-            'buyer_user_id'    =>  (string)$order->BuyerUserID,
-            'paid_time'    =>  $order->PaidTime ? Carbon::parse($order->PaidTime)->toDateTimeString() : null,
-            'shipped_time' =>  $order->ShippedTime ? Carbon::parse($order->ShippedTime)->toDateTimeString() : null,
-            'payment_hold_status'  =>  (string)$order->PaymentHoldStatus,
-            'extended_order_id'    =>  (string)$order->ExtendedOrderID,
-        ]);
-        CheckoutStatus::updateOrCreate([
-            'order_id'  =>  $orderModel->id
-        ], [
-            'ebay_payment_status'   =>  (string)$order->CheckoutStatus->eBayPaymentStatus,
-            'status'    =>  (string)$order->CheckoutStatus->Status
-        ]);
-        ShippingAddress::updateOrCreate([
-            'order_id'  =>  $orderModel->id
-        ], [
-            'name'  =>  (string)$order->ShippingAddress->Name,
-            'street1'   =>  (string)$order->ShippingAddress->Street1,
-            'street2'   =>  (string)$order->ShippingAddress->Street2,
-            'city_name' =>  (string)$order->ShippingAddress->CityName,
-            'state_or_province' =>  (string)$order->ShippingAddress->StateOrProvince,
-            'country'   =>  (string)$order->ShippingAddress->Country,
-            'country_name'  =>  (string)$order->ShippingAddress->CountryName,
-            'phone' =>  (string)$order->ShippingAddress->Phone,
-            'postal_code'   =>  (string)$order->ShippingAddress->PostalCode,
-            'address_id'    =>  (string)$order->ShippingAddress->AddressID,
-            'shipping_service_selected' =>  (string)$order->ShippingServiceSelected->ShippingService,
-            'shipping_service_cost' =>  (double)$order->ShippingServiceSelected->ShippingServiceCost,
-        ]);
-        foreach($order->TransactionArray->Transaction as $transaction){
-            Transaction::updateOrCreate([
+        DB::beginTransaction();
+        try{
+            $orderModel = Order::updateOrCreate([
+                'store_id' =>  $store_id,
+                'ebay_order_id'    =>  (string)$order->OrderID
+            ], [
+                'order_status' =>  (string)$order->OrderStatus,
+                'adjustment_amount'    =>  (double)$order->AdjustmentAmount,
+                'amount_paid'  =>  (double)$order->AmountPaid,
+                'amount_saved' =>  (double)$order->AmountSaved,
+                'created_time' =>  Carbon::parse($order->CreatedTime)->toDateTimeString(),
+                'payment_method'   =>  (string)$order->PaymentMethods,
+                'sub_total'    =>  (double)$order->Subtotal,
+                'total'    =>  (double)$order->Total,
+                'buyer_user_id'    =>  (string)$order->BuyerUserID,
+                'paid_time'    =>  $order->PaidTime ? Carbon::parse($order->PaidTime)->toDateTimeString() : null,
+                'shipped_time' =>  $order->ShippedTime ? Carbon::parse($order->ShippedTime)->toDateTimeString() : null,
+                'payment_hold_status'  =>  (string)$order->PaymentHoldStatus,
+                'extended_order_id'    =>  (string)$order->ExtendedOrderID,
+            ]);
+            CheckoutStatus::updateOrCreate([
                 'order_id'  =>  $orderModel->id
             ], [
-                'buyer_email'   =>  (string)$transaction->Buyer->Email,
-                'buyer_user_first_name' =>  (string)$transaction->Buyer->UserFirstName,
-                'buyer_user_last_name'  =>  (string)$transaction->Buyer->UserLastName,
-                'transaction_created_at'    =>  Carbon::parse($transaction->CreatedDate)->toDateTimeString(),
-                'item_id'   =>  (string)$transaction->Item->ItemID,
-                'site'  =>  (string)$transaction->Item->Item->Site,
-                'item_title'    =>  (string)$transaction->Item->Title,
-                'sku'   =>  (string)$transaction->Item->SKU,
-                'condition' =>  (string)$transaction->Item->ConditionDisplayName,
-                'quantity'  =>  (double)$transaction->QuantityPurchased,
-                'ebay_transaction_id'   =>  (string)$transaction->TransactionID,
-                'transaction_price' =>  (double)$transaction->TransactionPrice,
-                'order_line_item_id'    =>  (string)$transaction->OrderLineItemID,
+                'ebay_payment_status'   =>  (string)$order->CheckoutStatus->eBayPaymentStatus,
+                'status'    =>  (string)$order->CheckoutStatus->Status
             ]);
+            ShippingAddress::updateOrCreate([
+                'order_id'  =>  $orderModel->id
+            ], [
+                'name'  =>  (string)$order->ShippingAddress->Name,
+                'street1'   =>  (string)$order->ShippingAddress->Street1,
+                'street2'   =>  (string)$order->ShippingAddress->Street2,
+                'city_name' =>  (string)$order->ShippingAddress->CityName,
+                'state_or_province' =>  (string)$order->ShippingAddress->StateOrProvince,
+                'country'   =>  (string)$order->ShippingAddress->Country,
+                'country_name'  =>  (string)$order->ShippingAddress->CountryName,
+                'phone' =>  (string)$order->ShippingAddress->Phone,
+                'postal_code'   =>  (string)$order->ShippingAddress->PostalCode,
+                'address_id'    =>  (string)$order->ShippingAddress->AddressID,
+                'shipping_service_selected' =>  (string)$order->ShippingServiceSelected->ShippingService,
+                'shipping_service_cost' =>  (double)$order->ShippingServiceSelected->ShippingServiceCost,
+            ]);
+            foreach($order->TransactionArray->Transaction as $transaction){
+                Transaction::updateOrCreate([
+                    'order_id'  =>  $orderModel->id
+                ], [
+                    'buyer_email'   =>  (string)$transaction->Buyer->Email,
+                    'buyer_user_first_name' =>  (string)$transaction->Buyer->UserFirstName,
+                    'buyer_user_last_name'  =>  (string)$transaction->Buyer->UserLastName,
+                    'transaction_created_at'    =>  Carbon::parse($transaction->CreatedDate)->toDateTimeString(),
+                    'item_id'   =>  (string)$transaction->Item->ItemID,
+                    'site'  =>  (string)$transaction->Item->Item->Site,
+                    'item_title'    =>  (string)$transaction->Item->Title,
+                    'sku'   =>  (string)$transaction->Item->SKU,
+                    'condition' =>  (string)$transaction->Item->ConditionDisplayName,
+                    'quantity'  =>  (double)$transaction->QuantityPurchased,
+                    'ebay_transaction_id'   =>  (string)$transaction->TransactionID,
+                    'transaction_price' =>  (double)$transaction->TransactionPrice,
+                    'order_line_item_id'    =>  (string)$transaction->OrderLineItemID,
+                ]);
+            }
+            DB::commit();
+            return true;
+        }catch(\Exception $e){
+            DB::rollback();
+            throw $e;
         }
-        dd($orderModel);
-        $client = new Client();
-        $client->request('GET', 'http://127.0.0.1:3000?a=test');
-        dd($orderModel);
     }
 }

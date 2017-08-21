@@ -23,5 +23,10 @@ Route::resource('/dashboard/store', 'Store\StoreController');
 Route::get('/orders', 'Order\OrderController@getAll')->name('orders.all');
 
 Route::get('/test', function(){
-    dd(Carbon\Carbon::now('UTC'));
+    $stores = \App\Models\Store::all();
+    foreach ($stores as $store){
+        $store->update([
+            'is_syncing'    =>  false
+        ]);
+    }
 });

@@ -10,11 +10,9 @@ class Store extends Model
         'owner_id',
         'name',
         'site_id',
-        'dev_id',
-        'app_id',
-        'cert_id',
         'auth_token',
         'oauth_token',
+        'is_syncing'
     ];
 
 }

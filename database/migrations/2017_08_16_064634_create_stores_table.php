@@ -19,11 +19,10 @@ class CreateStoresTable extends Migration
             $table->string('name');
             $table->integer('site_id');
 
-            $table->string('dev_id');
-            $table->string('app_id');
-            $table->string('cert_id');
             $table->text('auth_token');
             $table->text('oauth_token');
+
+            $table->boolean('is_syncing')->default(false);
 
             $table->timestamps();
         });

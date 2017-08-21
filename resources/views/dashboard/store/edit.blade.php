@@ -79,27 +79,6 @@
                             <h4 class="form-section"><i class="icon-clipboard4"></i>Store Config</h4>
 
                             <div class="form-group row">
-                                <label class="col-md-3 label-control">Dev ID</label>
-                                <div class="col-md-9">
-                                    <input type="text" class="form-control" placeholder="Enter dev ID" name="dev_id" value="{{ old('dev_id', $store->dev_id) }}">
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <label class="col-md-3 label-control">App ID</label>
-                                <div class="col-md-9">
-                                    <input type="text" class="form-control" placeholder="Enter app ID" name="app_id" value="{{ old('app_id', $store->app_id) }}">
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <label class="col-md-3 label-control">Cert ID</label>
-                                <div class="col-md-9">
-                                    <input type="text" class="form-control" placeholder="Enter cert ID" name="cert_id" value="{{ old('cert_id', $store->cert_id) }}">
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
                                 <label class="col-md-3 label-control">Auth Token</label>
                                 <div class="col-md-9">
                                     <textarea class="form-control" name="auth_token" rows="3">{{ old('auth_token', $store->auth_token) }}</textarea>

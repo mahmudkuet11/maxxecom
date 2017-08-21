@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Order;
 
 use App\Jobs\SyncOrder;
+use App\Models\Store;
 use App\Service\Order\OrderService;
 use App\Http\Controllers\Controller;
+use App\Service\Store\StoreService;
 
 class OrderController extends Controller
 {
@@ -15,8 +17,14 @@ class OrderController extends Controller
         $this->service = $service;
     }
 
-    public function getAll(){
-        $this->service->fetchUnSynced(1);
+    public function getAll(StoreService $storeService){
+        //$storeService->syncAll();
+        try{
+            $res = $this->service->fetchUnSynced(1);
+            dd($res);
+        }catch (\Exception $e){
+            dd($e->getMessage());
+        }
         return view('dashboard.orders.index');
     }
 }
