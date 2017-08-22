@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Order;
 
-use App\Jobs\SetupStoreJob;
-use App\Models\Store;
 use App\Service\Order\OrderService;
 use App\Http\Controllers\Controller;
 use App\Service\Store\StoreService;
@@ -18,9 +16,8 @@ class OrderController extends Controller
     }
 
     public function getAll(StoreService $storeService){
-        $orders = $this->service->getAll()->get();
-        //dd($orders);
+        $orders = $this->service->getAll();
         $storeService->syncAll();
-        return view('dashboard.orders.index', ['orders'=>$orders]);
+        return view('dashboard.orders.index', ['orders'=>$orders->paginate(config('order.orders_per_page'))]);
     }
 }

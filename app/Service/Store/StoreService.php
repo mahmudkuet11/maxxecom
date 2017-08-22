@@ -79,7 +79,7 @@ class StoreService
         $syncService = new SyncService();
         $from = $syncService->getLastSyncedTime($store);
         $to = Carbon::now();
-        if(!$forceSync && $from->diffInMinutes($to) < config('app.order')['min_sync_after']){
+        if(!$forceSync && $from->diffInMinutes($to) < config('order.min_sync_after')){
             return true;
         }
         $getOrderService = new GetOrderService();

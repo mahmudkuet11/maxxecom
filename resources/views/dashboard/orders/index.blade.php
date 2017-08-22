@@ -172,28 +172,31 @@
                             </tr>
                             </thead>
                             <tbody>
+
+                            @foreach($orders as $order)
                             <tr>
                                 <td style=""><input type='checkbox' id='checkall' name='mydata'></td>
-                                <td >
-                                    <a href="#">93400</a>
+                                <td>
+                                    <a href="#">{{ $order->id }}</a>
                                 </td>
-                                <td > <a href="#">brto0195_bt26u8u</a><code>01</code>()</td>
-                                <td ><span>nishan@mazegeek.com</span> </td>
-                                <td >22222497777352</td>
-                                <td style="width:200px">New 2003-2007 FITS SAAB 9-3 MARKER LAMP</td>
+                                <td > <a href="#">{{ $order->buyer_user_id }}</a><code>01</code>()</td>
+                                <td ><span>{{ $order->transactions->first()->buyer_email }}</span> </td>
+                                <td >{{ $order->transactions->pluck('item_id')->implode(", ") }}</td>
+                                <td style="width:200px">{{ $order->transactions->pluck('item_title')->implode(", ") }}</td>
                                 <td><a href="#">Add</a></td>
                                 <td><a href="#"><div class="tag tag-pill tag-info"><i class="icon-newspaper-o"></i></div></a></td>
-                                <td>1</td>
+                                <td>{{ $order->transactions->sum('quantity') }}</td>
                                 <td>$1000</td>
-                                <td>$1040</td>
-                                <td>May-31-17</td>
-                                <td>May-31-17</td>
+                                <td>${{ $order->total }}</td>
+                                <td>{{ $order->sold_date }}</td>
+                                <td>{{ $order->paid_time }}</td>
                                 <th><i class="icon-star-o"></i></th>
                                 <th><i class="icon-star-o"></i></th>
                                 <th><i class="icon-star-o"></i></th>
                                 <th><i class="icon-star-o"></i></th>
                                 <th><i class="icon-star-o"></i></th>
                             </tr>
+                            @endforeach
 
                             </tbody>
                         </table>

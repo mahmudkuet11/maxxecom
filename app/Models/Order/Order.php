@@ -2,6 +2,7 @@
 
 namespace App\Models\Order;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
@@ -23,6 +24,19 @@ class Order extends Model
         'payment_hold_status',
         'extended_order_id',
     ];
+
+    public function getSoldDateAttribute(){
+        return Carbon::parse($this->created_time)->format('M-d-y');
+    }
+
+    public function getPaidDateAttribute(){
+        $paid_date = $this->paid_time;
+        dd($paid_date);
+        if($paid_date){
+            return Carbon::parse($paid_date)->format("M-d-y");
+        }
+        return '';
+    }
 
     public function checkoutStatus(){
         return $this->hasOne(CheckoutStatus::class);
