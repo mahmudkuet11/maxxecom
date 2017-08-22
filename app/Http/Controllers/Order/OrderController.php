@@ -18,7 +18,9 @@ class OrderController extends Controller
     }
 
     public function getAll(StoreService $storeService){
+        $orders = $this->service->getAll()->get();
+        //dd($orders);
         $storeService->syncAll();
-        return view('dashboard.orders.index');
+        return view('dashboard.orders.index', ['orders'=>$orders]);
     }
 }

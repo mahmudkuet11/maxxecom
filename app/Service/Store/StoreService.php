@@ -45,10 +45,12 @@ class StoreService
         return Store::where('id', $id);
     }
 
-    public function syncAll(){
-        $stores = self::getAll()->where('is_syncing', false)->get();
+    public function syncAll($forceSync = false){
+        $stores = self::getAll()->where('is_syncing', false)->with('orderSynchronization')->get();
         foreach ($stores as $store){
-            dispatch(new SyncStoreJob($store));
+            if($forceSync || $store->needToSync){
+                dispatch(new SyncStoreJob($store));
+            }
         }
     }
 
@@ -73,10 +75,13 @@ class StoreService
         $syncService->setLastSyncTime($store, $to, Scope::ORDER);
     }
 
-    public function syncStore(Store $store){
+    public function syncStore(Store $store, $forceSync = false){
         $syncService = new SyncService();
         $from = $syncService->getLastSyncedTime($store);
         $to = Carbon::now();
+        if(!$forceSync && $from->diffInMinutes($to) < config('app.order')['min_sync_after']){
+            return true;
+        }
         $getOrderService = new GetOrderService();
         $orderService = new OrderService();
         $pageNum = 1;

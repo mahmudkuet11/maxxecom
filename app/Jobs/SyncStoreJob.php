@@ -16,18 +16,20 @@ class SyncStoreJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $store;
+    private $forceSync;
     public $tries = 2;
 
-    public function __construct(Store $store)
+    public function __construct(Store $store, $forceSync = false)
     {
         $this->store = $store;
+        $this->forceSync = $forceSync;
     }
 
     public function handle(StoreService $service)
     {
         $this->store->update(['is_syncing'=>true]);
         try{
-            $service->syncStore($this->store);
+            $service->syncStore($this->store, $this->forceSync);
         }catch (\Exception $e){
             $console = new ConsoleOutput();
             $console->writeln($e->getMessage());

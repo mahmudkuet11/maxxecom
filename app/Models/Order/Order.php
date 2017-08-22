@@ -23,4 +23,15 @@ class Order extends Model
         'payment_hold_status',
         'extended_order_id',
     ];
+
+    public function checkoutStatus(){
+        return $this->hasOne(CheckoutStatus::class);
+    }
+
+    public function shippingAddress(){
+        return $this->hasOne(ShippingAddress::class);
+    }
+    public function transactions(){
+        return $this->hasMany(Transaction::class);
+    }
 }

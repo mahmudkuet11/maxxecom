@@ -135,6 +135,10 @@ return [
     |
     */
 
+    'order' =>  [
+        'min_sync_after'    =>  30, // minutes
+    ],
+
     'providers' => [
 
         /*

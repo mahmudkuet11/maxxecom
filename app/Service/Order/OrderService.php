@@ -13,6 +13,10 @@ use DB;
 
 class OrderService
 {
+    public function getAll(){
+        return new Order();
+    }
+
     public function SaveOrders(Store $store, $orders){
         $order_array = $orders->OrderArray->Order;
         foreach ($order_array as $order){
