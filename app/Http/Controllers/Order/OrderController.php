@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Order;
 
-use App\Jobs\SyncOrder;
+use App\Jobs\SetupStoreJob;
 use App\Models\Store;
 use App\Service\Order\OrderService;
 use App\Http\Controllers\Controller;
@@ -18,6 +18,7 @@ class OrderController extends Controller
     }
 
     public function getAll(StoreService $storeService){
+        $storeService->syncAll();
         return view('dashboard.orders.index');
     }
 }

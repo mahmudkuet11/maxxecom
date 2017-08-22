@@ -23,6 +23,28 @@ class GetOrderService
              </Pagination>
             </GetOrdersRequest>';
 
+        return self::_fetch($store, $request_body);
+    }
+
+    public function getModifiedBetween(Store $store, Carbon $from, Carbon $to, $page_no){
+        $request_body = '\
+            <?xml version="1.0" encoding="utf-8"?> 
+            <GetOrdersRequest xmlns="urn:ebay:apis:eBLBaseComponents">
+                <RequesterCredentials>
+                    <eBayAuthToken>'. $store->auth_token .'</eBayAuthToken>
+                </RequesterCredentials>
+                <ModTimeFrom>'. $from->toIso8601String() .'</ModTimeFrom>
+                <ModTimeTo>'. $to->toIso8601String() .'</ModTimeTo>
+            <Pagination>
+                <EntriesPerPage>100</EntriesPerPage>
+                <PageNumber>'. $page_no .'</PageNumber>
+             </Pagination>
+            </GetOrdersRequest>';
+
+        return self::_fetch($store, $request_body);
+    }
+
+    private function _fetch($store, $request_body){
         $client = new Client(
             [
                 "defaults" => [

@@ -2,7 +2,8 @@
 namespace App\Service\Store;
 
 use App\Enum\Ebay\Scope;
-use App\Jobs\SyncOrder;
+use App\Jobs\SetupStoreJob;
+use App\Jobs\SyncStoreJob;
 use App\Models\Store;
 use App\Service\eBay\GetOrderService;
 use App\Service\Order\OrderService;
@@ -21,7 +22,7 @@ class StoreService
             'oauth_token'  =>  $request->get('oauth_token'),
         ]);
 
-        dispatch(new SyncOrder($store));
+        dispatch(new SetupStoreJob($store));
 
         return $store;
     }
@@ -47,7 +48,7 @@ class StoreService
     public function syncAll(){
         $stores = self::getAll()->where('is_syncing', false)->get();
         foreach ($stores as $store){
-            dispatch(new SyncOrder($store));
+            dispatch(new SyncStoreJob($store));
         }
     }
 
@@ -60,10 +61,33 @@ class StoreService
         $pageNum = 1;
         do{
             $response = $getOrderService->getCreatedBetween($store, $from, $to, $pageNum);
-            if($response->Ack == 'Success' && isset($response->OrderArray->Order)){
-                $orderService->SaveOrders($store, $response);
+            if($response->Ack == 'Success'){
+                if(isset($response->OrderArray->Order)){
+                    $orderService->SaveOrders($store, $response);
+                }
             }else{
                 throw new \Exception('Failed');
+            }
+            $pageNum++;
+        }while($response->HasMoreOrders == 'true' && ((int)$response->PageNumber <= (int)$response->PaginationResult->TotalNumberOfPages));
+        $syncService->setLastSyncTime($store, $to, Scope::ORDER);
+    }
+
+    public function syncStore(Store $store){
+        $syncService = new SyncService();
+        $from = $syncService->getLastSyncedTime($store);
+        $to = Carbon::now();
+        $getOrderService = new GetOrderService();
+        $orderService = new OrderService();
+        $pageNum = 1;
+        do{
+            $response = $getOrderService->getModifiedBetween($store, $from, $to, $pageNum);
+            if($response->Ack == 'Success'){
+                if(isset($response->OrderArray->Order)){
+                    $orderService->SaveOrders($store, $response);
+                }
+            }else{
+                throw new \Exception('Failed to connect with ebay API');
             }
             $pageNum++;
         }while($response->HasMoreOrders == 'true' && ((int)$response->PageNumber <= (int)$response->PaginationResult->TotalNumberOfPages));
