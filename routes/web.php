@@ -23,10 +23,7 @@ Route::resource('/dashboard/store', 'Store\StoreController');
 Route::get('/orders', 'Order\OrderController@getAll')->name('orders.all');
 
 Route::get('/test', function(){
-    $stores = \App\Models\Store::all();
-    foreach ($stores as $store){
-        $store->update([
-            'is_syncing'    =>  false
-        ]);
-    }
+    $client = new \GuzzleHttp\Client();
+    $res = $client->request('GET', 'https://jsonplaceholder.typicode.com/posts/1');
+    dd($res->getBody()->getContents());
 });
