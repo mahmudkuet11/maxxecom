@@ -18,8 +18,6 @@ class OrderController extends Controller
     }
 
     public function getAll(StoreService $storeService){
-        $storeService->syncAll();
-        //$storeService->setUp(Store::first());
         return view('dashboard.orders.index');
     }
 }

@@ -9,7 +9,6 @@ use App\Models\Order\ShippingAddress;
 use App\Models\Order\Transaction;
 use App\Models\Store;
 use Carbon\Carbon;
-use GuzzleHttp\Client;
 use DB;
 
 class OrderService

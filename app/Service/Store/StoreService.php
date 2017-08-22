@@ -1,6 +1,7 @@
 <?php
 namespace App\Service\Store;
 
+use App\Enum\Ebay\Scope;
 use App\Jobs\SyncOrder;
 use App\Models\Store;
 use App\Service\eBay\GetOrderService;
@@ -12,13 +13,17 @@ use Auth;
 class StoreService
 {
     public function store(Request $request){
-        return Store::create([
+        $store = Store::create([
             'owner_id'  =>  Auth::user()->id,
             'name'  =>  $request->get('name'),
             'site_id'  =>  $request->get('site_id'),
             'auth_token'  =>  $request->get('auth_token'),
             'oauth_token'  =>  $request->get('oauth_token'),
         ]);
+
+        dispatch(new SyncOrder($store));
+
+        return $store;
     }
 
     public function update(Request $request, $id){
@@ -47,6 +52,7 @@ class StoreService
     }
 
     public function setUp($store){
+        $syncService = new SyncService();
         $from = Carbon::now()->subDays(7);
         $to = Carbon::now();
         $getOrderService = new GetOrderService();
@@ -57,10 +63,10 @@ class StoreService
             if($response->Ack == 'Success' && isset($response->OrderArray->Order)){
                 $orderService->SaveOrders($store, $response);
             }else{
-                dd($response);
                 throw new \Exception('Failed');
             }
             $pageNum++;
         }while($response->HasMoreOrders == 'true' && ((int)$response->PageNumber <= (int)$response->PaginationResult->TotalNumberOfPages));
+        $syncService->setLastSyncTime($store, $to, Scope::ORDER);
     }
 }
