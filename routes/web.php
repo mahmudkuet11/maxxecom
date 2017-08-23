@@ -21,6 +21,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/dashboard', 'DashboardController@getDashboard')->name('dashboard');
 Route::resource('/dashboard/store', 'Store\StoreController');
 Route::get('/orders', 'Order\OrderController@getAll')->name('orders.all');
+Route::get('/order/{id}', 'Order\OrderController@show')->name('order.show');
 
 Route::get('/test', function(){
     $client = new \GuzzleHttp\Client();

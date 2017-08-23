@@ -208,7 +208,7 @@
                             <tr>
                                 <td style=""><input type='checkbox' class='checkall' name='mydata'></td>
                                 <td>
-                                    <a href="#">#{{ $order->id . '-' . $order->sales_record_no }}</a>
+                                    <a href="{{ route('order.show', $order->id) }}">#{{ $order->id . '-' . $order->sales_record_no }}</a>
                                 </td>
                                 <td><a href="#">{{ $order->buyer_user_id }}</a><code>01</code>()</td>
                                 <td><span>{{ $order->transactions->first()->buyer_email }}</span> </td>

@@ -20,4 +20,8 @@ class OrderController extends Controller
         $storeService->syncAll();
         return view('dashboard.orders.index', ['orders'=>$orders->paginate(config('order.orders_per_page'))]);
     }
+
+    public function show($id){
+        return view('dashboard.orders.show');
+    }
 }
