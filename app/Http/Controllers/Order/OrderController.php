@@ -16,7 +16,7 @@ class OrderController extends Controller
     }
 
     public function getAll(StoreService $storeService){
-        $orders = $this->service->getAll();
+        $orders = $this->service->getAll()->orderBy('sales_record_no', 'DESC');
         $storeService->syncAll();
         return view('dashboard.orders.index', ['orders'=>$orders->paginate(config('order.orders_per_page'))]);
     }

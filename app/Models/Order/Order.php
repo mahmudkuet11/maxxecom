@@ -32,7 +32,6 @@ class Order extends Model
 
     public function getPaidDateAttribute(){
         $paid_date = $this->paid_time;
-        dd($paid_date);
         if($paid_date){
             return Carbon::parse($paid_date)->format("M-d-y");
         }
