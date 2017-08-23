@@ -10,6 +10,7 @@ class Order extends Model
     protected $fillable = [
         'store_id',
         'ebay_order_id',
+        'sales_record_no',
         'order_status',
         'adjustment_amount',
         'amount_paid',

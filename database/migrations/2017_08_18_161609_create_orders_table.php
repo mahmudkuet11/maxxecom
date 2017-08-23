@@ -17,6 +17,7 @@ class CreateOrdersTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('store_id');
             $table->string('ebay_order_id');
+            $table->string('sales_record_no');
             $table->string('order_status');
             $table->decimal('adjustment_amount');
             $table->decimal('amount_paid');

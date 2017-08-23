@@ -30,7 +30,8 @@ class OrderService
         try{
             $orderModel = Order::updateOrCreate([
                 'store_id' =>  $store_id,
-                'ebay_order_id'    =>  (string)$order->OrderID
+                'ebay_order_id'    =>  (string)$order->OrderID,
+                'sales_record_no'   =>  (string)$order->ShippingDetails->SellingManagerSalesRecordNumber
             ], [
                 'order_status' =>  (string)$order->OrderStatus,
                 'adjustment_amount'    =>  (double)$order->AdjustmentAmount,
@@ -70,7 +71,8 @@ class OrderService
             ]);
             foreach($order->TransactionArray->Transaction as $transaction){
                 Transaction::updateOrCreate([
-                    'order_id'  =>  $orderModel->id
+                    'order_id'  =>  $orderModel->id,
+                    'sales_record_no'   =>  (string)$transaction->ShippingDetails->SellingManagerSalesRecordNumber
                 ], [
                     'buyer_email'   =>  (string)$transaction->Buyer->Email,
                     'buyer_user_first_name' =>  (string)$transaction->Buyer->UserFirstName,
