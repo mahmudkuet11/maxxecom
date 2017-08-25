@@ -8,8 +8,10 @@ use App\Models\Order\Order;
 use App\Models\Order\ShippingAddress;
 use App\Models\Order\Transaction;
 use App\Models\Store;
+use App\Service\eBay\CompleteSaleService;
 use Carbon\Carbon;
 use DB;
+use Illuminate\Http\Request;
 
 class OrderService
 {
@@ -111,5 +113,22 @@ class OrderService
             DB::rollback();
             throw $e;
         }
+    }
+
+    public function saveTrackingNumber(Request $request){
+        $order_id = $request->get('order_id');
+        $order_line_item_id = $request->get('order_line_item_id');
+        $trackings = $request->get('trackings');
+        $order = self::get($order_id)->with('store')->first();
+        $store = $order->store;
+        $completeSalesService = new CompleteSaleService();
+
+        $response = $completeSalesService->saveTrackingNumber($store, $order_line_item_id, $trackings);
+        if($response->Ack == 'Success'){
+            $order->transactions->where('order_line_item_id', $order_line_item_id)->update([
+                'shipment_tracking_details' =>  json_encode($trackings)
+            ]);
+        }
+        return $response->Ack == 'Success';
     }
 }

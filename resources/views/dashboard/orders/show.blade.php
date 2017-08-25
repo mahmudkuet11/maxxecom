@@ -1,5 +1,10 @@
 @extends('layouts.main')
 
+@section('meta')
+@parent
+<meta name="csrf-token" content="{{ csrf_token() }}">
+@endsection
+
 @section('css')
 @parent
 <link rel="stylesheet" type="text/css" href="/app-assets/css/plugins/forms/extended/form-extended.min.css">
@@ -164,7 +169,7 @@
                 </div>
                 <div class="card-body collapse in">
                     <div class="card-block card-dashboard">
-                        <table class="table table-striped table-bordered">
+                        <table class="table table-striped table-bordered" id="transaction_details_table" data-order-id="{{ $order->id }}">
                             <thead>
                             <tr>
                                 <th>Quantity</th>
@@ -178,7 +183,7 @@
                             </thead>
                             <tbody>
                             @foreach($order->transactions as $transaction)
-                            <tr data-tracking-details="{{ $transaction->shipment_tracking_details }}">
+                            <tr data-tracking-details="{{ $transaction->shipment_tracking_details }}" data-order-line-item-id="{{ $transaction->order_line_item_id }}">
                                 <td>{{ $transaction->quantity }}</td>
                                 <td>{{ $transaction->item_id }}</td>
                                 <td><span><img src="../../../app-assets/images/product/BM10661061.jpg" style="width:100%;" /></span></td>
@@ -540,11 +545,11 @@
 </script>
 
 <script>
-
     var TrackingNumber = {
-        selectedRow: null,
+        $selectedRow: null,
         $modal: null,
         $trackingList: null,
+        url: '{{ route("tracking_no.save") }}',
         init: function(){
             this.$modal = $('#tracking_number_modal');
             this.$trackingList = $('#tracking_list');
@@ -553,14 +558,14 @@
         listen: function(){
             var _this = this;
             $(".add_tracking_no_btn").click(function(){
-                _this.selectedRow = $(this).closest("tr");
+                _this.$selectedRow = $(this).closest("tr");
                 _this.showModal();
             });
             this.$modal.on('shown.bs.modal', function(){
                 _this.showTrackingNumbers();
             });
             $("#add_tracking_row_btn").click(function(){
-                _this.addNewRow();
+                _this.appendNewRow();
             });
             $("#tracking_number_save_btn").click(function(){
                 _this.saveTrackingNumbers();
@@ -570,7 +575,7 @@
             this.$modal.modal('show');
         },
         showTrackingNumbers: function(){
-            var trackings = JSON.parse(this.selectedRow.attr('data-tracking-details'));
+            var trackings = JSON.parse(this.$selectedRow.attr('data-tracking-details'));
             if(trackings.length == 0){
                 this.addNewRow();
             }else{
@@ -579,27 +584,55 @@
                 this.$trackingList.html(html);
             }
         },
-        addNewRow: function(){
+        appendNewRow: function(){
             var template = Handlebars.compile($("#empty_tracking_row_template").html());
             var html = template();
             this.$trackingList.append(html);
+        },
+        addNewRow: function(){
+            var template = Handlebars.compile($("#empty_tracking_row_template").html());
+            var html = template();
+            this.$trackingList.html(html);
         },
         saveTrackingNumbers: function(){
             var trackings = [];
             this.$trackingList.find('.tracking_row').each(function(index){
                 var tracking = {
-                    tracking_number: $(this).find('.tracking_no_input').val(),
+                    tracking_no: $(this).find('.tracking_no_input').val(),
                     carrier_used: $(this).find('.carrier_used_input').val()
                 };
-                if(tracking.tracking_number != '' || tracking.carrier_used != ''){
+                if(tracking.tracking_no != '' || tracking.carrier_used != ''){
                     trackings.push(tracking);
                 }
             });
-            console.log(trackings);
+            $.ajax({
+                method: 'POST',
+                url: this.url,
+                data: {
+                    order_id: $("#transaction_details_table").attr('data-order-id'),
+                    order_line_item_id: this.$selectedRow.attr('data-order-line-item-id'),
+                    trackings: trackings
+                },
+                success: function(resp){
+                    if(resp.status == 'false'){
+                        console.log('error');
+                    }
+                },
+                error: function(){
+                    console.log('error');
+                }
+            });
         }
     };
 
     $(document).ready(function () {
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
         $('#order-info').DataTable();
 
         $("input:button").click(function () {

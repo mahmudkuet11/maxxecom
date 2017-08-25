@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Order;
 use App\Service\Order\OrderService;
 use App\Http\Controllers\Controller;
 use App\Service\Store\StoreService;
+use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
@@ -22,7 +23,16 @@ class OrderController extends Controller
     }
 
     public function show($id){
-        $order = $this->service->get($id)->with('shippingAddress')->first();
-        return view('dashboard.orders.show', compact('order'));
+        $order = $this->service->get($id)->with('shippingAddress', 'transactions')->first();
+        return view('dashboard.orders.show', [
+            'order' =>  $order
+        ]);
+    }
+
+    public function saveTrackingNumber(Request $request){
+        $res = $this->service->saveTrackingNumber($request);
+        return [
+            'status'    =>  $res
+        ];
     }
 }

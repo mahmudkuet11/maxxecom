@@ -22,6 +22,7 @@ Route::get('/dashboard', 'DashboardController@getDashboard')->name('dashboard');
 Route::resource('/dashboard/store', 'Store\StoreController');
 Route::get('/orders', 'Order\OrderController@getAll')->name('orders.all');
 Route::get('/order/{id}', 'Order\OrderController@show')->name('order.show');
+Route::post('/tracking-number/save', 'Order\OrderController@saveTrackingNumber')->name('tracking_no.save');
 
 Route::get('/test', function(){
     $client = new \GuzzleHttp\Client();

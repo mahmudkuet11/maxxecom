@@ -2,6 +2,7 @@
 
 namespace App\Models\Order;
 
+use App\Models\Store;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -54,5 +55,9 @@ class Order extends Model
     }
     public function transactions(){
         return $this->hasMany(Transaction::class);
+    }
+
+    public function store(){
+        return $this->belongsTo(Store::class);
     }
 }
