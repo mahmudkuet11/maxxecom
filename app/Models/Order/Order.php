@@ -24,6 +24,9 @@ class Order extends Model
         'shipped_time',
         'payment_hold_status',
         'extended_order_id',
+        'sales_tax_percent',
+        'sales_tax_state',
+        'sales_tax_amount',
     ];
 
     public function getSoldDateAttribute(){
@@ -36,6 +39,10 @@ class Order extends Model
             return Carbon::parse($paid_date)->format("M-d-y");
         }
         return '';
+    }
+
+    public function getSalesTaxStateValueAttribute(){
+        return $this->sales_tax_state == '' ? 'No Sales Tax' : $this->sales_tax_state;
     }
 
     public function checkoutStatus(){

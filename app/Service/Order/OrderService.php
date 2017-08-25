@@ -17,6 +17,10 @@ class OrderService
         return new Order();
     }
 
+    public function get($id){
+        return Order::where('id', $id);
+    }
+
     public function SaveOrders(Store $store, $orders){
         $order_array = $orders->OrderArray->Order;
         foreach ($order_array as $order){
@@ -46,6 +50,9 @@ class OrderService
                 'shipped_time' =>  $order->ShippedTime ? Carbon::parse($order->ShippedTime)->toDateTimeString() : null,
                 'payment_hold_status'  =>  (string)$order->PaymentHoldStatus,
                 'extended_order_id'    =>  (string)$order->ExtendedOrderID,
+                'sales_tax_percent'    =>  (double)$order->ShippingDetails->SalesTax->SalesTaxPercent,
+                'sales_tax_state'    =>  (string)$order->ShippingDetails->SalesTax->SalesTaxState,
+                'sales_tax_amount'    =>  (double)$order->ShippingDetails->SalesTax->SalesTaxAmount,
             ]);
             CheckoutStatus::updateOrCreate([
                 'order_id'  =>  $orderModel->id
@@ -70,6 +77,14 @@ class OrderService
                 'shipping_service_cost' =>  (double)$order->ShippingServiceSelected->ShippingServiceCost,
             ]);
             foreach($order->TransactionArray->Transaction as $transaction){
+                $shipmentTrackingDetails = $transaction->ShippingDetails->ShipmentTrackingDetails;
+                $tracking_array = [];
+                foreach ($shipmentTrackingDetails as $tracking){
+                    array_push($tracking_array, [
+                        'tracking_no'   =>  (string)$tracking->ShipmentTrackingNumber,
+                        'carrier_used'   =>  (string)$tracking->ShippingCarrierUsed,
+                    ]);
+                }
                 Transaction::updateOrCreate([
                     'order_id'  =>  $orderModel->id,
                     'sales_record_no'   =>  (string)$transaction->ShippingDetails->SellingManagerSalesRecordNumber
@@ -87,6 +102,7 @@ class OrderService
                     'ebay_transaction_id'   =>  (string)$transaction->TransactionID,
                     'transaction_price' =>  (double)$transaction->TransactionPrice,
                     'order_line_item_id'    =>  (string)$transaction->OrderLineItemID,
+                    'shipment_tracking_details'  =>  json_encode($tracking_array)
                 ]);
             }
             DB::commit();

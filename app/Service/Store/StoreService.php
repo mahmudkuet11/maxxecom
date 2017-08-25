@@ -10,6 +10,7 @@ use App\Service\Order\OrderService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Auth;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class StoreService
 {
@@ -56,7 +57,7 @@ class StoreService
 
     public function setUp($store){
         $syncService = new SyncService();
-        $from = Carbon::now()->subDays(7);
+        $from = Carbon::now()->subDays(25);
         $to = Carbon::now();
         $getOrderService = new GetOrderService();
         $orderService = new OrderService();

@@ -18,6 +18,7 @@ class Store extends Model
     ];
 
     public function getNeedToSyncAttribute(){
+        if(!$this->orderSynchronization) return true;
         $last_synced_at = Carbon::parse($this->orderSynchronization->last_synced_at);
         $now = Carbon::now();
         if($last_synced_at->diffInMinutes($now) > config('order.min_sync_after')){

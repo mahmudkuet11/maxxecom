@@ -55,7 +55,7 @@
 
                                     </h6>
                                     <div class="form-group">
-                                        <input type="text" class="form-control" placeholder="Enter buyer's full name" value="Araf Nishan"/>
+                                        <input type="text" class="form-control" placeholder="Enter buyer's full name" value="{{ $order->shippingAddress->name }}"/>
                                     </div>
                                 </fieldset>
                                 <fieldset>
@@ -64,8 +64,8 @@
 
                                     </h6>
                                     <div class="form-group">
-                                        <input type="text" class="form-control mb-1" placeholder="Enter street address" value="6220 88th St"/>
-                                        <input type="text" class="form-control" placeholder="Extra line of street address" value="Pokhara valley" />
+                                        <input type="text" class="form-control mb-1" placeholder="Enter street address" value="{{ $order->shippingAddress->street1 }}"/>
+                                        <input type="text" class="form-control" placeholder="Extra line of street address" value="{{ $order->shippingAddress->street2 }}" />
                                     </div>
                                 </fieldset>
                                 <fieldset>
@@ -74,7 +74,7 @@
 
                                     </h6>
                                     <div class="form-group">
-                                        <input type="text" class="form-control" placeholder="Enter City name" value="Sanfransisco"/>
+                                        <input type="text" class="form-control" placeholder="Enter City name" value="{{ $order->shippingAddress->city_name }}"/>
 
                                     </div>
                                 </fieldset>
@@ -84,7 +84,7 @@
 
                                     </h6>
                                     <div class="form-group">
-                                        <input type="text" class="form-control" placeholder="Enter state/ province name" value="LA"/>
+                                        <input type="text" class="form-control" placeholder="Enter state/ province name" value="{{ $order->shippingAddress->state_or_province }}"/>
 
                                     </div>
                                 </fieldset>
@@ -94,7 +94,7 @@
 
                                     </h6>
                                     <div class="form-group">
-                                        <input type="text" class="form-control" placeholder="Enter zip/ postal Code" value="1243"/>
+                                        <input type="text" class="form-control" placeholder="Enter zip/ postal Code" value="{{ $order->shippingAddress->postal_code }}"/>
 
                                     </div>
                                 </fieldset>
@@ -105,6 +105,7 @@
                                     </h6>
                                     <div class="form-group">
                                         <select class="form-control" id="basicSelect">
+                                            <option value="{{ $order->shippingAddress->country }}" selected>{{ $order->shippingAddress->country_name }}</option>
                                             <option>USA</option>
                                             <option>India</option>
                                             <option>China</option>
@@ -120,7 +121,7 @@
                                         <small class="text-muted">(999) 999-9999 / x999999</small>
                                     </h6>
                                     <div class="form-group">
-                                        <input type="text" class="form-control xphone-inputmask" id="xphone-mask" placeholder="Enter Phone Number" value="(999) 999-9999 / x999999"/>
+                                        <input type="text" class="form-control xphone-inputmask" id="xphone-mask" placeholder="Enter Phone Number" value="{{ $order->shippingAddress->phone }}"/>
                                     </div>
                                 </fieldset>
                             </div>
@@ -172,51 +173,30 @@
                                 <th>Item Name</th>
                                 <th>Price</th>
                                 <th>Subtotal</th>
+                                <th>Tracking Number</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>272540515751</td>
+                            @foreach($order->transactions as $transaction)
+                            <tr data-tracking-details="{{ $transaction->shipment_tracking_details }}">
+                                <td>{{ $transaction->quantity }}</td>
+                                <td>{{ $transaction->item_id }}</td>
                                 <td><span><img src="../../../app-assets/images/product/BM10661061.jpg" style="width:100%;" /></span></td>
                                 <td>
-                                    <a href="#" class="text-bold-600">New bumper grille fits 2015 acura tlx rh outrter</a>
+                                    <a href="#" class="text-bold-600">{{ $transaction->item_title }}</a>
                                     <p class="text-muted font-small-2">Phasellus vel elit volutpat, egestas urna a.</p>
                                 </td>
-                                <td>$57.98</td>
-                                <td>$57.98</td>
+                                <td>${{ $transaction->transaction_price }}</td>
+                                <td>${{ $transaction->transaction_price }}</td>
+                                <td><button class="btn btn-primary btn-sm add_tracking_no_btn">Add</button></td>
                             </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>272540515751</td>
-                                <td><span><img src="../../../app-assets/images/product/BM10661061.jpg" style="width:100%;" /></span></td>
-                                <td>
-                                    <a href="#" class="text-bold-600">New bumper grille fits 2015 acura tlx rh outrter</a>
-                                    <p class="text-muted font-small-2">Phasellus vel elit volutpat, egestas urna a.</p>
-                                </td>
-                                <td>$57.98</td>
-                                <td>$57.98</td>
-                            </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>272540515751</td>
-                                <td><span><img src="../../../app-assets/images/product/BM10661061.jpg" style="width:100%;" /></span></td>
-                                <td>
-                                    <a href="#" class="text-bold-600">New bumper grille fits 2015 acura tlx rh outrter</a>
-                                    <p class="text-muted font-small-2">Phasellus vel elit volutpat, egestas urna a.</p>
-                                </td>
-                                <td>$57.98</td>
-                                <td>$57.98</td>
-                            </tr>
+                            @endforeach
                             </tbody>
                             <tfoot>
                             <tr>
+                                <th colspan="5" style="text-align: right">Total</th>
+                                <th>${{ $order->sub_total }}</th>
                                 <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th>Total</th>
-                                <th>$57.98</th>
                             </tr>
                             </tfoot>
                         </table>
@@ -246,24 +226,9 @@
                         <tbody>
                         <tr>
                             <td>
-                                <select class="form-control" id="basicSelect">
-                                    <option>FedEx ground or FedEx home delivery</option>
-                                    <option>DHL</option>
-                                    <option>Cargo</option>
-
-                                </select>
+                                <label for="">{{ $order->shippingAddress->shipping_service_selected }}</label>
                             </td>
-                            <td><input type="text" class="form-control currency-inputmask" id="currency-mask" placeholder="$____"></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <select class="form-control" id="basicSelect">
-                                    <option>FedEx ground or FedEx home delivery</option>
-                                    <option>DHL</option>
-                                    <option>Cargo</option>
-                                </select>
-                            </td>
-                            <td><input type="text" class="form-control currency-inputmask" id="currency-mask" placeholder="$____"></td>
+                            <td><input type="text" class="form-control" id="currency-mask" placeholder="" value="{{ $order->shippingAddress->shipping_service_cost }}"></td>
                         </tr>
                         <tr>
                             <td>
@@ -303,15 +268,10 @@
                         <tbody>
                         <tr>
                             <td>
-                                <select class="form-control" id="basicSelect">
-                                    <option>No sales tax</option>
-                                    <option>Fixed sales tax</option>
-
-
-                                </select>
+                                <label for="">{{ $order->sales_tax_state_value }}</label>
                             </td>
-                            <td><input type="text" class="form-control percentage-inputmask" id="percentage-mask" placeholder="__%" /></td>
-                            <td><input type="text" class="form-control currency-inputmask" id="currency-mask" placeholder="$____"></td>
+                            <td><input type="text" class="form-control" id="percentage-mask" placeholder="__%" value="{{ $order->sales_tax_percent }}" /></td>
+                            <td><input type="text" class="form-control" id="currency-mask" placeholder="$____" value="${{ $order->sales_tax_amount }}"></td>
 
                         </tr>
                         <tr>
@@ -327,7 +287,7 @@
                                 <button class="btn btn-sm btn-success">Recalculate</button>
                             </td>
                             <th>Total</th>
-                            <th>$57.98</th>
+                            <th>${{ $order->total }}</th>
 
                         </tr>
                         </tbody>
@@ -415,7 +375,6 @@
                     <a class="heading-elements-toggle"><i class="icon-ellipsis font-medium-3"></i></a>
                     <div class="heading-elements">
                         <ul class="list-inline mb-0">
-
                             <li><a data-action="reload"><i class="icon-reload"></i></a></li>
                             <li><a data-action="expand"><i class="icon-expand2"></i></a></li>
 
@@ -479,6 +438,51 @@
     </div>
 </section>
 
+<div class="modal fade in" id="tracking_number_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Add Tracking Number</h4>
+            </div>
+            <div class="modal-body">
+                <div class="card-body collapse in">
+                    <div class="card-block">
+                        <div class="card-text">
+                            <dl>
+                                <dt>BuyerID (buyer name, location)</dt>
+                                <dd>paris181-2007(Russell J Dauzat, 70452)</dd>
+                                <dt>Item name</dt>
+                                <dd>
+                                    <a href="#">New 2010-2016 FITS FORD TAURUS INNER FENDER FRONT LEFT DRVER SIDE</a>
+                                </dd>
+                                <dd>(331633910429)</dd>
+
+                            </dl>
+                        </div>
+                        <form class="row">
+
+                            <div class="form-group col-xs-12 mb-2 contact-repeater">
+                                <div data-repeater-list="repeater-group" id="tracking_list">
+                                    <!--will be rendered by handlebars-->
+                                </div>
+                                <button type="button" data-repeater-create class="btn btn-info" id="add_tracking_row_btn">
+                                    <i class="icon-plus4"></i> Add new
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="tracking_number_save_btn">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @section('scripts')
@@ -489,8 +493,112 @@
 <script src="/app-assets/vendors/js/forms/repeater/jquery.repeater.min.js" type="text/javascript"></script>
 <script src="/app-assets/js/scripts/forms/extended/form-inputmask.min.js" type="text/javascript"></script>
 <script src="/app-assets/js/scripts/forms/form-repeater.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.10/handlebars.min.js"></script>
+
+<script id="tracking_list_template" type="text/x-handlebars-template">
+    @{{#each trackings}}
+    <div class="input-group tracking_row" data-repeater-item>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-5">
+                    <label for="eventType2">Tracking number</label>
+                    <input type="text" class="form-control tracking_no_input" value="@{{tracking_no}}">
+                </div>
+                <div class="col-md-5">
+                    <label for="eventType2">Carrier</label>
+                    <input type="text" class="form-control carrier_used_input" value="@{{carrier_used}}">
+                </div>
+                <div class="col-md-2">
+                    <label for="eventType2">Delete</label>
+                    <button type="button" data-repeater-delete="" class="btn btn-icon btn-danger mr-1"><i class="icon-cross2"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @{{/each}}
+</script>
+
+<script id="empty_tracking_row_template" type="text/x-handlebars-template">
+    <div class="input-group tracking_row" data-repeater-item>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-5">
+                    <label for="eventType2">Tracking number</label>
+                    <input type="text" class="form-control tracking_no_input">
+                </div>
+                <div class="col-md-5">
+                    <label for="eventType2">Carrier</label>
+                    <input type="text" class="form-control carrier_used_input">
+                </div>
+                <div class="col-md-2">
+                    <label for="eventType2">Delete</label>
+                    <button type="button" data-repeater-delete="" class="btn btn-icon btn-danger mr-1"><i class="icon-cross2"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
 
 <script>
+
+    var TrackingNumber = {
+        selectedRow: null,
+        $modal: null,
+        $trackingList: null,
+        init: function(){
+            this.$modal = $('#tracking_number_modal');
+            this.$trackingList = $('#tracking_list');
+            this.listen();
+        },
+        listen: function(){
+            var _this = this;
+            $(".add_tracking_no_btn").click(function(){
+                _this.selectedRow = $(this).closest("tr");
+                _this.showModal();
+            });
+            this.$modal.on('shown.bs.modal', function(){
+                _this.showTrackingNumbers();
+            });
+            $("#add_tracking_row_btn").click(function(){
+                _this.addNewRow();
+            });
+            $("#tracking_number_save_btn").click(function(){
+                _this.saveTrackingNumbers();
+            });
+        },
+        showModal: function(){
+            this.$modal.modal('show');
+        },
+        showTrackingNumbers: function(){
+            var trackings = JSON.parse(this.selectedRow.attr('data-tracking-details'));
+            if(trackings.length == 0){
+                this.addNewRow();
+            }else{
+                var template = Handlebars.compile($("#tracking_list_template").html());
+                var html = template({trackings: trackings});
+                this.$trackingList.html(html);
+            }
+        },
+        addNewRow: function(){
+            var template = Handlebars.compile($("#empty_tracking_row_template").html());
+            var html = template();
+            this.$trackingList.append(html);
+        },
+        saveTrackingNumbers: function(){
+            var trackings = [];
+            this.$trackingList.find('.tracking_row').each(function(index){
+                var tracking = {
+                    tracking_number: $(this).find('.tracking_no_input').val(),
+                    carrier_used: $(this).find('.carrier_used_input').val()
+                };
+                if(tracking.tracking_number != '' || tracking.carrier_used != ''){
+                    trackings.push(tracking);
+                }
+            });
+            console.log(trackings);
+        }
+    };
+
     $(document).ready(function () {
         $('#order-info').DataTable();
 
@@ -502,6 +610,9 @@
             });
             $("textarea").val(values);
         });
+
+        TrackingNumber.init();
+
     });
 </script>
 @endsection

@@ -22,5 +22,6 @@ class Transaction extends Model
         'ebay_transaction_id',
         'transaction_price',
         'order_line_item_id',
+        'shipment_tracking_details',
     ];
 }

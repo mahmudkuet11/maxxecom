@@ -22,6 +22,7 @@ class OrderController extends Controller
     }
 
     public function show($id){
-        return view('dashboard.orders.show');
+        $order = $this->service->get($id)->with('shippingAddress')->first();
+        return view('dashboard.orders.show', compact('order'));
     }
 }

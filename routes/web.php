@@ -25,6 +25,7 @@ Route::get('/order/{id}', 'Order\OrderController@show')->name('order.show');
 
 Route::get('/test', function(){
     $client = new \GuzzleHttp\Client();
-    $res = $client->request('GET', 'https://jsonplaceholder.typicode.com/posts/1');
-    dd($res->getBody()->getContents());
+    $resource = fopen(__DIR__ . '../test.xlsx', 'w');
+    $stream = GuzzleHttp\Psr7\stream_for($resource);
+    $client->request('GET', 'http://127.0.0.1:3000/test.xlsx', ['save_to' => $stream]);
 });

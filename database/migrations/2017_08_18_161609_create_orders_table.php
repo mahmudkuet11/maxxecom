@@ -31,6 +31,9 @@ class CreateOrdersTable extends Migration
             $table->timestamp('shipped_time')->nullable();
             $table->string('payment_hold_status');
             $table->string('extended_order_id');
+            $table->decimal('sales_tax_percent');
+            $table->string('sales_tax_state');
+            $table->decimal('sales_tax_amount');
             $table->timestamps();
         });
     }

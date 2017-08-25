@@ -30,6 +30,7 @@ class CreateTransactionsTable extends Migration
             $table->string('ebay_transaction_id');
             $table->decimal('transaction_price');
             $table->string('order_line_item_id');
+            $table->text('shipment_tracking_details');
             $table->timestamps();
         });
     }
