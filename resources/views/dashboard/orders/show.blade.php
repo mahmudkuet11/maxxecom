@@ -371,77 +371,7 @@
 
     </div>
 </section>
-<section id="form-repeater">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title" id="tel-repeater">Tracking details</h4>
-                    <a class="heading-elements-toggle"><i class="icon-ellipsis font-medium-3"></i></a>
-                    <div class="heading-elements">
-                        <ul class="list-inline mb-0">
-                            <li><a data-action="reload"><i class="icon-reload"></i></a></li>
-                            <li><a data-action="expand"><i class="icon-expand2"></i></a></li>
 
-                        </ul>
-                    </div>
-                </div>
-                <div class="card-body collapse in">
-                    <div class="card-block">
-                        <div class="card-text">
-                            <dl>
-                                <dt>BuyerID (buyer name, location)</dt>
-                                <dd>paris181-2007(Russell J Dauzat, 70452)</dd>
-                                <dt>Item name</dt>
-                                <dd>
-                                    <a href="#">New 2010-2016 FITS FORD TAURUS INNER FENDER FRONT LEFT DRVER SIDE</a>
-                                </dd>
-                                <dd>(331633910429)</dd>
-
-                            </dl>
-                        </div>
-                        <form class="row">
-
-                            <div class="form-group col-xs-12 mb-2 contact-repeater">
-                                <div data-repeater-list="repeater-group">
-
-                                    <div class="input-group" data-repeater-item>
-                                        <div class="form-group">
-
-                                            <div class="row">
-                                                <div class="col-md-5">
-                                                    <label for="eventType2">Tracking number</label>
-                                                    <input type="text" class="form-control">
-                                                </div>
-                                                <div class="col-md-5">
-                                                    <label for="eventType2">Carrier</label>
-                                                    <input type="text" class="form-control">
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <label for="eventType2">Delete</label>
-                                                    <button type="button" data-repeater-delete="" class="btn btn-icon btn-danger mr-1"><i class="icon-cross2"></i></button>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                        <!--<input type="tel" placeholder="Telephone" class="form-control" id="example-tel-input">
-                                        <span class="input-group-btn" id="button-addon2">
-                                            <button class="btn btn-danger" type="button" data-repeater-delete><i class="icon-cross2"></i></button>
-                                        </span>-->
-                                    </div>
-                                </div>
-                                <button type="button" data-repeater-create class="btn btn-info">
-                                    <i class="icon-plus4"></i> Add new
-                                </button>
-                            </div>
-
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
 <div class="modal fade in" id="tracking_number_modal">
     <div class="modal-dialog">

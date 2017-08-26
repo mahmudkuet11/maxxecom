@@ -38,32 +38,34 @@
                 </ul>
             </li>
             <li class=" nav-item">
-                <a href="#"><i class="icon-clipboard2"></i><span class="menu-title">Selling Manager Pro</span></a>
+                <a href="#"><i class="icon-clipboard2"></i><span class="menu-title">Order</span></a>
                 <ul class="menu-content">
                     <li>
-                        <a href="active-listing.html" class="menu-item">Active</a>
-                    </li>
-                    <li class="">
-                        <a href="#" class="menu-item">Unsold</a>
+                        <a href="active-listing.html" class="menu-item">Awaiting payment</a>
                     </li>
                     <li>
-                        <a href="#" class="menu-item">Sold</a>
-                        <ul class="menu-content">
-                            <li>
-                                <a href="#" class="menu-item">Awaiting payment</a>
-                            </li>
-                            <li>
-                                <a href="#" class="menu-item">Awaiting shipment</a>
-                            </li>
-                            <li>
-                                <a href="#" class="menu-item">Paid and shipped</a>
-                            </li>
-                            <li>
-                                <a href="#" class="menu-item">Shopping lebels</a>
-                            </li>
-                        </ul>
+                        <a href="active-listing.html" class="menu-item">Awaiting shipment</a>
                     </li>
-
+                    <li>
+                        <a href="active-listing.html" class="menu-item">
+                            Awaiting Order
+                        </a>
+                    </li>
+                    <li>
+                        <a href="active-listing.html" class="menu-item">
+                            Print Label
+                        </a>
+                    </li>
+                    <li>
+                        <a href="active-listing.html" class="menu-item">
+                            Awaiting tracking
+                        </a>
+                    </li>
+                    <li>
+                        <a href="active-listing.html" class="menu-item">
+                            Paid and Shipped
+                        </a>
+                    </li>
                 </ul>
             </li>
 
