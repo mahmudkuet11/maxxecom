@@ -24,4 +24,12 @@ class Transaction extends Model
         'order_line_item_id',
         'shipment_tracking_details',
     ];
+
+    public function getSubTotalAttribute(){
+        return $this->quantity * $this->transaction_price;
+    }
+
+    public function getBuyerNameAttribute(){
+        return $this->buyer_user_first_name . ' ' . $this->buyer_user_last_name;
+    }
 }

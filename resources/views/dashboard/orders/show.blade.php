@@ -183,7 +183,7 @@
                             </thead>
                             <tbody>
                             @foreach($order->transactions as $transaction)
-                            <tr data-tracking-details="{{ $transaction->shipment_tracking_details }}" data-order-line-item-id="{{ $transaction->order_line_item_id }}">
+                            <tr data-tracking-details="{{ $transaction->shipment_tracking_details }}" data-order-line-item-id="{{ $transaction->order_line_item_id }}" data-buyer-id="{{ $order->buyer_user_id }}" data-buyer-name="{{ $transaction->buyer_name }}" data-item-title="{{ $transaction->item_title }}" data-item-id="{{ $transaction->item_id }}">
                                 <td>{{ $transaction->quantity }}</td>
                                 <td>{{ $transaction->item_id }}</td>
                                 <td><span><img src="../../../app-assets/images/product/BM10661061.jpg" style="width:100%;" /></span></td>
@@ -192,7 +192,7 @@
                                     <p class="text-muted font-small-2">Phasellus vel elit volutpat, egestas urna a.</p>
                                 </td>
                                 <td>${{ $transaction->transaction_price }}</td>
-                                <td>${{ $transaction->transaction_price }}</td>
+                                <td>${{ number_format($transaction->sub_total, 2, ".", "") }}</td>
                                 <td><button class="btn btn-primary btn-sm add_tracking_no_btn">Add</button></td>
                             </tr>
                             @endforeach
@@ -455,13 +455,13 @@
                     <div class="card-block">
                         <div class="card-text">
                             <dl>
-                                <dt>BuyerID (buyer name, location)</dt>
-                                <dd>paris181-2007(Russell J Dauzat, 70452)</dd>
+                                <dt>BuyerID (buyer name)</dt>
+                                <dd><span id="buyer_id"></span>(<span id="buyer_name"></span>)</dd>
                                 <dt>Item name</dt>
                                 <dd>
-                                    <a href="#">New 2010-2016 FITS FORD TAURUS INNER FENDER FRONT LEFT DRVER SIDE</a>
+                                    <a href="#" id="item_title"></a>
                                 </dd>
-                                <dd>(331633910429)</dd>
+                                <dd>(<span id="item_id"></span>)</dd>
 
                             </dl>
                         </div>
@@ -562,6 +562,7 @@
                 _this.showModal();
             });
             this.$modal.on('shown.bs.modal', function(){
+                _this.showTransactionInfo();
                 _this.showTrackingNumbers();
             });
             $("#add_tracking_row_btn").click(function(){
@@ -574,6 +575,9 @@
         showModal: function(){
             this.$modal.modal('show');
         },
+        hideModal: function(){
+            this.$modal.modal('hide');
+        },
         showTrackingNumbers: function(){
             var trackings = JSON.parse(this.$selectedRow.attr('data-tracking-details'));
             if(trackings.length == 0){
@@ -583,6 +587,19 @@
                 var html = template({trackings: trackings});
                 this.$trackingList.html(html);
             }
+        },
+        showTransactionInfo: function(){
+            var info = {
+                order_line_item_id: this.$selectedRow.attr('data-order-line-item-id'),
+                buyer_id: this.$selectedRow.attr('data-buyer-id'),
+                buyer_name: this.$selectedRow.attr('data-buyer-name'),
+                item_title: this.$selectedRow.attr('data-item-title'),
+                item_id: this.$selectedRow.attr('data-item-id'),
+            };
+            this.$modal.find('#buyer_id').text(info.buyer_id);
+            this.$modal.find('#buyer_name').text(info.buyer_name);
+            this.$modal.find('#item_title').text(info.item_title);
+            this.$modal.find('#item_id').text(info.item_id);
         },
         appendNewRow: function(){
             var template = Handlebars.compile($("#empty_tracking_row_template").html());
@@ -595,13 +612,14 @@
             this.$trackingList.html(html);
         },
         saveTrackingNumbers: function(){
+            var _this = this;
             var trackings = [];
             this.$trackingList.find('.tracking_row').each(function(index){
                 var tracking = {
                     tracking_no: $(this).find('.tracking_no_input').val(),
                     carrier_used: $(this).find('.carrier_used_input').val()
                 };
-                if(tracking.tracking_no != '' || tracking.carrier_used != ''){
+                if(tracking.tracking_no != '' && tracking.carrier_used != ''){
                     trackings.push(tracking);
                 }
             });
@@ -614,12 +632,15 @@
                     trackings: trackings
                 },
                 success: function(resp){
-                    if(resp.status == 'false'){
-                        console.log('error');
+                    if(resp.status == true){
+                        _this.$selectedRow.attr('data-tracking-details', JSON.stringify(trackings));
+                        _this.hideModal();
+                    }else{
+                        alert(resp.msg);
                     }
                 },
                 error: function(){
-                    console.log('error');
+                    alert('Sorry, Tracking number could not be added. Please refresh the page and try again!');
                 }
             });
         }

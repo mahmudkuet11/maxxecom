@@ -2,41 +2,39 @@
 
 namespace App\Service\eBay;
 
+use App\Models\Order\Order;
 use App\Models\Store;
+use GuzzleHttp\Client;
+use Spatie\ArrayToXml\ArrayToXml;
 
 class CompleteSaleService
 {
-    public function saveTrackingNumber(Store $store, $orderLineItemId, $shipmentTrackingDetails){
-        /*$shipmentTrackingDetailsXml = "";
+    public function saveTrackingNumber(Store $store, Order $order, $orderLineItemId, $shipmentTrackingDetails){
+
+        $reqArray = [
+            'RequesterCredentials'  =>  [
+                'eBayAuthToken' =>  $store->auth_token
+            ],
+            'OrderLineItemID'   =>  $orderLineItemId,
+            'Shipment'  =>  [],
+        ];
         foreach ($shipmentTrackingDetails as $trackingDetail){
-            $tracking_no = $trackingDetail["tracking_no"];
-            $carrier_used = $trackingDetail["carrier_used"];
-            $shipmentTrackingDetails .= "\
-                <ShipmentTrackingDetails>
-                    <ShipmentTrackingNumber>". $tracking_no ."</ShipmentTrackingNumber>
-                    <ShippingCarrierUsed>". $carrier_used ."</ShippingCarrierUsed>
-                </ShipmentTrackingDetails>
-            ";
-        }*/
-        $request_body = '\
-            <?xml version="1.0" encoding="utf-8"?> 
-            <CompleteSaleRequest xmlns="urn:ebay:apis:eBLBaseComponents">
-                <RequesterCredentials>
-                    <eBayAuthToken>'. $store->auth_token .'</eBayAuthToken>
-                </RequesterCredentials>
-                <OrderLineItemID>'. $orderLineItemId .'</OrderLineItemID>
-                <Shipment>
-                    
-                </Shipment>
-                <Shipped>false</Shipped>
-            </CompleteSaleRequest>';
-        $xml = simplexml_load_string($request_body);
-        foreach ($shipmentTrackingDetails as $trackingDetail){
-            $details = $xml->CompleteSaleRequest->Shipment->addChild('ShipmentTrackingDetails');
-            $details->addChild('ShipmentTrackingNumber', $trackingDetail["tracking_no"]);
-            $details->addChild('ShippingCarrierUsed', $trackingDetail["carrier_used"]);
+            $reqArray['Shipment']['ShipmentTrackingDetails'][] = [
+                'ShipmentTrackingNumber'    =>  $trackingDetail["tracking_no"],
+                'ShippingCarrierUsed'   =>  $trackingDetail["carrier_used"]
+            ];
         }
-        dd($xml->asXML());
+        if($order->shipped_time){
+            $reqArray['Shipment']['ShippedTime'] = $order->shipped_time;
+        }else{
+            $reqArray['Shipped'] = 'false';
+        }
+        $request_body = ArrayToXml::convert($reqArray, [
+            'rootElementName'   =>  'CompleteSaleRequest',
+            '_attributes'   =>  [
+                'xmlns' =>  'urn:ebay:apis:eBLBaseComponents'
+            ]
+        ], false, 'UTF-8');
         return self::_fetch($store, $request_body);
     }
 

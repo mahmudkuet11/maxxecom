@@ -31,8 +31,6 @@ class OrderController extends Controller
 
     public function saveTrackingNumber(Request $request){
         $res = $this->service->saveTrackingNumber($request);
-        return [
-            'status'    =>  $res
-        ];
+        return $res;
     }
 }

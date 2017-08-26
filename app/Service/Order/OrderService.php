@@ -123,12 +123,18 @@ class OrderService
         $store = $order->store;
         $completeSalesService = new CompleteSaleService();
 
-        $response = $completeSalesService->saveTrackingNumber($store, $order_line_item_id, $trackings);
+        $response = $completeSalesService->saveTrackingNumber($store, $order, $order_line_item_id, $trackings);
+        $msg = '';
         if($response->Ack == 'Success'){
-            $order->transactions->where('order_line_item_id', $order_line_item_id)->update([
+            Transaction::where('order_line_item_id', $order_line_item_id)->update([
                 'shipment_tracking_details' =>  json_encode($trackings)
             ]);
+        }else{
+            $msg = $response->Errors->LongMessage;
         }
-        return $response->Ack == 'Success';
+        return [
+            'status'    =>  $response->Ack == 'Success',
+            'msg'   =>  (string)$msg
+        ];
     }
 }
