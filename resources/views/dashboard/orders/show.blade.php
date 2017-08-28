@@ -172,6 +172,7 @@
                         <table class="table table-striped table-bordered" id="transaction_details_table" data-order-id="{{ $order->id }}">
                             <thead>
                             <tr>
+                                <th></th>
                                 <th>Quantity</th>
                                 <th>Item #</th>
                                 <th style="width:100px">Picture</th>
@@ -183,25 +184,61 @@
                             </thead>
                             <tbody>
                             @foreach($order->transactions as $transaction)
+
+                            @if($transaction->hasMoreThanOneSKU)
                             <tr data-tracking-details="{{ $transaction->shipment_tracking_details }}" data-order-line-item-id="{{ $transaction->order_line_item_id }}" data-buyer-id="{{ $order->buyer_user_id }}" data-buyer-name="{{ $transaction->buyer_name }}" data-item-title="{{ $transaction->item_title }}" data-item-id="{{ $transaction->item_id }}">
+                                <td>
+
+                                </td>
                                 <td>{{ $transaction->quantity }}</td>
                                 <td>{{ $transaction->item_id }}</td>
                                 <td><span><img src="../../../app-assets/images/product/BM10661061.jpg" style="width:100%;" /></span></td>
                                 <td>
                                     <a href="#" class="text-bold-600">{{ $transaction->item_title }}</a>
+                                    <p>{{ $transaction->sku }}</p>
                                     <p class="text-muted font-small-2">Phasellus vel elit volutpat, egestas urna a.</p>
                                 </td>
                                 <td>${{ $transaction->transaction_price }}</td>
                                 <td>${{ number_format($transaction->sub_total, 2, ".", "") }}</td>
                                 <td><button class="btn btn-primary btn-sm add_tracking_no_btn">Add</button></td>
                             </tr>
+                            @foreach($transaction->skus as $sku)
+                            <tr>
+                                <td>
+                                    <input type="radio" name="price_comparison_section" value="{{ $sku }}">
+                                </td>
+                                <td colspan="3"></td>
+                                <td>{{ $sku }}</td>
+                                <td colspan="3"></td>
+                            </tr>
+                            @endforeach
+                            @else
+                            <tr data-tracking-details="{{ $transaction->shipment_tracking_details }}" data-order-line-item-id="{{ $transaction->order_line_item_id }}" data-buyer-id="{{ $order->buyer_user_id }}" data-buyer-name="{{ $transaction->buyer_name }}" data-item-title="{{ $transaction->item_title }}" data-item-id="{{ $transaction->item_id }}">
+                                <td>
+                                    @if($transaction->hasSKU)
+                                    <input type="radio" name="price_comparison_section" value="{{ $transaction->formattedSKU }}">
+                                    @endif
+                                </td>
+                                <td>{{ $transaction->quantity }}</td>
+                                <td>{{ $transaction->item_id }}</td>
+                                <td><span><img src="../../../app-assets/images/product/BM10661061.jpg" style="width:100%;" /></span></td>
+                                <td>
+                                    <a href="#" class="text-bold-600">{{ $transaction->item_title }}</a>
+                                    <p>{{ $transaction->sku }}</p>
+                                    <p class="text-muted font-small-2">Phasellus vel elit volutpat, egestas urna a.</p>
+                                </td>
+                                <td>${{ $transaction->transaction_price }}</td>
+                                <td>${{ number_format($transaction->sub_total, 2, ".", "") }}</td>
+                                <td><button class="btn btn-primary btn-sm add_tracking_no_btn">Add</button></td>
+                            </tr>
+                            @endif
                             @endforeach
                             </tbody>
                             <tfoot>
                             <tr>
                                 <th colspan="5" style="text-align: right">Total</th>
                                 <th>${{ $order->sub_total }}</th>
-                                <th></th>
+                                <th colspan="2"></th>
                             </tr>
                             </tfoot>
                         </table>
@@ -475,106 +512,15 @@
 </script>
 
 <script>
-    var TrackingNumber = {
-        $selectedRow: null,
-        $modal: null,
-        $trackingList: null,
-        url: '{{ route("tracking_no.save") }}',
-        init: function(){
-            this.$modal = $('#tracking_number_modal');
-            this.$trackingList = $('#tracking_list');
-            this.listen();
-        },
-        listen: function(){
-            var _this = this;
-            $(".add_tracking_no_btn").click(function(){
-                _this.$selectedRow = $(this).closest("tr");
-                _this.showModal();
-            });
-            this.$modal.on('shown.bs.modal', function(){
-                _this.showTransactionInfo();
-                _this.showTrackingNumbers();
-            });
-            $("#add_tracking_row_btn").click(function(){
-                _this.appendNewRow();
-            });
-            $("#tracking_number_save_btn").click(function(){
-                _this.saveTrackingNumbers();
-            });
-        },
-        showModal: function(){
-            this.$modal.modal('show');
-        },
-        hideModal: function(){
-            this.$modal.modal('hide');
-        },
-        showTrackingNumbers: function(){
-            var trackings = JSON.parse(this.$selectedRow.attr('data-tracking-details'));
-            if(trackings.length == 0){
-                this.addNewRow();
-            }else{
-                var template = Handlebars.compile($("#tracking_list_template").html());
-                var html = template({trackings: trackings});
-                this.$trackingList.html(html);
-            }
-        },
-        showTransactionInfo: function(){
-            var info = {
-                order_line_item_id: this.$selectedRow.attr('data-order-line-item-id'),
-                buyer_id: this.$selectedRow.attr('data-buyer-id'),
-                buyer_name: this.$selectedRow.attr('data-buyer-name'),
-                item_title: this.$selectedRow.attr('data-item-title'),
-                item_id: this.$selectedRow.attr('data-item-id'),
-            };
-            this.$modal.find('#buyer_id').text(info.buyer_id);
-            this.$modal.find('#buyer_name').text(info.buyer_name);
-            this.$modal.find('#item_title').text(info.item_title);
-            this.$modal.find('#item_id').text(info.item_id);
-        },
-        appendNewRow: function(){
-            var template = Handlebars.compile($("#empty_tracking_row_template").html());
-            var html = template();
-            this.$trackingList.append(html);
-        },
-        addNewRow: function(){
-            var template = Handlebars.compile($("#empty_tracking_row_template").html());
-            var html = template();
-            this.$trackingList.html(html);
-        },
-        saveTrackingNumbers: function(){
-            var _this = this;
-            var trackings = [];
-            this.$trackingList.find('.tracking_row').each(function(index){
-                var tracking = {
-                    tracking_no: $(this).find('.tracking_no_input').val(),
-                    carrier_used: $(this).find('.carrier_used_input').val()
-                };
-                if(tracking.tracking_no != '' && tracking.carrier_used != ''){
-                    trackings.push(tracking);
-                }
-            });
-            $.ajax({
-                method: 'POST',
-                url: this.url,
-                data: {
-                    order_id: $("#transaction_details_table").attr('data-order-id'),
-                    order_line_item_id: this.$selectedRow.attr('data-order-line-item-id'),
-                    trackings: trackings
-                },
-                success: function(resp){
-                    if(resp.status == true){
-                        _this.$selectedRow.attr('data-tracking-details', JSON.stringify(trackings));
-                        _this.hideModal();
-                    }else{
-                        alert(resp.msg);
-                    }
-                },
-                error: function(){
-                    alert('Sorry, Tracking number could not be added. Please refresh the page and try again!');
-                }
-            });
+    var Global = {
+        order: {
+            url: '{{ route("tracking_no.save") }}'
         }
     };
+</script>
+
+<script type="text/javascript" src="/js/order/tracking-number.js"></script>
+<script>
 
     $(document).ready(function () {
 
