@@ -339,7 +339,7 @@
         </div>
     </div>
 </div>
-<section>
+<section id="price_comparison_section">
     <div class="row match-height">
         <div class="col-xl-6 col-lg-6 col-md-12">
             <div class="card" style="height: 453px;">
@@ -520,6 +520,7 @@
 </script>
 
 <script type="text/javascript" src="/js/order/tracking-number.js"></script>
+<script type="text/javascript" src="/js/order/price-comparison.js"></script>
 <script>
 
     $(document).ready(function () {
