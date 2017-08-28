@@ -23,10 +23,12 @@ Route::resource('/dashboard/store', 'Store\StoreController');
 Route::get('/orders', 'Order\OrderController@getAll')->name('orders.all');
 Route::get('/order/{id}', 'Order\OrderController@show')->name('order.show');
 Route::post('/tracking-number/save', 'Order\OrderController@saveTrackingNumber')->name('tracking_no.save');
+Route::get('/price/{sku}', 'Store\ItemController@getStorePrices')->name('price.get');
 
 Route::get('/test', function(){
-    $client = new \GuzzleHttp\Client();
+/*    $client = new \GuzzleHttp\Client();
     $resource = fopen(__DIR__ . '../test.xlsx', 'w');
     $stream = GuzzleHttp\Psr7\stream_for($resource);
-    $client->request('GET', 'http://127.0.0.1:3000/test.xlsx', ['save_to' => $stream]);
+    $client->request('GET', 'http://127.0.0.1:3000/test.xlsx', ['save_to' => $stream]);*/
+    return 'asdadd';
 });
