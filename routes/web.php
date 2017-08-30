@@ -25,6 +25,11 @@ Route::get('/order/{id}', 'Order\OrderController@show')->name('order.show');
 Route::post('/tracking-number/save', 'Order\OrderController@saveTrackingNumber')->name('tracking_no.save');
 Route::get('/price/{sku}', 'Store\ItemController@getStorePrices')->name('price.get');
 
+
+Route::get('/price/sync', function(){
+
+});
+
 Route::get('/test', function(){
 /*    $client = new \GuzzleHttp\Client();
     $resource = fopen(__DIR__ . '../test.xlsx', 'w');

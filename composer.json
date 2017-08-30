@@ -11,6 +11,7 @@
         "laravel/tinker": "~1.0",
         "maatwebsite/excel": "^2.1",
         "myclabs/php-enum": "^1.5",
+        "phpoffice/phpexcel": "^1.8",
         "spatie/array-to-xml": "^2.6"
     },
     "require-dev": {

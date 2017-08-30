@@ -2,23 +2,19 @@
 
 namespace App\Service\Store;
 
-use Excel;
+use App\Service\Excel\ExcelService;
 
 class PriceService
 {
     public function getPerfectFitPrice($sku){
-        /*Excel::load(public_path('\upload\price\perfect_fit.xlsx'), function($reader) {
+        $excelService = new ExcelService(public_path('\upload\price\perfect_fit.xlsx'));
+        dd($excelService->search('AC1000110'));
+    }
 
-            dd($reader->all());
-
-        });*/
-        ini_set('memory_limit', '-1');
-        Excel::filter('chunk')->load(public_path('\upload\price\perfect_fit.csv'))->chunk(5, function($results)
-        {
-            foreach($results as $row)
-            {
-                dd($row);
-            }
+    public function save(){
+        $excelService = new ExcelService(public_path('\upload\price\perfect_fit.xlsx'));
+        $excelService->chunk(function($data){
+            dd($data);
         });
     }
 }
