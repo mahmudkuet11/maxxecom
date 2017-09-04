@@ -23,10 +23,11 @@ class OrderService
         return Order::where('id', $id);
     }
 
-    public function SaveOrders(Store $store, $orders){
+    public function SaveOrders(Store $store, $orders, Callable $callback = null){
         $order_array = $orders->OrderArray->Order;
         foreach ($order_array as $order){
-            self::Save($store->id, $order);
+            $order = self::Save($store->id, $order);
+            if($order) call_user_func($callback, $order);
         }
         event(new StoreSyncProgress($orders, $store));
     }
@@ -56,13 +57,13 @@ class OrderService
                 'sales_tax_state'    =>  (string)$order->ShippingDetails->SalesTax->SalesTaxState,
                 'sales_tax_amount'    =>  (double)$order->ShippingDetails->SalesTax->SalesTaxAmount,
             ]);
-            CheckoutStatus::updateOrCreate([
+            $orderModel->checkoutStatus()->updateOrCreate([
                 'order_id'  =>  $orderModel->id
             ], [
                 'ebay_payment_status'   =>  (string)$order->CheckoutStatus->eBayPaymentStatus,
                 'status'    =>  (string)$order->CheckoutStatus->Status
             ]);
-            ShippingAddress::updateOrCreate([
+            $orderModel->shippingAddress()->updateOrCreate([
                 'order_id'  =>  $orderModel->id
             ], [
                 'name'  =>  (string)$order->ShippingAddress->Name,
@@ -87,7 +88,7 @@ class OrderService
                         'carrier_used'   =>  (string)$tracking->ShippingCarrierUsed,
                     ]);
                 }
-                Transaction::updateOrCreate([
+                $orderModel->transactions()->updateOrCreate([
                     'order_id'  =>  $orderModel->id,
                     'sales_record_no'   =>  (string)$transaction->ShippingDetails->SellingManagerSalesRecordNumber
                 ], [
@@ -108,7 +109,7 @@ class OrderService
                 ]);
             }
             DB::commit();
-            return true;
+            return $orderModel;
         }catch(\Exception $e){
             DB::rollback();
             throw $e;

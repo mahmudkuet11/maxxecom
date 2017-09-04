@@ -28,6 +28,7 @@ class Order extends Model
         'sales_tax_percent',
         'sales_tax_state',
         'sales_tax_amount',
+        'internal_status',
     ];
 
     public function getSoldDateAttribute(){
@@ -44,6 +45,10 @@ class Order extends Model
 
     public function getSalesTaxStateValueAttribute(){
         return $this->sales_tax_state == '' ? 'No Sales Tax' : $this->sales_tax_state;
+    }
+
+    public function scopeAwaitingPayment($builder){
+        return $builder->where('order_status', 'Active')->orWhere('order_status', 'InProcess');
     }
 
     public function checkoutStatus(){

@@ -19,7 +19,13 @@ class OrderController extends Controller
     public function getAll(StoreService $storeService){
         $orders = $this->service->getAll()->orderBy('sales_record_no', 'DESC');
         $storeService->syncAll();
-        return view('dashboard.orders.index', ['orders'=>$orders->paginate(config('order.orders_per_page'))]);
+        return view('dashboard.orders.index', ['orders'=>$orders->paginate(config('order.orders_per_page')), 'active_menu'=>'order.all']);
+    }
+
+    public function getAwaitingPaymentOrders(StoreService $storeService){
+        $orders = $this->service->getAll()->awaitingPayment()->orderBy('sales_record_no', 'DESC');
+        $storeService->syncAll();
+        return view('dashboard.orders.awaiting_payment', ['orders'=>$orders->paginate(config('order.orders_per_page')), 'active_menu'=>'order.awaiting_payment']);
     }
 
     public function show($id){

@@ -40,8 +40,11 @@
             <li class=" nav-item">
                 <a href="#"><i class="icon-clipboard2"></i><span class="menu-title">Order</span></a>
                 <ul class="menu-content">
-                    <li>
-                        <a href="active-listing.html" class="menu-item">Awaiting payment</a>
+                    <li class="{{ active_menu('order.all', $active_menu) }}">
+                        <a href="{{ route('orders.all') }}" class="menu-item">All Orders</a>
+                    </li>
+                    <li class="{{ active_menu('order.awaiting_payment', $active_menu) }}">
+                        <a href="{{ route('orders.awaiting_payment') }}" class="menu-item">Awaiting payment</a>
                     </li>
                     <li>
                         <a href="active-listing.html" class="menu-item">Awaiting shipment</a>

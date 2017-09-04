@@ -21,6 +21,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/dashboard', 'DashboardController@getDashboard')->name('dashboard');
 Route::resource('/dashboard/store', 'Store\StoreController');
 Route::get('/orders', 'Order\OrderController@getAll')->name('orders.all');
+Route::get('/orders/awaiting-payment', 'Order\OrderController@getAwaitingPaymentOrders')->name('orders.awaiting_payment');
 Route::get('/order/{id}', 'Order\OrderController@show')->name('order.show');
 Route::post('/tracking-number/save', 'Order\OrderController@saveTrackingNumber')->name('tracking_no.save');
 Route::get('/price/{sku}', 'Store\ItemController@getStorePrices')->name('price.get');

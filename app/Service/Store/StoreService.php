@@ -2,8 +2,10 @@
 namespace App\Service\Store;
 
 use App\Enum\Ebay\Scope;
+use App\Enum\InternalOrderStatus;
 use App\Jobs\SetupStoreJob;
 use App\Jobs\SyncStoreJob;
+use App\Models\Order\Order;
 use App\Models\Store;
 use App\Service\eBay\GetOrderService;
 use App\Service\Order\OrderService;
@@ -66,7 +68,18 @@ class StoreService
             $response = $getOrderService->getCreatedBetween($store, $from, $to, $pageNum);
             if($response->Ack == 'Success'){
                 if(isset($response->OrderArray->Order)){
-                    $orderService->SaveOrders($store, $response);
+                    $orderService->SaveOrders($store, $response, function(Order $order){
+                        if($order->order_status == 'Completed' && $order->paid_time != null){
+                            $order->update([
+                                'internal_status'   =>  'AWAITING_SHIPMENT'
+                            ]);
+                        }
+                        if($order->order_status == 'Active' || $order->order_status == 'InProcess'){
+                            $order->update([
+                                'internal_status'   =>  'AWAITING_PAYMENT'
+                            ]);
+                        }
+                    });
                 }
             }else{
                 throw new \Exception('Failed');
