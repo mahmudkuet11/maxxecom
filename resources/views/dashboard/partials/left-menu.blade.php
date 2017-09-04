@@ -44,10 +44,10 @@
                         <a href="{{ route('orders.all') }}" class="menu-item">All Orders</a>
                     </li>
                     <li class="{{ active_menu('order.awaiting_payment', $active_menu) }}">
-                        <a href="{{ route('orders.awaiting_payment') }}" class="menu-item">Awaiting payment</a>
+                        <a href="{{ route('orders.awaiting_payment') }}" class="menu-item">Awaiting Payment</a>
                     </li>
-                    <li>
-                        <a href="active-listing.html" class="menu-item">Awaiting shipment</a>
+                    <li class="{{ active_menu('order.awaiting_shipment', $active_menu) }}">
+                        <a href="{{ route('orders.awaiting_shipment') }}" class="menu-item">Awaiting Shipment</a>
                     </li>
                     <li>
                         <a href="active-listing.html" class="menu-item">

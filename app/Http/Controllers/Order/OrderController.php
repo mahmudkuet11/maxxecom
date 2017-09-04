@@ -28,6 +28,12 @@ class OrderController extends Controller
         return view('dashboard.orders.awaiting_payment', ['orders'=>$orders->paginate(config('order.orders_per_page')), 'active_menu'=>'order.awaiting_payment']);
     }
 
+    public function getAwaitingShipmentOrders(StoreService $storeService){
+        $orders = $this->service->getAll()->awaitingShipment()->orderBy('sales_record_no', 'DESC');
+        $storeService->syncAll();
+        return view('dashboard.orders.awaiting_shipment', ['orders'=>$orders->paginate(config('order.orders_per_page')), 'active_menu'=>'order.awaiting_shipment']);
+    }
+
     public function show($id){
         $order = $this->service->get($id)->with('shippingAddress', 'transactions')->first();
         return view('dashboard.orders.show', [

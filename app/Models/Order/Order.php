@@ -51,6 +51,10 @@ class Order extends Model
         return $builder->where('order_status', 'Active')->orWhere('order_status', 'InProcess');
     }
 
+    public function scopeAwaitingShipment($builder){
+        return $builder->where('order_status', 'Completed')->whereNotNull('paid_time');
+    }
+
     public function checkoutStatus(){
         return $this->hasOne(CheckoutStatus::class);
     }
