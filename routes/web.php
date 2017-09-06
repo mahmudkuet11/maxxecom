@@ -25,11 +25,12 @@ Route::get('/orders/awaiting-payment', 'Order\OrderController@getAwaitingPayment
 Route::get('/orders/awaiting-shipment', 'Order\OrderController@getAwaitingShipmentOrders')->name('orders.awaiting_shipment');
 Route::get('/order/{id}', 'Order\OrderController@show')->name('order.show');
 Route::post('/tracking-number/save', 'Order\OrderController@saveTrackingNumber')->name('tracking_no.save');
-Route::get('/price/{sku}', 'Store\ItemController@getStorePrices')->name('price.get');
+Route::get('/store/price/', 'Store\ItemController@getStorePrices')->name('store.price.get');
 
 
-Route::get('/price/sync', function(){
-
+Route::get('/store-price/sync', function(){
+    $service = app(\App\Service\Store\PriceService::class);
+    $service->save();
 });
 
 Route::get('/test', function(){

@@ -7,7 +7,20 @@ class ItemService
 {
         public function getStorePrices($sku){
             $priceService = new PriceService();
-            $perfect_fit = $priceService->getPerfectFitPrice($sku);
-            return $perfect_fit;
+            return [
+                'keystone_qi'   =>  $priceService->getKeystoneQIPrice($sku),
+                'keystone_local'   =>  $priceService->getKeystoneLocalPrice($sku),
+                'wr'   =>  $priceService->getWRPrice($sku),
+                'pf'   =>  $priceService->getPFPrice($sku),
+                'bs'   =>  $priceService->getBSPrice($sku),
+                'cap'   =>  $priceService->getCAPPrice($sku),
+                'apw'   =>  $priceService->getAPWPrice($sku),
+                'ra'   =>  $priceService->getRAPrice($sku),
+                'pg'   =>  $priceService->getPGPrice($sku),
+                'amazon'   =>  $priceService->getAmazonPrice($sku),
+                'ebay'   =>  $priceService->getEbayPrice($sku),
+                'atd'   =>  $priceService->getATDPrice($sku),
+                'future'   =>  $priceService->getFuturePrice($sku),
+            ];
         }
 }

@@ -15,7 +15,8 @@ class ItemController extends Controller
         $this->service = $service;
     }
 
-    public function getStorePrices($sku){
+    public function getStorePrices(Request $request){
+        $sku = $request->get('sku');
         return $this->service->getStorePrices($sku);
     }
 }

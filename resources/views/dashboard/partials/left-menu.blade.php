@@ -24,10 +24,10 @@
             </li>
 
             <li class=" nav-item">
-                <a href="#"><i class="icon-cart4"></i><span class="menu-title">Order Management</span></a>
+                <a href="#"><i class="icon-cart4"></i><span class="menu-title">Others</span></a>
                 <ul class="menu-content">
                     <li>
-                        <a href="{{ route('orders.all') }}" class="menu-item">All</a>
+                        <a href="" class="menu-item">Manage Store Files</a>
                     </li>
                     <li>
                         <a href="#" class="menu-item">Bids/Offers</a>
@@ -38,7 +38,7 @@
                 </ul>
             </li>
             <li class=" nav-item">
-                <a href="#"><i class="icon-clipboard2"></i><span class="menu-title">Order</span></a>
+                <a href="#"><i class="icon-clipboard2"></i><span class="menu-title">Order Management</span></a>
                 <ul class="menu-content">
                     <li class="{{ active_menu('order.all', $active_menu) }}">
                         <a href="{{ route('orders.all') }}" class="menu-item">All Orders</a>

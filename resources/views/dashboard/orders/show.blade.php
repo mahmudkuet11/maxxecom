@@ -8,6 +8,11 @@
 @section('css')
 @parent
 <link rel="stylesheet" type="text/css" href="/app-assets/css/plugins/forms/extended/form-extended.min.css">
+<style>
+    #store_list_ul .list-group-item:hover{
+        cursor: pointer;
+    }
+</style>
 @endsection
 
 @section('content_header')
@@ -203,7 +208,7 @@
                                 <td><button class="btn btn-primary btn-sm add_tracking_no_btn">Add</button></td>
                             </tr>
                             @foreach($transaction->skus as $sku)
-                            <tr>
+                            <tr data-price="{{ $transaction->transaction_price }}">
                                 <td>
                                     <input type="radio" name="price_comparison_section" value="{{ $sku }}">
                                 </td>
@@ -213,7 +218,7 @@
                             </tr>
                             @endforeach
                             @else
-                            <tr data-tracking-details="{{ $transaction->shipment_tracking_details }}" data-order-line-item-id="{{ $transaction->order_line_item_id }}" data-buyer-id="{{ $order->buyer_user_id }}" data-buyer-name="{{ $transaction->buyer_name }}" data-item-title="{{ $transaction->item_title }}" data-item-id="{{ $transaction->item_id }}">
+                            <tr data-price="{{ $transaction->transaction_price }}" data-tracking-details="{{ $transaction->shipment_tracking_details }}" data-order-line-item-id="{{ $transaction->order_line_item_id }}" data-buyer-id="{{ $order->buyer_user_id }}" data-buyer-name="{{ $transaction->buyer_name }}" data-item-title="{{ $transaction->item_title }}" data-item-id="{{ $transaction->item_id }}">
                                 <td>
                                     @if($transaction->hasSKU)
                                     <input type="radio" name="price_comparison_section" value="{{ $transaction->formattedSKU }}">
@@ -248,6 +253,106 @@
         </div>
     </div>
 </section>
+
+<section id="price_comparison_section">
+    <div class="row match-height">
+        <div class="col-xl-6 col-lg-6 col-md-12">
+            <div class="card" style="height: 453px;">
+                <div class="card-body" id="invoice_container">
+                    <div class="card-block" style="padding:1.25rem;">
+                        <p class="card-text"><b>Invoice</b></p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <span class="float-xs-right"><input type="text" id="sold_price_input" class="form-control" value=""/></span> Sold price:
+                        </li>
+                        <li class="list-group-item">
+                            <span class="float-xs-right"><input type="text" id="product_cost_input" class="form-control" value=""/></span> Product Cost:
+                        </li>
+                        <li class="list-group-item">
+                            <span class="float-xs-right"><input type="text" id="shipping_cost_input" class="form-control" value=""/></span> Shipping cost:
+                        </li>
+                        <li class="list-group-item">
+                            <span class="float-xs-right"><input type="text" id="handling_cost_input" class="form-control" value=""/></span> Handling Cost:
+                        </li>
+                        <li class="list-group-item">
+                            <span class="float-xs-right"><input type="text" id="fees_input" class="form-control" value=""/></span> Fees:
+                        </li>
+                        <li class="list-group-item">
+                            <span class="float-xs-right"><input disabled type="text" id="profit_input" class="form-control" value=""/></span> Profit:
+                        </li>
+                    </ul>
+                    <div class="card-block">
+                        <a href="#" class="btn btn-sm btn-info">Edit</a>
+                        <a href="#" class="btn btn-sm btn-success">Submit</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-12">
+            <div class="card" style="height: 453px;">
+                <div class="card-body">
+                    <div class="card-block" style="padding:1.25rem;">
+                        <p class="card-text"><b>Comparison between available stores</b></p>
+                    </div>
+                    <ul class="list-group list-group-flush" id="store_list_ul">
+                        <li class="list-group-item" data-store="keystone_qi">
+                            <span class="float-xs-right">$42.98 S&H</span> keystone/QI:
+                        </li>
+                        <li class="list-group-item" data-store="keystone_local">
+                            <span class="float-xs-right">$23.53 W/O S&H</span> keystone/ LOCAL:
+                        </li>
+                        <li class="list-group-item" data-store="wr">
+                            <span class="float-xs-right">Please check price</span> WAREHOUSE/ WR:
+                        </li>
+                        <li class="list-group-item" data-store="pf">
+                            <span class="float-xs-right">$44.99 S&H</span> perfectfit/PF:
+                        </li>
+                        <li class="list-group-item" data-store="bs">
+                            <span class="float-xs-right">Please check price</span> brocksupply/BS:
+                        </li>
+                        <li class="list-group-item" data-store="cap">
+                            <span class="float-xs-right">Please check price</span> continentalparts/CAP:
+                        </li>
+                        <li class="list-group-item" data-store="apw">
+                            <span class="float-xs-right">Please check price</span> autopartswarehouse/APW:
+                        </li>
+                        <li class="list-group-item" data-store="ra">
+                            <span class="float-xs-right">Please check price</span> Rockauto/RA:
+                        </li>
+                        <li class="list-group-item" data-store="pg">
+                            <span class="float-xs-right">Please check price</span> Partsgeek/PG:
+                        </li>
+                        <li class="list-group-item" data-store="amazon">
+                            <span class="float-xs-right">$44.99 S&H</span> Amazon:
+                        </li>
+                        <li class="list-group-item" data-store="ebay">
+                            <span class="float-xs-right">$44.99 S&H</span> Ebay:
+                        </li>
+                        <li class="list-group-item" data-store="atd">
+                            <span class="float-xs-right">Please check price</span> ATD:
+                        </li>
+                        <li class="list-group-item" data-store="future">
+                            <span class="float-xs-right">Please check price</span> FUTURE:
+                        </li>
+                        <li class="list-group-item">
+                            <span class="float-xs-right">
+                                <!--<input type="text" placeholder="Price" style="text-align: right">-->
+                            </span>
+                            <input type="text" placeholder="Store name">
+                        </li>
+                    </ul>
+                    <div class="card-block">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</section>
+
 <div class="row">
     <div class="col-xs-6">
         <div class="card">
@@ -339,75 +444,7 @@
         </div>
     </div>
 </div>
-<section id="price_comparison_section">
-    <div class="row match-height">
-        <div class="col-xl-6 col-lg-6 col-md-12">
-            <div class="card" style="height: 453px;">
-                <div class="card-body">
-                    <div class="card-block" style="padding:1.25rem;">
 
-                        <p class="card-text"><b>Invoice</b></p>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                            <span class="float-xs-right"><input type="text" class="form-control" value="$57"/></span> Sold price:
-                        </li>
-                        <li class="list-group-item">
-                            <span class="float-xs-right"><input type="text" class="form-control" value="$23"/></span> Product Cost:
-                        </li>
-                        <li class="list-group-item">
-                            <span class="float-xs-right"><input type="text" class="form-control" value="$7"/></span> Shipping cost:
-                        </li>
-                        <li class="list-group-item">
-                            <span class="float-xs-right"><input type="text" class="form-control" value="$0"/></span> Handling Cost:
-                        </li>
-                        <li class="list-group-item">
-                            <span class="float-xs-right"><input type="text" class="form-control" value="$6.96"/></span> Fees:
-                        </li>
-                        <li class="list-group-item">
-                            <span class="float-xs-right"><input type="text" class="form-control" value="$20"/></span> Profit:
-                        </li>
-                    </ul>
-                    <div class="card-block">
-                        <a href="#" class="btn btn-sm btn-info">Edit</a>
-                        <a href="#" class="btn btn-sm btn-success">Submit</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-6 col-lg-6 col-md-12">
-            <div class="card" style="height: 453px;">
-                <div class="card-body">
-                    <div class="card-block" style="padding:1.25rem;">
-                        <p class="card-text"><b>Comparison between available stores</b></p>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                            <span class="float-xs-right">$42.98 S&H</span> Perfect Fit:
-                        </li>
-                        <li class="list-group-item">
-                            <span class="float-xs-right">$23.53 W/O S&H</span> KeyStone:
-                        </li>
-                        <li class="list-group-item">
-                            <span class="float-xs-right">Please check price</span> Cap:
-                        </li>
-                        <li class="list-group-item">
-                            <span class="float-xs-right">$44.99 S&H</span> Ebay:
-                        </li>
-                        <li class="list-group-item">
-                            <span class="float-xs-right">$44.99 S&H</span> Amazon:
-                        </li>
-                    </ul>
-                    <div class="card-block">
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-    </div>
-</section>
 
 
 <div class="modal fade in" id="tracking_number_modal">
@@ -515,6 +552,12 @@
     var Global = {
         order: {
             url: '{{ route("tracking_no.save") }}'
+        },
+        store: {
+            price: {
+                url: '{{ route("store.price.get") }}',
+                data: {}
+            }
         }
     };
 </script>

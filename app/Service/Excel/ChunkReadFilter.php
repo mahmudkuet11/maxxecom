@@ -15,7 +15,7 @@ class ChunkReadFilter implements \PHPExcel_Reader_IReadFilter
 
     public function readCell($column, $row, $worksheetName = '')
     {
-        if (($row == 1) || ($row >= $this->_startRow && $row < $this->_endRow)) {
+        if (($row > 1) && ($row >= $this->_startRow && $row < $this->_endRow)) {
             return true;
         }
         return false;
