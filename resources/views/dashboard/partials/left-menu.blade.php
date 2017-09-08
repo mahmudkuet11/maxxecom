@@ -49,10 +49,8 @@
                     <li class="{{ active_menu('order.awaiting_shipment', $active_menu) }}">
                         <a href="{{ route('orders.awaiting_shipment') }}" class="menu-item">Awaiting Shipment</a>
                     </li>
-                    <li>
-                        <a href="active-listing.html" class="menu-item">
-                            Awaiting Order
-                        </a>
+                    <li class="{{ active_menu('order.awaiting_order', $active_menu) }}">
+                        <a href="{{ route('orders.awaiting_order') }}" class="menu-item">Awaiting Order</a>
                     </li>
                     <li>
                         <a href="active-listing.html" class="menu-item">

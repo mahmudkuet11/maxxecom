@@ -52,7 +52,18 @@ class Order extends Model
     }
 
     public function scopeAwaitingShipment($builder){
-        return $builder->where('order_status', 'Completed')->whereNotNull('paid_time');
+        return $builder
+            ->where('order_status', 'Completed')
+            ->whereNotNull('paid_time')
+            ->whereDoesntHave('transactions', function($query){
+            $query->where('status', 'awaiting_order');
+        });
+    }
+
+    public function scopeAwaitingOrder($builder){
+        return $builder->whereHas('transactions', function($query){
+            $query->where('status', 'awaiting_order');
+        });
     }
 
     public function checkoutStatus(){

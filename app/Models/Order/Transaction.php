@@ -23,6 +23,7 @@ class Transaction extends Model
         'transaction_price',
         'order_line_item_id',
         'shipment_tracking_details',
+        'status',
     ];
 
     public function getSubTotalAttribute(){

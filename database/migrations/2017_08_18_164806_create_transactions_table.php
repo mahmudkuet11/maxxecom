@@ -31,6 +31,7 @@ class CreateTransactionsTable extends Migration
             $table->decimal('transaction_price');
             $table->string('order_line_item_id');
             $table->text('shipment_tracking_details');
+            $table->string('status')->nullable();
             $table->timestamps();
         });
     }

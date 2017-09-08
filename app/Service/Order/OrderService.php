@@ -154,20 +154,40 @@ class OrderService
         $fees = $request->get('fees');
         $profit = $request->get('profit');
 
-        return Invoice::updateOrCreate([
-            'order_id'  =>  $order_id,
-            'transaction_id'  =>  $transaction_id,
-            'sku'   =>  $sku,
-        ],[
-            'store_type'    =>  $store_type,
-            'store_name'    =>  $store_name,
-            'next_state'    =>  $next_state,
-            'sold_price'    =>  $sold_price,
-            'product_cost'  =>  $product_cost,
-            'shipping_cost' =>  $shipping_cost,
-            'handling_cost' =>  $handling_cost,
-            'fees'  =>  $fees,
-            'profit'    =>  $profit
-        ]);
+        DB::beginTransaction();
+        try{
+            $invoice = Invoice::updateOrCreate([
+                'order_id'  =>  $order_id,
+                'transaction_id'  =>  $transaction_id,
+                'sku'   =>  $sku,
+            ],[
+                'store_type'    =>  $store_type,
+                'store_name'    =>  $store_name,
+                'next_state'    =>  $next_state,
+                'sold_price'    =>  $sold_price,
+                'product_cost'  =>  $product_cost,
+                'shipping_cost' =>  $shipping_cost,
+                'handling_cost' =>  $handling_cost,
+                'fees'  =>  $fees,
+                'profit'    =>  $profit
+            ]);
+            self::checkForAwaitingOrderStatus($transaction_id);
+            DB::commit();
+            return $invoice;
+        }catch(\Exception $e){
+            DB::rollback();
+            return false;
+        }
+    }
+
+    public function checkForAwaitingOrderStatus($transaction_id){
+        $transaction = Transaction::where('id', $transaction_id)->with('invoices')->first();
+        $skus = $transaction->skus;
+        $invoice_count = Invoice::where('transaction_id', $transaction_id)->whereIn('sku', $skus)->count();
+        if(count($skus) == $invoice_count){
+            $transaction->update([
+                'status'    =>  'awaiting_order'
+            ]);
+        }
     }
 }

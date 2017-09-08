@@ -23,6 +23,7 @@ Route::resource('/dashboard/store', 'Store\StoreController');
 Route::get('/orders', 'Order\OrderController@getAll')->name('orders.all');
 Route::get('/orders/awaiting-payment', 'Order\OrderController@getAwaitingPaymentOrders')->name('orders.awaiting_payment');
 Route::get('/orders/awaiting-shipment', 'Order\OrderController@getAwaitingShipmentOrders')->name('orders.awaiting_shipment');
+Route::get('/orders/awaiting-order', 'Order\OrderController@getAwaitingOrderList')->name('orders.awaiting_order');
 Route::get('/order/{id}', 'Order\OrderController@show')->name('order.show');
 Route::post('/tracking-number/save', 'Order\OrderController@saveTrackingNumber')->name('tracking_no.save');
 Route::get('/store/price/', 'Store\ItemController@getStorePrices')->name('store.price.get');
@@ -35,9 +36,8 @@ Route::get('/store-price/sync', function(){
 });
 
 Route::get('/test', function(){
-/*    $client = new \GuzzleHttp\Client();
-    $resource = fopen(__DIR__ . '../test.xlsx', 'w');
-    $stream = GuzzleHttp\Psr7\stream_for($resource);
-    $client->request('GET', 'http://127.0.0.1:3000/test.xlsx', ['save_to' => $stream]);*/
-    return 'asdadd';
+    $orders = \App\Models\Order\Order::whereHas('transactions', function($query){
+        $query->where('status', 'awaiting_order');
+    });
+    dd($orders->toSql());
 });
