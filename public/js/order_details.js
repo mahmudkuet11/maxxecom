@@ -187,9 +187,28 @@ var Invoice = {
             shipping_cost: $("#shipping_cost_input").val(),
             handling_cost: $("#handling_cost_input").val(),
             fees: $("#fees_input").val(),
-            profit: $("#profit_input").val(),
+            profit: $("#profit_input").val()
         };
         $("#save_invoice_btn").prop('disabled', true);
+
+        if(Global.order.status == 'awaiting_order'){
+            var oldInvoice = {};
+            var invoices = Global.order.invoices;
+            for(var i=0; i<invoices.length; i++){
+                if(invoices[i].transaction_id == invoice.transaction_id && invoices[i].sku == invoice.sku){
+                    oldInvoice = invoices[i];
+                }
+            }
+            if(this.isInvoiceChanged(oldInvoice, invoice)){
+                var msg = prompt('Enter reason');
+                if(msg){
+                    invoice.msg = msg;
+                }else{
+                    alert('Please enter a reason to continue');
+                    return;
+                }
+            }
+        }
         $.ajax({
             method: 'POST',
             url: Global.invoice.url_save,
@@ -210,6 +229,21 @@ var Invoice = {
                 alert("Invoice could not be saved");
             }
         });
+    },
+    isInvoiceChanged: function(oldInvoice, newInvoice){
+        return !(oldInvoice.order_id == newInvoice.order_id &&
+        oldInvoice.transaction_id == newInvoice.transaction_id &&
+        oldInvoice.sku == newInvoice.sku &&
+        oldInvoice.store_type == newInvoice.store_type &&
+        oldInvoice.store_name == newInvoice.store_name &&
+        oldInvoice.next_state == newInvoice.next_state &&
+        oldInvoice.sold_price == newInvoice.sold_price &&
+        oldInvoice.product_cost == newInvoice.product_cost &&
+        oldInvoice.shipping_cost == newInvoice.shipping_cost &&
+        oldInvoice.handling_cost == newInvoice.handling_cost &&
+        oldInvoice.fees == newInvoice.fees &&
+        oldInvoice.profit == newInvoice.profit);
+
     },
     initInvoice: function(transaction_id, sku){
         var invoices = Global.order.invoices;

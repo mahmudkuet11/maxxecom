@@ -47,6 +47,17 @@ class Order extends Model
         return $this->sales_tax_state == '' ? 'No Sales Tax' : $this->sales_tax_state;
     }
 
+    public function getStatusAttribute(){
+        $transactions = $this->transactions;
+        if($transactions->count() == $transactions->where('status', 'awaiting_order')->count()){
+            return 'awaiting_order';
+        }
+        if($this->order_status == 'Completed' && $this->paid_time != null){
+            return 'awaiting_shipment';
+        }
+        return '';
+    }
+
     public function scopeAwaitingPayment($builder){
         return $builder->where('order_status', 'Active')->orWhere('order_status', 'InProcess');
     }

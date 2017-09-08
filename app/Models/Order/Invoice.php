@@ -18,6 +18,7 @@ class Invoice extends Model
         'shipping_cost',
         'handling_cost',
         'fees',
-        'profit'
+        'profit',
+        'message',
     ];
 }

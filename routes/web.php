@@ -28,6 +28,7 @@ Route::get('/order/{id}', 'Order\OrderController@show')->name('order.show');
 Route::post('/tracking-number/save', 'Order\OrderController@saveTrackingNumber')->name('tracking_no.save');
 Route::get('/store/price/', 'Store\ItemController@getStorePrices')->name('store.price.get');
 Route::post('/order/invoice/save', 'Order\OrderController@saveInvoice')->name('invoice.save');
+Route::post('/order/submitted', 'Order\OrderController@orderSubmitted')->name('order.submitted');
 
 
 Route::get('/store-price/sync', function(){

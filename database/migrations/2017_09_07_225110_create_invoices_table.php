@@ -27,6 +27,7 @@ class CreateInvoicesTable extends Migration
             $table->decimal('handling_cost');
             $table->decimal('fees');
             $table->decimal('profit');
+            $table->string('message')->nullable();
             $table->timestamps();
         });
     }

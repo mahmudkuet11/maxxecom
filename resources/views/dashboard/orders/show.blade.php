@@ -353,7 +353,6 @@
             </div>
         </div>
 
-
     </div>
 </section>
 
@@ -551,13 +550,14 @@
         </div>
     </div>
 </script>
-
+{{ $order->status }}
 <script>
     var Global = {
         order: {
             id: parseInt("{{ $order->id }}"),
             url: '{{ route("tracking_no.save") }}',
-            invoices: JSON.parse('{!! json_encode($invoices) !!}')
+            invoices: JSON.parse('{!! json_encode($invoices) !!}'),
+            status: '{{ $order->status }}'
         },
         store: {
             price: {

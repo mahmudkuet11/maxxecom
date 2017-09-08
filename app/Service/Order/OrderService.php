@@ -180,6 +180,50 @@ class OrderService
         }
     }
 
+    public function orderSubmitted(Request $request){
+        $order_id = $request->get('order_id');
+        $transaction_id = $request->get('transaction_id');
+        $sku = $request->get('sku');
+        $store_type = $request->get('store_type');
+        $store_name = $request->get('store_name');
+        $next_state = $request->get('next_state');
+        $sold_price = $request->get('sold_price');
+        $product_cost = $request->get('product_cost');
+        $shipping_cost = $request->get('shipping_cost');
+        $handling_cost = $request->get('handling_cost');
+        $fees = $request->get('fees');
+        $profit = $request->get('profit');
+        $msg = $request->get('msg');
+
+        DB::beginTransaction();
+        try{
+            $invoice = Invoice::updateOrCreate([
+                'order_id'  =>  $order_id,
+                'transaction_id'  =>  $transaction_id,
+                'sku'   =>  $sku,
+            ],[
+                'store_type'    =>  $store_type,
+                'store_name'    =>  $store_name,
+                'next_state'    =>  $next_state,
+                'sold_price'    =>  $sold_price,
+                'product_cost'  =>  $product_cost,
+                'shipping_cost' =>  $shipping_cost,
+                'handling_cost' =>  $handling_cost,
+                'fees'  =>  $fees,
+                'profit'    =>  $profit,
+                'message'   =>  $msg
+            ]);
+
+
+
+            DB::commit();
+            return $invoice;
+        }catch(\Exception $e){
+            DB::rollback();
+            return false;
+        }
+    }
+
     public function checkForAwaitingOrderStatus($transaction_id){
         $transaction = Transaction::where('id', $transaction_id)->with('invoices')->first();
         $skus = $transaction->skus;

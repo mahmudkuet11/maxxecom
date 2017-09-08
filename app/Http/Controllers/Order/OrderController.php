@@ -41,7 +41,6 @@ class OrderController extends Controller
 
     public function show($id){
         $order = $this->service->get($id)->with('shippingAddress', 'transactions', 'invoices')->first();
-        //dd(json_encode($order->invoices->toArray()));
         return view('dashboard.orders.show', [
             'order' =>  $order,
             'invoices'   =>  $order->invoices->toArray()
@@ -55,6 +54,21 @@ class OrderController extends Controller
 
     public function saveInvoice(Request $request){
         $res = $this->service->saveInvoice($request);
+        if($res){
+            return [
+                'status'    =>  'success',
+                'msg'   =>  'Invoice saved successfully!'
+            ];
+        }else{
+            return [
+                'status'    =>  'failed',
+                'msg'   =>  'Invoice could not be saved'
+            ];
+        }
+    }
+
+    public function orderSubmitted(Request $request){
+        $res = $this->service->orderSubmitted($request);
         if($res){
             return [
                 'status'    =>  'success',
