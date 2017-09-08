@@ -35,14 +35,31 @@ class OrderController extends Controller
     }
 
     public function show($id){
-        $order = $this->service->get($id)->with('shippingAddress', 'transactions')->first();
+        $order = $this->service->get($id)->with('shippingAddress', 'transactions', 'invoices')->first();
+        //dd(json_encode($order->invoices->toArray()));
         return view('dashboard.orders.show', [
-            'order' =>  $order
+            'order' =>  $order,
+            'invoices'   =>  $order->invoices->toArray()
         ]);
     }
 
     public function saveTrackingNumber(Request $request){
         $res = $this->service->saveTrackingNumber($request);
         return $res;
+    }
+
+    public function saveInvoice(Request $request){
+        $res = $this->service->saveInvoice($request);
+        if($res){
+            return [
+                'status'    =>  'success',
+                'msg'   =>  'Invoice saved successfully!'
+            ];
+        }else{
+            return [
+                'status'    =>  'failed',
+                'msg'   =>  'Invoice could not be saved'
+            ];
+        }
     }
 }

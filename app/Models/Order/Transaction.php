@@ -57,4 +57,8 @@ class Transaction extends Model
     public function getHasSKUAttribute(){
         return $this->sku != '';
     }
+
+    public function invoices(){
+        return $this->hasMany(Invoice::class);
+    }
 }

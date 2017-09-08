@@ -69,4 +69,8 @@ class Order extends Model
     public function store(){
         return $this->belongsTo(Store::class);
     }
+
+    public function invoices(){
+        return $this->hasMany(Invoice::class);
+    }
 }

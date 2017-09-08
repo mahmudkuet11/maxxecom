@@ -208,7 +208,7 @@
                                 <td><button class="btn btn-primary btn-sm add_tracking_no_btn">Add</button></td>
                             </tr>
                             @foreach($transaction->skus as $sku)
-                            <tr data-price="{{ $transaction->transaction_price }}">
+                            <tr data-transaction-id="{{ $transaction->id }}" data-price="{{ $transaction->transaction_price }}">
                                 <td>
                                     <input type="radio" name="price_comparison_section" value="{{ $sku }}">
                                 </td>
@@ -218,7 +218,7 @@
                             </tr>
                             @endforeach
                             @else
-                            <tr data-price="{{ $transaction->transaction_price }}" data-tracking-details="{{ $transaction->shipment_tracking_details }}" data-order-line-item-id="{{ $transaction->order_line_item_id }}" data-buyer-id="{{ $order->buyer_user_id }}" data-buyer-name="{{ $transaction->buyer_name }}" data-item-title="{{ $transaction->item_title }}" data-item-id="{{ $transaction->item_id }}">
+                            <tr data-transaction-id="{{ $transaction->id }}" data-price="{{ $transaction->transaction_price }}" data-tracking-details="{{ $transaction->shipment_tracking_details }}" data-order-line-item-id="{{ $transaction->order_line_item_id }}" data-buyer-id="{{ $order->buyer_user_id }}" data-buyer-name="{{ $transaction->buyer_name }}" data-item-title="{{ $transaction->item_title }}" data-item-id="{{ $transaction->item_id }}">
                                 <td>
                                     @if($transaction->hasSKU)
                                     <input type="radio" name="price_comparison_section" value="{{ $transaction->formattedSKU }}">
@@ -283,8 +283,8 @@
                         </li>
                     </ul>
                     <div class="card-block">
-                        <a href="#" class="btn btn-sm btn-info">Edit</a>
-                        <a href="#" class="btn btn-sm btn-success">Submit</a>
+                        <a href="#" class="btn btn-sm btn-info" id="edit_invoice_btn">Edit</a>
+                        <a href="#" class="btn btn-sm btn-success" id="save_invoice_btn">Submit</a>
                     </div>
                 </div>
             </div>
@@ -337,9 +337,13 @@
                         </li>
                         <li class="list-group-item">
                             <span class="float-xs-right">
-                                <!--<input type="text" placeholder="Price" style="text-align: right">-->
+                                <select class="form-control" id="custom_store_next_state_select">
+                                    <option value="" disabled selected>--Select Next State--</option>
+                                    <option value="awaiting_tracking">Awaiting Tracking No.</option>
+                                    <option value="print_label">Print Label</option>
+                                </select>
                             </span>
-                            <input type="text" placeholder="Store name">
+                            <input type="text" id="custom_store_input" placeholder="Store name">
                         </li>
                     </ul>
                     <div class="card-block">
@@ -551,19 +555,23 @@
 <script>
     var Global = {
         order: {
-            url: '{{ route("tracking_no.save") }}'
+            id: parseInt("{{ $order->id }}"),
+            url: '{{ route("tracking_no.save") }}',
+            invoices: JSON.parse('{!! json_encode($invoices) !!}')
         },
         store: {
             price: {
                 url: '{{ route("store.price.get") }}',
                 data: {}
             }
+        },
+        invoice: {
+            url_save: '{{ route("invoice.save") }}'
         }
     };
 </script>
 
-<script type="text/javascript" src="/js/order/tracking-number.js"></script>
-<script type="text/javascript" src="/js/order/price-comparison.js"></script>
+<script type="text/javascript" src="/js/order_details.js"></script>
 <script>
 
     $(document).ready(function () {
