@@ -28,7 +28,6 @@ class Order extends Model
         'sales_tax_percent',
         'sales_tax_state',
         'sales_tax_amount',
-        'internal_status',
     ];
 
     public function getSoldDateAttribute(){

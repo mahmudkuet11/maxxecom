@@ -34,7 +34,6 @@ class CreateOrdersTable extends Migration
             $table->decimal('sales_tax_percent');
             $table->string('sales_tax_state');
             $table->decimal('sales_tax_amount');
-            $table->enum('internal_status', \App\Enum\InternalOrderStatus::keys())->nullable();
             $table->timestamps();
         });
     }

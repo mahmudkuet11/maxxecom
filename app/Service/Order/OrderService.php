@@ -24,16 +24,16 @@ class OrderService
         return Order::where('id', $id);
     }
 
-    public function SaveOrders(Store $store, $orders, Callable $callback = null){
+    public function saveOrders(Store $store, $orders, Callable $callback = null){
         $order_array = $orders->OrderArray->Order;
         foreach ($order_array as $order){
-            $order = self::Save($store->id, $order);
-            if($order) call_user_func($callback, $order);
+            $order = self::save($store->id, $order);
+            if($order && $callback) call_user_func($callback, $order);
         }
         event(new StoreSyncProgress($orders, $store));
     }
 
-    public function Save($store_id, $order){
+    public function save($store_id, $order){
         DB::beginTransaction();
         try{
             $orderModel = Order::updateOrCreate([

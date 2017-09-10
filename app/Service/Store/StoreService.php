@@ -68,18 +68,7 @@ class StoreService
             $response = $getOrderService->getCreatedBetween($store, $from, $to, $pageNum);
             if($response->Ack == 'Success'){
                 if(isset($response->OrderArray->Order)){
-                    $orderService->SaveOrders($store, $response, function(Order $order){
-                        if($order->order_status == 'Completed' && $order->paid_time != null){
-                            $order->update([
-                                'internal_status'   =>  'AWAITING_SHIPMENT'
-                            ]);
-                        }
-                        if($order->order_status == 'Active' || $order->order_status == 'InProcess'){
-                            $order->update([
-                                'internal_status'   =>  'AWAITING_PAYMENT'
-                            ]);
-                        }
-                    });
+                    $orderService->saveOrders($store, $response);
                 }
             }else{
                 throw new \Exception('Failed');
@@ -103,7 +92,7 @@ class StoreService
             $response = $getOrderService->getModifiedBetween($store, $from, $to, $pageNum);
             if($response->Ack == 'Success'){
                 if(isset($response->OrderArray->Order)){
-                    $orderService->SaveOrders($store, $response);
+                    $orderService->saveOrders($store, $response);
                 }
             }else{
                 throw new \Exception('Failed to connect with ebay API');
