@@ -2,6 +2,7 @@
 
 namespace App\Models\Order;
 
+use App\Enum\InternalOrderStatus;
 use App\Models\Store;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -57,16 +58,20 @@ class Order extends Model
         return '';
     }
 
+    public function scopeFilterByUser($builder){
+        $stores = \Auth::user()->user_stores->pluck('store_id')->toArray();
+        return $builder->whereIn('store_id', $stores);
+    }
+
     public function scopeAwaitingPayment($builder){
-        return $builder->where('order_status', 'Active')->orWhere('order_status', 'InProcess');
+        return $builder->whereHas('transactions.skus', function($query){
+            $query->where('status', InternalOrderStatus::AWAITING_PAYMENT);
+        });
     }
 
     public function scopeAwaitingShipment($builder){
-        return $builder
-            ->where('order_status', 'Completed')
-            ->whereNotNull('paid_time')
-            ->whereDoesntHave('transactions', function($query){
-            $query->where('status', 'awaiting_order');
+        return $builder->whereHas('transactions.skus', function($query){
+            $query->where('status', InternalOrderStatus::AWAITING_SHIPMENT);
         });
     }
 

@@ -27,6 +27,11 @@ class Store extends Model
         return false;
     }
 
+    public function scopeFilterByUser($builder){
+        $stores = \Auth::user()->user_stores->pluck('store_id')->toArray();
+        return $builder->whereIn('id', $stores);
+    }
+
     public function orderSynchronization(){
         return $this->hasOne(Synchronization::class)->where('scope', Scope::ORDER);
     }

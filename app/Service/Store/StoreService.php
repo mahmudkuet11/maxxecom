@@ -59,7 +59,7 @@ class StoreService
     }
 
     public function syncAll($forceSync = false){
-        $stores = self::getAll()->where('is_syncing', false)->with('orderSynchronization')->get();
+        $stores = self::getAll()->filterByUser()->where('is_syncing', false)->with('orderSynchronization')->get();
         foreach ($stores as $store){
             if($forceSync || $store->needToSync){
                 dispatch(new SyncStoreJob($store));
