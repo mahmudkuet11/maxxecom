@@ -190,7 +190,7 @@
                             <tbody>
                             @foreach($order->transactions as $transaction)
 
-                            @if($transaction->hasMoreThanOneSKU)
+                            @if($transaction->skus->count() > 1)
                             <tr data-tracking-details="{{ $transaction->shipment_tracking_details }}" data-order-line-item-id="{{ $transaction->order_line_item_id }}" data-buyer-id="{{ $order->buyer_user_id }}" data-buyer-name="{{ $transaction->buyer_name }}" data-item-title="{{ $transaction->item_title }}" data-item-id="{{ $transaction->item_id }}">
                                 <td>
 
@@ -220,8 +220,8 @@
                             @else
                             <tr data-transaction-id="{{ $transaction->id }}" data-price="{{ $transaction->transaction_price }}" data-tracking-details="{{ $transaction->shipment_tracking_details }}" data-order-line-item-id="{{ $transaction->order_line_item_id }}" data-buyer-id="{{ $order->buyer_user_id }}" data-buyer-name="{{ $transaction->buyer_name }}" data-item-title="{{ $transaction->item_title }}" data-item-id="{{ $transaction->item_id }}">
                                 <td>
-                                    @if($transaction->hasSKU)
-                                    <input type="radio" name="price_comparison_section" value="{{ $transaction->formattedSKU }}">
+                                    @if($transaction->sku)
+                                    <input type="radio" name="price_comparison_section" value="{{ $transaction->skus->first() }}">
                                     @endif
                                 </td>
                                 <td>{{ $transaction->quantity }}</td>

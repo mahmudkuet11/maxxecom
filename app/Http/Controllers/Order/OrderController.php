@@ -40,7 +40,7 @@ class OrderController extends Controller
     }
 
     public function show($id){
-        $order = $this->service->get($id)->with('shippingAddress', 'transactions', 'invoices')->first();
+        $order = $this->service->get($id)->with('shippingAddress', 'transactions', 'transactions.skus', 'invoices')->first();
         return view('dashboard.orders.show', [
             'order' =>  $order,
             'invoices'   =>  $order->invoices->toArray()
