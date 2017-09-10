@@ -47,15 +47,26 @@ class Order extends Model
         return $this->sales_tax_state == '' ? 'No Sales Tax' : $this->sales_tax_state;
     }
 
-    public function getStatusAttribute(){
-        $transactions = $this->transactions;
-        if($transactions->count() == $transactions->where('status', 'awaiting_order')->count()){
-            return 'awaiting_order';
-        }
-        if($this->order_status == 'Completed' && $this->paid_time != null){
-            return 'awaiting_shipment';
-        }
-        return '';
+    public function getInvoicesAttribute(){
+        $invoices = collect([]);
+        $this->transactions->each(function($transaction) use ($invoices){
+            $transaction->skus->each(function($sku) use ($invoices){
+                if($sku->invoice){
+                    $invoices->push($sku->invoice);
+                }
+            });
+        });
+        return $invoices;
+    }
+
+    public function getSkusAttribute(){
+        $skus = collect([]);
+        $this->transactions->each(function($transaction) use ($skus){
+            $transaction->skus->each(function($sku) use ($skus){
+                $skus->push($sku);
+            });
+        });
+        return $skus;
     }
 
     public function scopeFilterByUser($builder){
@@ -94,9 +105,5 @@ class Order extends Model
 
     public function store(){
         return $this->belongsTo(Store::class);
-    }
-
-    public function invoices(){
-        return $this->hasMany(Invoice::class);
     }
 }

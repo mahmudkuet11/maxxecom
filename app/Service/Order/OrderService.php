@@ -2,6 +2,7 @@
 
 namespace App\Service\Order;
 
+use App\Enum\InternalOrderStatus;
 use App\Event\StoreSyncProgress;
 use App\Models\Order\CheckoutStatus;
 use App\Models\Order\Invoice;
@@ -155,9 +156,7 @@ class OrderService
     }
 
     public function saveInvoice(Request $request){
-        $order_id = $request->get('order_id');
-        $transaction_id = $request->get('transaction_id');
-        $sku = $request->get('sku');
+        $sku_id = $request->get('sku_id');
         $store_type = $request->get('store_type');
         $store_name = $request->get('store_name');
         $next_state = $request->get('next_state');
@@ -171,9 +170,7 @@ class OrderService
         DB::beginTransaction();
         try{
             $invoice = Invoice::updateOrCreate([
-                'order_id'  =>  $order_id,
-                'transaction_id'  =>  $transaction_id,
-                'sku'   =>  $sku,
+                'sku_id'   =>  $sku_id,
             ],[
                 'store_type'    =>  $store_type,
                 'store_name'    =>  $store_name,
@@ -185,7 +182,9 @@ class OrderService
                 'fees'  =>  $fees,
                 'profit'    =>  $profit
             ]);
-            self::checkForAwaitingOrderStatus($transaction_id);
+            Sku::where('id', $sku_id)->update([
+                'status'    =>  InternalOrderStatus::AWAITING_ORDER
+            ]);
             DB::commit();
             return $invoice;
         }catch(\Exception $e){
@@ -194,10 +193,8 @@ class OrderService
         }
     }
 
-    public function orderSubmitted(Request $request){
-        $order_id = $request->get('order_id');
-        $transaction_id = $request->get('transaction_id');
-        $sku = $request->get('sku');
+    public function orderSubmit(Request $request){
+        $sku_id = $request->get('sku_id');
         $store_type = $request->get('store_type');
         $store_name = $request->get('store_name');
         $next_state = $request->get('next_state');
@@ -207,14 +204,13 @@ class OrderService
         $handling_cost = $request->get('handling_cost');
         $fees = $request->get('fees');
         $profit = $request->get('profit');
-        $msg = $request->get('msg');
+        $order_id = $request->get('order_id');
+        $msg = $request->get('msg', '');
 
         DB::beginTransaction();
         try{
             $invoice = Invoice::updateOrCreate([
-                'order_id'  =>  $order_id,
-                'transaction_id'  =>  $transaction_id,
-                'sku'   =>  $sku,
+                'sku_id'   =>  $sku_id,
             ],[
                 'store_type'    =>  $store_type,
                 'store_name'    =>  $store_name,
@@ -225,27 +221,27 @@ class OrderService
                 'handling_cost' =>  $handling_cost,
                 'fees'  =>  $fees,
                 'profit'    =>  $profit,
+                'order_id'    =>  $order_id,
                 'message'   =>  $msg
             ]);
-
-
-
+            $status = InternalOrderStatus::AWAITING_TRACKING;
+            if($next_state == 'print_label'){
+                $status = InternalOrderStatus::PRINT_LABEL;
+            }
+            Sku::where('id', $sku_id)->update([
+                'status'    =>  $status
+            ]);
             DB::commit();
-            return $invoice;
+            return [
+                'status'    =>  'success',
+                'msg'   =>  'Order submitted successfully!'
+            ];
         }catch(\Exception $e){
             DB::rollback();
-            return false;
-        }
-    }
-
-    public function checkForAwaitingOrderStatus($transaction_id){
-        $transaction = Transaction::where('id', $transaction_id)->with('invoices')->first();
-        $skus = $transaction->skus;
-        $invoice_count = Invoice::where('transaction_id', $transaction_id)->whereIn('sku', $skus)->count();
-        if(count($skus) == $invoice_count){
-            $transaction->update([
-                'status'    =>  'awaiting_order'
-            ]);
+            return [
+                'status'    =>  'failed',
+                'msg'   =>  $e->getMessage()
+            ];
         }
     }
 }

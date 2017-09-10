@@ -58,10 +58,6 @@ class Transaction extends Model
         return $this->sku != '';
     }*/
 
-    public function invoices(){
-        return $this->hasMany(Invoice::class);
-    }
-
     public function skus(){
         return $this->hasMany(Sku::class);
     }

@@ -29,11 +29,11 @@ $(document).ready(function(){
     $el.price_comparison_section.hide();
 
     $el.price_comparison_radio_btn.change(function(){
-        var sku = $(this).val();
-        var transaction_id = $(this).closest('tr').attr('data-transaction-id');
+        var sku_id = $(this).attr('data-sku-id');
+        var invoice = Invoice.getBySkuID(sku_id);
         $el.price_comparison_section.show();
         Invoice.reset();
-        Invoice.initInvoice(transaction_id, sku);
+        Invoice.initInvoice(invoice);
     });
 
 
@@ -48,8 +48,26 @@ $(document).ready(function(){
         Invoice.updateInputFieldOnKeyUp();
     });
 
+    $("#submit_order_btn").click(function(e){
+        e.preventDefault();
+        Invoice.submitOrder();
+    });
+
 
 });
+
+var Sku = {
+    getBySkuID: function(sku_id){
+        var transactions = Global.order.data.transactions;
+        for(var i in transactions){
+            var skus = transactions[i].skus;
+            for(var j in skus){
+                if(skus[j].id == sku_id) return skus[j];
+            }
+        }
+        return null;
+    }
+};
 
 var Invoice = {
     store: {
@@ -102,50 +120,53 @@ var Invoice = {
             e.preventDefault();
             _this.save();
         });
+        $("#show_order_id_modal_btn").click(function (e) {
+            e.preventDefault();
+            _this.showOrderIDModal();
+        });
     },
     updateInvoice: function(){
-        var transaction_id = $("#transaction_details_table input[name='price_comparison_section']").closest('tr').attr('data-transaction-id');
-        var sku = $("#transaction_details_table input[name='price_comparison_section']").val();
-
-        var invoices = Global.order.invoices;
-        var hasInvoice = false;
-        for (var i=0; i<invoices.length; i++){
-            if(invoices[i].transaction_id == transaction_id && invoices[i].sku == sku){
-                hasInvoice = true;
-                $("input#sold_price_input").val(invoices[i].sold_price);
-                $("input#product_cost_input").val(invoices[i].product_cost);
-                $("input#shipping_cost_input").val(invoices[i].shipping_cost);
-                $("input#handling_cost_input").val(invoices[i].handling_cost);
-                $("input#fees_input").val(invoices[i].fees);
-                $("input#profit_input").val(invoices[i].profit);
+        var sku_id = $("#transaction_details_table input[name='price_comparison_section']:checked").attr('data-sku-id');
+        var invoice = this.getBySkuID(sku_id);
+        var $selectedStore = $("#store_list_ul .list-group-item.active");
+        if(invoice){
+            if(invoice.store_name == $selectedStore.attr('data-store')){
+                $("input#sold_price_input").val(invoice.sold_price);
+                $("input#product_cost_input").val(invoice.product_cost);
+                $("input#shipping_cost_input").val(invoice.shipping_cost);
+                $("input#handling_cost_input").val(invoice.handling_cost);
+                $("input#fees_input").val(invoice.fees);
+                $("input#profit_input").val(invoice.profit);
+            }else{
+                this.setStorePriceToInvoice();
             }
+        }else{
+            this.setStorePriceToInvoice();
         }
-        hasInvoice = false;
+    },
+    setStorePriceToInvoice: function(){
+        var $selectedStore = $("#store_list_ul .list-group-item.active");
+        var store = $selectedStore.attr('data-store');
+        var price = Global.store.price.data[store];
+        var sold_price = $("input[name='price_comparison_section']:checked").closest('tr').attr('data-price');
+        var product_cost = 0;
+        var shipping_cost = 0;
+        var handling_cost = 0;
+        var fees = 0;
+        if(price){
+            product_cost = price.price;
+            shipping_cost = price.shipping_cost;
+            handling_cost = price.handling_cost;
 
-        if(!hasInvoice){
-            var $selectedStore = $("#store_list_ul .list-group-item.active");
-            var store = $selectedStore.attr('data-store');
-            var price = Global.store.price.data[store];
-            var sold_price = $("input[name='price_comparison_section']:checked").closest('tr').attr('data-price');
-            var product_cost = 0;
-            var shipping_cost = 0;
-            var handling_cost = 0;
-            var fees = 0;
-            if(price){
-                product_cost = price.price;
-                shipping_cost = price.shipping_cost;
-                handling_cost = price.handling_cost;
-
-            }
-            var profit = sold_price - (product_cost + shipping_cost + handling_cost);
-
-            $("input#sold_price_input").val(sold_price);
-            $("input#product_cost_input").val(product_cost);
-            $("input#shipping_cost_input").val(shipping_cost);
-            $("input#handling_cost_input").val(handling_cost);
-            $("input#fees_input").val(fees);
-            $("input#profit_input").val(profit);
         }
+        var profit = sold_price - (product_cost + shipping_cost + handling_cost);
+
+        $("input#sold_price_input").val(sold_price);
+        $("input#product_cost_input").val(product_cost);
+        $("input#shipping_cost_input").val(shipping_cost);
+        $("input#handling_cost_input").val(handling_cost);
+        $("input#fees_input").val(fees);
+        $("input#profit_input").val(profit);
     },
     updateInputFieldOnKeyUp: function(){
         var amount = {
@@ -165,50 +186,9 @@ var Invoice = {
         $("input#profit_input").val(amount.profit);
     },
     save: function(){
-        var store_name = $("#store_list_ul .list-group-item.active").attr('data-store');
-        var store_type = 'regular';
-        var next_state = "";
-        if(store_name){
-            next_state = this.store[store_name].next_state;
-        }else{
-            store_name = $("#custom_store_input").val();
-            store_type = 'custom';
-            next_state = $("#custom_store_next_state_select").val();
-        }
-        var invoice= {
-            order_id: Global.order.id,
-            transaction_id: $("#transaction_details_table input[name='price_comparison_section']:checked").closest('tr').attr('data-transaction-id'),
-            sku: $("#transaction_details_table input[name='price_comparison_section']:checked").val(),
-            store_type: store_type,
-            store_name: store_name,
-            next_state: next_state,
-            sold_price: $("#sold_price_input").val(),
-            product_cost: $("#product_cost_input").val(),
-            shipping_cost: $("#shipping_cost_input").val(),
-            handling_cost: $("#handling_cost_input").val(),
-            fees: $("#fees_input").val(),
-            profit: $("#profit_input").val()
-        };
+        var invoice = this.getInvoice();
         $("#save_invoice_btn").prop('disabled', true);
 
-        if(Global.order.status == 'awaiting_order'){
-            var oldInvoice = {};
-            var invoices = Global.order.invoices;
-            for(var i=0; i<invoices.length; i++){
-                if(invoices[i].transaction_id == invoice.transaction_id && invoices[i].sku == invoice.sku){
-                    oldInvoice = invoices[i];
-                }
-            }
-            if(this.isInvoiceChanged(oldInvoice, invoice)){
-                var msg = prompt('Enter reason');
-                if(msg){
-                    invoice.msg = msg;
-                }else{
-                    alert('Please enter a reason to continue');
-                    return;
-                }
-            }
-        }
         $.ajax({
             method: 'POST',
             url: Global.invoice.url_save,
@@ -230,10 +210,103 @@ var Invoice = {
             }
         });
     },
+    showOrderIDModal: function(){
+        $("#order_id_modal").modal('show');
+        var invoice = this.getInvoice();
+        var oldInvoice = this.getBySkuID(invoice.sku_id);
+        if(this.isInvoiceChanged(oldInvoice, invoice)){
+            $("#invoice_message_form_group").show();
+        }else{
+            $("#invoice_message_form_group").hide();
+        }
+    },
+    submitOrder: function(){
+        //validation
+        var order_id = $("#order_id_modal input[name='order_id']").val();
+        var message = $("#order_id_modal input[name='message']").val();
+        if(order_id == ''){
+            alert('Order ID is required');
+            return;
+        }
+        var invoice = this.getInvoice();
+        var oldInvoice = this.getBySkuID(invoice.sku_id);
+        if(this.isInvoiceChanged(oldInvoice, invoice)){
+            if(message == ''){
+                alert('Message is required');
+                return;
+            }
+        }
+        //validation end
+
+        $("#submit_order_btn").prop('disabled', true);
+        invoice.order_id = order_id;
+        invoice.msg = message ? message : '';
+        $.ajax({
+            method: 'POST',
+            url: Global.invoice.order_submit,
+            data: invoice,
+            success: function(res){
+                $("#submit_order_btn").prop('disabled', false);
+                if(res.status == 'success'){
+                    window.location.reload(true);
+                }else{
+                    alert(res.msg);
+                }
+            },
+            error: function(){
+                $("#submit_order_btn").prop('disabled', false);
+                if(res.status != 'success'){
+                    $("#submit_order_btn").prop('disabled', false);
+                }
+                alert("Invoice could not be saved");
+            }
+        });
+
+    },
+    getInvoice: function(){
+        var selected_sku_id = $("#transaction_details_table input[name='price_comparison_section']:checked").attr('data-sku-id');
+        var skuModel = Sku.getBySkuID(selected_sku_id);
+
+        var store_name = $("#store_list_ul .list-group-item.active").attr('data-store');
+        var store_type = 'regular';
+        var next_state = "";
+        if(store_name){
+            next_state = this.store[store_name].next_state;
+        }else{
+            store_name = $("#custom_store_input").val();
+            store_type = 'custom';
+            next_state = $("#custom_store_next_state_select").val();
+        }
+        var invoice= {
+            sku_id: selected_sku_id,
+            store_type: store_type,
+            store_name: store_name,
+            next_state: next_state,
+            sold_price: $("#sold_price_input").val(),
+            product_cost: $("#product_cost_input").val(),
+            shipping_cost: $("#shipping_cost_input").val(),
+            handling_cost: $("#handling_cost_input").val(),
+            fees: $("#fees_input").val(),
+            profit: $("#profit_input").val()
+        };
+        return invoice;
+    },
+    getBySkuID: function(sku_id){
+        var transactions = Global.order.data.transactions;
+        for(var i in transactions){
+            var skus = transactions[i].skus;
+            for(var j in skus){
+                if(skus[j].invoice){
+                    if(skus[j].invoice.sku_id == sku_id){
+                        return skus[j].invoice;
+                    }
+                }
+            }
+        }
+        return null;
+    },
     isInvoiceChanged: function(oldInvoice, newInvoice){
-        return !(oldInvoice.order_id == newInvoice.order_id &&
-        oldInvoice.transaction_id == newInvoice.transaction_id &&
-        oldInvoice.sku == newInvoice.sku &&
+        return !(oldInvoice.sku_id == newInvoice.sku_id &&
         oldInvoice.store_type == newInvoice.store_type &&
         oldInvoice.store_name == newInvoice.store_name &&
         oldInvoice.next_state == newInvoice.next_state &&
@@ -243,30 +316,36 @@ var Invoice = {
         oldInvoice.handling_cost == newInvoice.handling_cost &&
         oldInvoice.fees == newInvoice.fees &&
         oldInvoice.profit == newInvoice.profit);
-
     },
-    initInvoice: function(transaction_id, sku){
-        var invoices = Global.order.invoices;
-        for (var i=0; i<invoices.length; i++){
-            if(invoices[i].transaction_id == transaction_id && invoices[i].sku == sku){
-                $("#store_list_ul .list-group-item.active").removeClass('active');
-                if(invoices[i].store_type == 'regular'){
-                    $("#store_list_ul .list-group-item[data-store='"+ invoices[i].store_name +"']").addClass('active');
-                }
-                if(invoices[i].store_type == 'custom'){
-                    $("#custom_store_next_state_select").closest('.list-group-item').addClass('active');
-                    $("#custom_store_input").val(invoices[i].store_name);
-                    $("#custom_store_next_state_select").val(invoices[i].next_state);
-                }
-                $("input#sold_price_input").val(invoices[i].sold_price);
-                $("input#product_cost_input").val(invoices[i].product_cost);
-                $("input#shipping_cost_input").val(invoices[i].shipping_cost);
-                $("input#handling_cost_input").val(invoices[i].handling_cost);
-                $("input#fees_input").val(invoices[i].fees);
-                $("input#profit_input").val(invoices[i].profit);
-
-            }
+    initInvoice: function(invoice){
+        if(! invoice){
+            $("#show_order_id_modal_btn").hide();
+            return;
         }
+        var status = Sku.getBySkuID(invoice.sku_id).status;
+        if(status != 'AWAITING_SHIPMENT'){
+            $("#save_invoice_btn").hide();
+        }
+        if(status != 'AWAITING_ORDER'){
+            $("#show_order_id_modal_btn").hide();
+        }
+
+
+        $("#store_list_ul .list-group-item.active").removeClass('active');
+        if(invoice.store_type == 'regular'){
+            $("#store_list_ul .list-group-item[data-store='"+ invoice.store_name +"']").addClass('active');
+        }
+        if(invoice.store_type == 'custom'){
+            $("#custom_store_next_state_select").closest('.list-group-item').addClass('active');
+            $("#custom_store_input").val(invoice.store_name);
+            $("#custom_store_next_state_select").val(invoice.next_state);
+        }
+        $("input#sold_price_input").val(invoice.sold_price);
+        $("input#product_cost_input").val(invoice.product_cost);
+        $("input#shipping_cost_input").val(invoice.shipping_cost);
+        $("input#handling_cost_input").val(invoice.handling_cost);
+        $("input#fees_input").val(invoice.fees);
+        $("input#profit_input").val(invoice.profit);
     },
     reset: function(){
         $("#store_list_ul .list-group-item.active").removeClass('active');

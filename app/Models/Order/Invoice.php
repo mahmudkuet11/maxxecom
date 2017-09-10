@@ -7,9 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Invoice extends Model
 {
     protected $fillable = [
-        'order_id',
-        'transaction_id',
-        'sku',
+        'sku_id',
         'store_type',
         'store_name',
         'next_state',
@@ -19,6 +17,11 @@ class Invoice extends Model
         'handling_cost',
         'fees',
         'profit',
+        'order_id',
         'message',
     ];
+
+    public function sku(){
+        return $this->belongsTo(Sku::class);
+    }
 }

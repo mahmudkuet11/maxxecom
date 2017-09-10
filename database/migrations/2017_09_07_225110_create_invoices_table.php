@@ -15,9 +15,7 @@ class CreateInvoicesTable extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('order_id');
-            $table->bigInteger('transaction_id');
-            $table->string('sku');
+            $table->bigInteger('sku_id');
             $table->string('store_type');
             $table->string('store_name');
             $table->string('next_state');
@@ -27,6 +25,7 @@ class CreateInvoicesTable extends Migration
             $table->decimal('handling_cost');
             $table->decimal('fees');
             $table->decimal('profit');
+            $table->string('order_id')->nullable();
             $table->string('message')->nullable();
             $table->timestamps();
         });

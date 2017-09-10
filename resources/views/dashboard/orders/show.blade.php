@@ -210,7 +210,7 @@
                             @foreach($transaction->skus as $sku)
                             <tr data-transaction-id="{{ $transaction->id }}" data-price="{{ $transaction->transaction_price }}">
                                 <td>
-                                    <input type="radio" name="price_comparison_section" value="{{ $sku }}">
+                                    <input type="radio" name="price_comparison_section" value="{{ $sku->sku }}" data-sku-id="{{ $sku->id }}">
                                 </td>
                                 <td colspan="3"></td>
                                 <td>{{ $sku }}</td>
@@ -221,7 +221,7 @@
                             <tr data-transaction-id="{{ $transaction->id }}" data-price="{{ $transaction->transaction_price }}" data-tracking-details="{{ $transaction->shipment_tracking_details }}" data-order-line-item-id="{{ $transaction->order_line_item_id }}" data-buyer-id="{{ $order->buyer_user_id }}" data-buyer-name="{{ $transaction->buyer_name }}" data-item-title="{{ $transaction->item_title }}" data-item-id="{{ $transaction->item_id }}">
                                 <td>
                                     @if($transaction->sku)
-                                    <input type="radio" name="price_comparison_section" value="{{ $transaction->skus->first() }}">
+                                    <input type="radio" name="price_comparison_section" value="{{ $transaction->skus->first()->sku }}" data-sku-id="{{ $transaction->skus->first()->id }}">
                                     @endif
                                 </td>
                                 <td>{{ $transaction->quantity }}</td>
@@ -283,8 +283,8 @@
                         </li>
                     </ul>
                     <div class="card-block">
-                        <a href="#" class="btn btn-sm btn-info" id="edit_invoice_btn">Edit</a>
                         <a href="#" class="btn btn-sm btn-success" id="save_invoice_btn">Submit</a>
+                        <a href="#" class="btn btn-sm btn-success" id="show_order_id_modal_btn">Submit Order</a>
                     </div>
                 </div>
             </div>
@@ -495,6 +495,42 @@
     </div>
 </div>
 
+<div class="modal fade in" id="order_id_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Submit Order</h4>
+            </div>
+            <div class="modal-body">
+                <div class="card-body collapse in">
+                    <div class="card-block">
+                        <form class="form">
+                            <div class="form-body">
+
+                                <div class="form-group">
+                                    <label>Order ID:</label>
+                                    <input name="order_id" class="form-control border-primary" type="text" placeholder="Enter Order ID...">
+                                </div>
+
+                                <div class="form-group" id="invoice_message_form_group">
+                                    <label>Message:</label>
+                                    <input name="message" class="form-control border-primary" type="text" placeholder="Enter Message...">
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="submit_order_btn">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @section('scripts')
@@ -550,14 +586,13 @@
         </div>
     </div>
 </script>
-{{ $order->status }}
+
 <script>
     var Global = {
         order: {
             id: parseInt("{{ $order->id }}"),
             url: '{{ route("tracking_no.save") }}',
-            invoices: JSON.parse('{!! json_encode($invoices) !!}'),
-            status: '{{ $order->status }}'
+            data: JSON.parse('{!! json_encode($order) !!}'),
         },
         store: {
             price: {
@@ -566,7 +601,8 @@
             }
         },
         invoice: {
-            url_save: '{{ route("invoice.save") }}'
+            url_save: '{{ route("invoice.save") }}',
+            order_submit: '{{ route("order.submit") }}',
         }
     };
 </script>

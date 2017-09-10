@@ -40,10 +40,9 @@ class OrderController extends Controller
     }
 
     public function show($id){
-        $order = $this->service->get($id)->with('shippingAddress', 'transactions', 'transactions.skus', 'invoices')->first();
+        $order = $this->service->get($id)->with('shippingAddress', 'transactions', 'transactions.skus', 'transactions.skus.invoice')->first();
         return view('dashboard.orders.show', [
-            'order' =>  $order,
-            'invoices'   =>  $order->invoices->toArray()
+            'order' =>  $order
         ]);
     }
 
@@ -67,18 +66,7 @@ class OrderController extends Controller
         }
     }
 
-    public function orderSubmitted(Request $request){
-        $res = $this->service->orderSubmitted($request);
-        if($res){
-            return [
-                'status'    =>  'success',
-                'msg'   =>  'Invoice saved successfully!'
-            ];
-        }else{
-            return [
-                'status'    =>  'failed',
-                'msg'   =>  'Invoice could not be saved'
-            ];
-        }
+    public function orderSubmit(Request $request){
+        return $this->service->orderSubmit($request);
     }
 }
