@@ -2,17 +2,14 @@
 namespace App\Service\Store;
 
 use App\Enum\Ebay\Scope;
-use App\Enum\InternalOrderStatus;
 use App\Jobs\SetupStoreJob;
 use App\Jobs\SyncStoreJob;
-use App\Models\Order\Order;
 use App\Models\Store;
 use App\Service\eBay\GetOrderService;
 use App\Service\Order\OrderService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Auth;
-use Symfony\Component\Console\Output\ConsoleOutput;
 
 class StoreService
 {

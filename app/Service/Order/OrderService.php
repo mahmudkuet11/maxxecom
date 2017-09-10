@@ -7,6 +7,7 @@ use App\Models\Order\CheckoutStatus;
 use App\Models\Order\Invoice;
 use App\Models\Order\Order;
 use App\Models\Order\ShippingAddress;
+use App\Models\Order\Sku;
 use App\Models\Order\Transaction;
 use App\Models\Store;
 use App\Service\eBay\CompleteSaleService;
@@ -89,7 +90,7 @@ class OrderService
                         'carrier_used'   =>  (string)$tracking->ShippingCarrierUsed,
                     ]);
                 }
-                $orderModel->transactions()->updateOrCreate([
+                $transaction = $orderModel->transactions()->updateOrCreate([
                     'order_id'  =>  $orderModel->id,
                     'sales_record_no'   =>  (string)$transaction->ShippingDetails->SellingManagerSalesRecordNumber
                 ], [
@@ -108,6 +109,19 @@ class OrderService
                     'order_line_item_id'    =>  (string)$transaction->OrderLineItemID,
                     'shipment_tracking_details'  =>  json_encode($tracking_array)
                 ]);
+                $skus = Sku::parseSkus($transaction->sku);
+                foreach ($skus as $sku){
+                    $skuModel = Sku::where('transaction_id', $transaction->id)->where('sku', $sku)->first();
+                    if($skuModel){
+                        Sku::updateSkuStatus($orderModel, $skuModel);
+                    }else{
+                        Sku::create([
+                            'transaction_id'    =>  $transaction->id,
+                            'sku'   =>  $sku,
+                            'status'    =>  Sku::parseInitilaStatus($orderModel)
+                        ]);
+                    }
+                }
             }
             DB::commit();
             return $orderModel;

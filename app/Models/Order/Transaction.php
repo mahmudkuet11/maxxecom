@@ -33,7 +33,7 @@ class Transaction extends Model
         return $this->buyer_user_first_name . ' ' . $this->buyer_user_last_name;
     }
 
-    public function getHasMoreThanOneSKUAttribute(){
+/*    public function getHasMoreThanOneSKUAttribute(){
         return preg_match("/[a-zA-Z0-9]+(-[a-zA-Z0-9]+)+-[A-Za-z]+/", $this->sku);
     }
 
@@ -56,9 +56,13 @@ class Transaction extends Model
 
     public function getHasSKUAttribute(){
         return $this->sku != '';
-    }
+    }*/
 
     public function invoices(){
         return $this->hasMany(Invoice::class);
+    }
+
+    public function skus(){
+        return $this->hasMany(Sku::class);
     }
 }
