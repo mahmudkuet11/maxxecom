@@ -37,8 +37,5 @@ Route::get('/store-price/sync', function(){
 });
 
 Route::get('/test', function(){
-    $orders = \App\Models\Order\Order::whereHas('transactions', function($query){
-        $query->where('status', 'awaiting_order');
-    });
-    dd($orders->toSql());
+    dispatch(new \App\Jobs\SetupStoreJob(\App\Models\Store::find(2)));
 });

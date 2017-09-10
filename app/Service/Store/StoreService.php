@@ -5,26 +5,39 @@ use App\Enum\Ebay\Scope;
 use App\Jobs\SetupStoreJob;
 use App\Jobs\SyncStoreJob;
 use App\Models\Store;
+use App\Models\UserStore;
 use App\Service\eBay\GetOrderService;
 use App\Service\Order\OrderService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Auth;
+use DB;
 
 class StoreService
 {
     public function store(Request $request){
-        $store = Store::create([
-            'owner_id'  =>  Auth::user()->id,
-            'name'  =>  $request->get('name'),
-            'site_id'  =>  $request->get('site_id'),
-            'auth_token'  =>  $request->get('auth_token'),
-            'oauth_token'  =>  $request->get('oauth_token'),
-        ]);
+        DB::beginTransaction();
+        try{
+            $store = Store::create([
+                'owner_id'  =>  Auth::user()->id,
+                'name'  =>  $request->get('name'),
+                'site_id'  =>  $request->get('site_id'),
+                'auth_token'  =>  $request->get('auth_token'),
+                'oauth_token'  =>  $request->get('oauth_token'),
+            ]);
 
-        dispatch(new SetupStoreJob($store));
+            UserStore::create([
+                'user_id'   =>  Auth::user()->id,
+                'store_id'  =>  $store->id
+            ]);
 
-        return $store;
+            dispatch(new SetupStoreJob($store));
+            DB::commit();
+            return $store;
+        }catch (\Exception $e){
+            DB::rollback();
+            return null;
+        }
     }
 
     public function update(Request $request, $id){
@@ -56,7 +69,7 @@ class StoreService
 
     public function setUp($store){
         $syncService = new SyncService();
-        $from = Carbon::now()->subDays(25);
+        $from = Carbon::now()->subDays(7);
         $to = Carbon::now();
         $getOrderService = new GetOrderService();
         $orderService = new OrderService();

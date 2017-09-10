@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Models\Store;
+use App\Models\UserStore;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -30,5 +31,9 @@ class User extends Authenticatable
 
     public function stores(){
         return $this->hasMany(Store::class, 'owner_id');
+    }
+
+    public function user_stores(){
+        return $this->hasMany(UserStore::class);
     }
 }
