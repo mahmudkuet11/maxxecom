@@ -24,20 +24,6 @@
             </li>
 
             <li class=" nav-item">
-                <a href="#"><i class="icon-cart4"></i><span class="menu-title">Others</span></a>
-                <ul class="menu-content">
-                    <li>
-                        <a href="" class="menu-item">Manage Store Files</a>
-                    </li>
-                    <li>
-                        <a href="#" class="menu-item">Bids/Offers</a>
-                    </li>
-                    <li>
-                        <a href="#" class="menu-item">Purchase History</a>
-                    </li>
-                </ul>
-            </li>
-            <li class=" nav-item">
                 <a href="#"><i class="icon-clipboard2"></i><span class="menu-title">Order Management</span></a>
                 <ul class="menu-content">
                     <li class="{{ active_menu('order.all', $active_menu) }}">
