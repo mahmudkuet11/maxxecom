@@ -34,7 +34,7 @@ class OrderController extends Controller
         return view('dashboard.orders.awaiting_shipment', ['orders'=>$orders->paginate(config('order.orders_per_page')), 'active_menu'=>'order.awaiting_shipment']);
     }
     public function getAwaitingOrderList(StoreService $storeService){
-        $orders = $this->service->getAll()->awaitingOrder()->orderBy('sales_record_no', 'DESC');
+        $orders = $this->service->getAll()->filterByUser()->awaitingOrder()->orderBy('sales_record_no', 'DESC');
         $storeService->syncAll();
         return view('dashboard.orders.awaiting_order', ['orders'=>$orders->paginate(config('order.orders_per_page')), 'active_menu'=>'order.awaiting_order']);
     }

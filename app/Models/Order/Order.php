@@ -87,8 +87,8 @@ class Order extends Model
     }
 
     public function scopeAwaitingOrder($builder){
-        return $builder->whereHas('transactions', function($query){
-            $query->where('status', 'awaiting_order');
+        return $builder->whereHas('transactions.skus', function($query){
+            $query->where('status', InternalOrderStatus::AWAITING_ORDER);
         });
     }
 
