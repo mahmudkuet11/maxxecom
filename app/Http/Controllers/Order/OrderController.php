@@ -25,18 +25,28 @@ class OrderController extends Controller
     public function getAwaitingPaymentOrders(StoreService $storeService){
         $orders = $this->service->getAll()->filterByUser()->awaitingPayment()->orderBy('sales_record_no', 'DESC');
         $storeService->syncAll();
-        return view('dashboard.orders.awaiting_payment', ['orders'=>$orders->paginate(config('order.orders_per_page')), 'active_menu'=>'order.awaiting_payment']);
+        return view('dashboard.orders.index', ['orders'=>$orders->paginate(config('order.orders_per_page')), 'active_menu'=>'order.awaiting_payment']);
     }
 
     public function getAwaitingShipmentOrders(StoreService $storeService){
         $orders = $this->service->getAll()->filterByUser()->awaitingShipment()->orderBy('sales_record_no', 'DESC');
         $storeService->syncAll();
-        return view('dashboard.orders.awaiting_shipment', ['orders'=>$orders->paginate(config('order.orders_per_page')), 'active_menu'=>'order.awaiting_shipment']);
+        return view('dashboard.orders.index', ['orders'=>$orders->paginate(config('order.orders_per_page')), 'active_menu'=>'order.awaiting_shipment']);
     }
     public function getAwaitingOrderList(StoreService $storeService){
         $orders = $this->service->getAll()->filterByUser()->awaitingOrder()->orderBy('sales_record_no', 'DESC');
         $storeService->syncAll();
-        return view('dashboard.orders.awaiting_order', ['orders'=>$orders->paginate(config('order.orders_per_page')), 'active_menu'=>'order.awaiting_order']);
+        return view('dashboard.orders.index', ['orders'=>$orders->paginate(config('order.orders_per_page')), 'active_menu'=>'order.awaiting_order']);
+    }
+    public function getPrintLabelList(StoreService $storeService){
+        $orders = $this->service->getAll()->filterByUser()->printLabel()->orderBy('sales_record_no', 'DESC');
+        $storeService->syncAll();
+        return view('dashboard.orders.index', ['orders'=>$orders->paginate(config('order.orders_per_page')), 'active_menu'=>'order.print_label']);
+    }
+    public function getAwaitingTrackingList(StoreService $storeService){
+        $orders = $this->service->getAll()->filterByUser()->awaitingTracking()->orderBy('sales_record_no', 'DESC');
+        $storeService->syncAll();
+        return view('dashboard.orders.index', ['orders'=>$orders->paginate(config('order.orders_per_page')), 'active_menu'=>'order.awaiting_tracking']);
     }
 
     public function show($id){

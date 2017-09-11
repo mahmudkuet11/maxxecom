@@ -52,15 +52,11 @@
                     <li class="{{ active_menu('order.awaiting_order', $active_menu) }}">
                         <a href="{{ route('orders.awaiting_order') }}" class="menu-item">Awaiting Order</a>
                     </li>
-                    <li>
-                        <a href="active-listing.html" class="menu-item">
-                            Print Label
-                        </a>
+                    <li class="{{ active_menu('order.print_label', $active_menu) }}">
+                        <a href="{{ route('orders.print_label') }}" class="menu-item">Print Label</a>
                     </li>
-                    <li>
-                        <a href="active-listing.html" class="menu-item">
-                            Awaiting tracking
-                        </a>
+                    <li class="{{ active_menu('order.awaiting_tracking', $active_menu) }}">
+                        <a href="{{ route('orders.awaiting_tracking') }}" class="menu-item">Awaiting Tracking</a>
                     </li>
                     <li>
                         <a href="active-listing.html" class="menu-item">

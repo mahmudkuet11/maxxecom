@@ -92,6 +92,18 @@ class Order extends Model
         });
     }
 
+    public function scopePrintLabel($builder){
+        return $builder->whereHas('transactions.skus', function($query){
+            $query->where('status', InternalOrderStatus::PRINT_LABEL);
+        });
+    }
+
+    public function scopeAwaitingTracking($builder){
+        return $builder->whereHas('transactions.skus', function($query){
+            $query->where('status', InternalOrderStatus::AWAITING_TRACKING);
+        });
+    }
+
     public function checkoutStatus(){
         return $this->hasOne(CheckoutStatus::class);
     }

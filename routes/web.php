@@ -24,6 +24,8 @@ Route::get('/orders', 'Order\OrderController@getAll')->name('orders.all');
 Route::get('/orders/awaiting-payment', 'Order\OrderController@getAwaitingPaymentOrders')->name('orders.awaiting_payment');
 Route::get('/orders/awaiting-shipment', 'Order\OrderController@getAwaitingShipmentOrders')->name('orders.awaiting_shipment');
 Route::get('/orders/awaiting-order', 'Order\OrderController@getAwaitingOrderList')->name('orders.awaiting_order');
+Route::get('/orders/print-label', 'Order\OrderController@getPrintLabelList')->name('orders.print_label');
+Route::get('/orders/awaiting-tracking', 'Order\OrderController@getAwaitingTrackingList')->name('orders.awaiting_tracking');
 Route::get('/order/{id}', 'Order\OrderController@show')->name('order.show');
 Route::post('/tracking-number/save', 'Order\OrderController@saveTrackingNumber')->name('tracking_no.save');
 Route::get('/store/price/', 'Store\ItemController@getStorePrices')->name('store.price.get');
