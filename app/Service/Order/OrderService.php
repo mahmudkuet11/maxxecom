@@ -4,10 +4,8 @@ namespace App\Service\Order;
 
 use App\Enum\InternalOrderStatus;
 use App\Event\StoreSyncProgress;
-use App\Models\Order\CheckoutStatus;
 use App\Models\Order\Invoice;
 use App\Models\Order\Order;
-use App\Models\Order\ShippingAddress;
 use App\Models\Order\Sku;
 use App\Models\Order\Transaction;
 use App\Models\Store;
@@ -91,9 +89,12 @@ class OrderService
                         'carrier_used'   =>  (string)$tracking->ShippingCarrierUsed,
                     ]);
                 }
+                $sales_record_no = (string)$transaction->ShippingDetails->SellingManagerSalesRecordNumber;
+                self::updateSkuStatusBasedOnTrackingNumber($orderModel, $sales_record_no, $tracking_array);
+
                 $transaction = $orderModel->transactions()->updateOrCreate([
                     'order_id'  =>  $orderModel->id,
-                    'sales_record_no'   =>  (string)$transaction->ShippingDetails->SellingManagerSalesRecordNumber
+                    'sales_record_no'   =>  $sales_record_no
                 ], [
                     'buyer_email'   =>  (string)$transaction->Buyer->Email,
                     'buyer_user_first_name' =>  (string)$transaction->Buyer->UserFirstName,
@@ -129,6 +130,34 @@ class OrderService
         }catch(\Exception $e){
             DB::rollback();
             throw $e;
+        }
+    }
+
+    private function updateSkuStatusBasedOnTrackingNumber(Order $order, $sales_record_no, $new_tracking_array){
+        $transaction = $order->transactions()
+            ->where('sales_record_no', $sales_record_no)
+            ->with('skus')
+            ->first();
+
+        if($transaction){
+            $tracking_numbers = json_decode($transaction->shipment_tracking_details, true);
+            foreach ($new_tracking_array as $new_tracking){
+                $found = false;
+                foreach ($tracking_numbers as $tracking_number){
+                    if(
+                        $new_tracking['tracking_no'] == $tracking_number['tracking_no'] &&
+                        $new_tracking['carrier_used'] == $tracking_number['carrier_used']
+                    ){
+                        $found = true;
+                        break;
+                    }
+                }
+                if(!$found){
+                    $transaction->skus()->where('status', InternalOrderStatus::PRINT_LABEL)->update([
+                        'status'    =>  InternalOrderStatus::PAID_AND_SHIPPED
+                    ]);
+                }
+            }
         }
     }
 

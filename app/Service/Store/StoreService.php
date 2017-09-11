@@ -69,7 +69,7 @@ class StoreService
 
     public function setUp($store){
         $syncService = new SyncService();
-        $from = Carbon::now()->subDays(7);
+        $from = Carbon::now()->subDays(config('order.total_sync_day'));
         $to = Carbon::now();
         $getOrderService = new GetOrderService();
         $orderService = new OrderService();

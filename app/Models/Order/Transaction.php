@@ -33,31 +33,6 @@ class Transaction extends Model
         return $this->buyer_user_first_name . ' ' . $this->buyer_user_last_name;
     }
 
-/*    public function getHasMoreThanOneSKUAttribute(){
-        return preg_match("/[a-zA-Z0-9]+(-[a-zA-Z0-9]+)+-[A-Za-z]+/", $this->sku);
-    }
-
-    public function getSKUsAttribute(){
-        $skus = explode("-", $this->sku);
-        array_splice($skus, count($skus)-1, 1);
-        return $skus;
-    }
-
-    public function getFormattedSKUAttribute(){
-        if($this->hasMoreThanOneKSU){
-            return $this->SKUs;
-        }else{
-            if($this->sku == '') return '';
-            else {
-                return explode('-', $this->sku)[0];
-            }
-        }
-    }
-
-    public function getHasSKUAttribute(){
-        return $this->sku != '';
-    }*/
-
     public function skus(){
         return $this->hasMany(Sku::class);
     }

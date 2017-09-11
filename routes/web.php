@@ -39,5 +39,6 @@ Route::get('/store-price/sync', function(){
 });
 
 Route::get('/test', function(){
-    dispatch(new \App\Jobs\SetupStoreJob(\App\Models\Store::find(2)));
+    $order = \App\Models\Order\Order::find(1);
+    dd($order->transactions()->where('sales_record_no', 104)->first());
 });
