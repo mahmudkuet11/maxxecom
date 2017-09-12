@@ -3,6 +3,7 @@
 namespace App\Models\Order;
 
 use App\Enum\InternalOrderStatus;
+use App\Enum\TrackingNumberScope;
 use Illuminate\Database\Eloquent\Model;
 
 class Sku extends Model
@@ -25,12 +26,10 @@ class Sku extends Model
                 $sku->update(['status'=>InternalOrderStatus::AWAITING_SHIPMENT]);
             }
         }
-        if($sku->status == InternalOrderStatus::PRINT_LABEL){
-            //@Todo Check tracking number and change status to paid and shipped
-        }
     }
 
-    public static function parseInitilaStatus(Order $order){
+    public static function parseInitialStatus(Order $order){
+        if($order->shipped_time != null) return InternalOrderStatus::PAID_AND_SHIPPED;
         if($order->paid_time == null) return InternalOrderStatus::AWAITING_PAYMENT;
         return InternalOrderStatus::AWAITING_SHIPMENT;
     }
@@ -41,5 +40,9 @@ class Sku extends Model
 
     public function invoice(){
         return $this->hasOne(Invoice::class);
+    }
+
+    public function tracking_numbers(){
+        return $this->hasMany(TrackingNumber::class, 'reference_id')->where('scope', TrackingNumberScope::SKU);
     }
 }

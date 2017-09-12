@@ -34,6 +34,7 @@ class OrderService
     }
 
     public function save($store_id, $order){
+        $trackingNumberService = new TrackingNumberService();
         DB::beginTransaction();
         try{
             $orderModel = Order::updateOrCreate([
@@ -90,7 +91,6 @@ class OrderService
                     ]);
                 }
                 $sales_record_no = (string)$transaction->ShippingDetails->SellingManagerSalesRecordNumber;
-                self::updateSkuStatusBasedOnTrackingNumber($orderModel, $sales_record_no, $tracking_array);
 
                 $transaction = $orderModel->transactions()->updateOrCreate([
                     'order_id'  =>  $orderModel->id,
@@ -111,6 +111,9 @@ class OrderService
                     'order_line_item_id'    =>  (string)$transaction->OrderLineItemID,
                     'shipment_tracking_details'  =>  json_encode($tracking_array)
                 ]);
+
+                $trackingNumberService->updateOnSync($tracking_array, $transaction->id);
+
                 $skus = Sku::parseSkus($transaction->sku);
                 foreach ($skus as $sku){
                     $skuModel = Sku::where('transaction_id', $transaction->id)->where('sku', $sku)->first();
@@ -120,7 +123,7 @@ class OrderService
                         Sku::create([
                             'transaction_id'    =>  $transaction->id,
                             'sku'   =>  $sku,
-                            'status'    =>  Sku::parseInitilaStatus($orderModel)
+                            'status'    =>  Sku::parseInitialStatus($orderModel)
                         ]);
                     }
                 }
@@ -130,34 +133,6 @@ class OrderService
         }catch(\Exception $e){
             DB::rollback();
             throw $e;
-        }
-    }
-
-    private function updateSkuStatusBasedOnTrackingNumber(Order $order, $sales_record_no, $new_tracking_array){
-        $transaction = $order->transactions()
-            ->where('sales_record_no', $sales_record_no)
-            ->with('skus')
-            ->first();
-
-        if($transaction){
-            $tracking_numbers = json_decode($transaction->shipment_tracking_details, true);
-            foreach ($new_tracking_array as $new_tracking){
-                $found = false;
-                foreach ($tracking_numbers as $tracking_number){
-                    if(
-                        $new_tracking['tracking_no'] == $tracking_number['tracking_no'] &&
-                        $new_tracking['carrier_used'] == $tracking_number['carrier_used']
-                    ){
-                        $found = true;
-                        break;
-                    }
-                }
-                if(!$found){
-                    $transaction->skus()->where('status', InternalOrderStatus::PRINT_LABEL)->update([
-                        'status'    =>  InternalOrderStatus::PAID_AND_SHIPPED
-                    ]);
-                }
-            }
         }
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Models\Order;
 
+use App\Enum\TrackingNumberScope;
 use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
@@ -35,5 +36,9 @@ class Transaction extends Model
 
     public function skus(){
         return $this->hasMany(Sku::class);
+    }
+
+    public function tracking_numbers(){
+        return $this->hasMany(TrackingNumber::class, 'reference_id')->where('scope', TrackingNumberScope::TRANSACTION);
     }
 }

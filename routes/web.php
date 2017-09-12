@@ -39,6 +39,5 @@ Route::get('/store-price/sync', function(){
 });
 
 Route::get('/test', function(){
-    $order = \App\Models\Order\Order::find(1);
-    dd($order->transactions()->where('sales_record_no', 104)->first());
+
 });
