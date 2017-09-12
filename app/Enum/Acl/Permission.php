@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Enum\Acl;
+
+use MyCLabs\Enum\Enum;
+
+class Permission extends Enum
+{
+    const STORE_EDIT = "STORE_EDIT";
+    const USER_ADD = "USER_ADD";
+    const USER_REMOVE = "USER_REMOVE";
+    const PERMISSION_GRANT = "PERMISSION_GRANT";
+    const VIEW_ALL_ORDERS = "VIEW_ALL_ORDERS";
+    const VIEW_AWAITING_PAYMENT = "VIEW_AWAITING_PAYMENT";
+    const VIEW_AWAITING_SHIPMENT = "VIEW_AWAITING_SHIPMENT";
+    const AWAITING_ORDER = "AWAITING_ORDER";
+    const PRINT_LABEL = "PRINT_LABEL";
+    const AWAITING_TRACKING = "AWAITING_TRACKING";
+    const PAID_AND_SHIPPED = "PAID_AND_SHIPPED";
+    const EDIT_SHIPPING_ADDRESS = "EDIT_SHIPPING_ADDRESS";
+
+}
