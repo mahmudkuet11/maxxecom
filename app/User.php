@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\Acl\Permission;
 use App\Models\Store;
 use App\Models\UserStore;
 use Illuminate\Notifications\Notifiable;
@@ -35,5 +36,9 @@ class User extends Authenticatable
 
     public function user_stores(){
         return $this->hasMany(UserStore::class);
+    }
+
+    public function permissions(){
+        return $this->hasMany(Permission::class);
     }
 }

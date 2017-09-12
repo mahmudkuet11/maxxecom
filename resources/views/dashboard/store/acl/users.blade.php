@@ -53,7 +53,9 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->email }}</td>
-                                <td></td>
+                                <td>
+                                    <a href="{{ route('store.user.permission', ['store_id'=>$store_id, 'user_id'=>$user->id]) }}" class="btn btn-primary btn-sm">Manage Permissions</a>
+                                </td>
                             </tr>
                             @endforeach
                             </tbody>

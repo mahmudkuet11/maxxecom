@@ -6,17 +6,17 @@ use MyCLabs\Enum\Enum;
 
 class Permission extends Enum
 {
-    const STORE_EDIT = "STORE_EDIT";
-    const USER_ADD = "USER_ADD";
-    const USER_REMOVE = "USER_REMOVE";
-    const PERMISSION_GRANT = "PERMISSION_GRANT";
-    const VIEW_ALL_ORDERS = "VIEW_ALL_ORDERS";
-    const VIEW_AWAITING_PAYMENT = "VIEW_AWAITING_PAYMENT";
-    const VIEW_AWAITING_SHIPMENT = "VIEW_AWAITING_SHIPMENT";
-    const AWAITING_ORDER = "AWAITING_ORDER";
-    const PRINT_LABEL = "PRINT_LABEL";
-    const AWAITING_TRACKING = "AWAITING_TRACKING";
-    const PAID_AND_SHIPPED = "PAID_AND_SHIPPED";
-    const EDIT_SHIPPING_ADDRESS = "EDIT_SHIPPING_ADDRESS";
+    const STORE_EDIT = 'Store Edit';
+    const USER_ADD = 'User Add';
+    const USER_REMOVE = 'User Remove';
+    const PERMISSION_GRANT = 'Permission Grant';
+    const VIEW_ALL_ORDERS = 'View All Orders';
+    const VIEW_AWAITING_PAYMENT = 'View Awaiting Payment';
+    const VIEW_AWAITING_SHIPMENT = 'View Awaiting Shipment';
+    const VIEW_AWAITING_ORDER = 'View Awaiting Order';
+    const VIEW_PRINT_LABEL = 'View Print Label';
+    const VIEW_AWAITING_TRACKING = 'View Awaiting Tracking';
+    const VIEW_PAID_AND_SHIPPED ='View Paid And Shipped';
+    const EDIT_SHIPPING_ADDRESS = 'Edit Shipping Address';
 
 }

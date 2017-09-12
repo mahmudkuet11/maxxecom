@@ -23,6 +23,8 @@ Route::get('/dashboard', 'DashboardController@getDashboard')->name('dashboard');
 Route::resource('/dashboard/store', 'Store\StoreController');
 Route::get('store/{id}/user/manage', 'UserController@getStoreUsers')->name('store.user.manage');
 Route::post('store/{id}/user/add', 'UserController@addUserToStore')->name('store.user.add');
+Route::get('store/{store_id}/user/{user_id}/permission', 'UserController@showUsersPermission')->name('store.user.permission');
+Route::post('store/{store_id}/user/{user_id}/permission', 'UserController@updateUsersPermission')->name('store.user.permission.update');
 Route::get('/store/price/', 'Store\ItemController@getStorePrices')->name('store.price.get');
 
 Route::get('/orders', 'Order\OrderController@getAll')->name('orders.all');
