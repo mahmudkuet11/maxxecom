@@ -3,7 +3,7 @@
 @section('content_header')
 <div class="content-header row">
     <div class="content-header-left col-md-6 col-xs-12 mb-1">
-        <h2 class="content-header-title">Add a Store</h2>
+        <h2 class="content-header-title">Users of your store</h2>
     </div>
     <div class="content-header-right breadcrumbs-right breadcrumbs-top col-md-6 col-xs-12">
         <div class="breadcrumb-wrapper col-xs-12">
@@ -26,59 +26,74 @@
         <div class="card">
             <div class="card-head">
                 <div class="card-header">
-                    <h4 class="card-title">Stores</h4>
+                    <h4 class="card-title">Added Users</h4>
                     <a class="heading-elements-toggle"><i class="icon-ellipsis font-medium-3"></i></a>
                     <div class="heading-elements">
-                        <a href="{{ route('store.create') }}" class="btn btn-primary white"><i class="icon-plus4 white"></i> Create Store</a>
+                        <button data-toggle="modal" data-target="#modal_user_add" type="button" class="btn mr-1 mb-1 btn-primary btn-sm">Add User</button>
                     </div>
                 </div>
             </div>
             <div class="card-body collapse in">
                 <div class="card-block">
                     @include('common.msg')
-                    <!-- Invoices List table -->
+                    @include('common.form-errors')
                     <div class="table-responsive">
                         <table class="table table-striped table-hover">
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Site Name</th>
-                                <th>Site ID</th>
-                                <th>Created At</th>
-                                <th>Last Update</th>
+                                <th>Name</th>
+                                <th>Email</th>
                                 <th>Action</th>
                             </tr>
                             </thead>
                             <tbody>
-                            @forelse($stores as $store)
+                            @foreach($users as $user)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $store->name }}</td>
-                                <td>{{ \App\Enum\Ebay\Site::getSiteBySiteID($store->site_id)['site_name'] }}</td>
-                                <td>{{ $store->created_at }}</td>
-                                <td>{{ $store->updated_at }}</td>
-                                <td>
-                                    <a href="{{ route('store.edit', $store->id) }}" class="btn btn-default">Edit</a>
-                                    <a href="{{ route('store.user.manage', $store->id) }}" class="btn btn-default">User Manage</a>
-                                </td>
+                                <td>{{ $user->name }}</td>
+                                <td>{{ $user->email }}</td>
+                                <td></td>
                             </tr>
-                            @empty
-
-                            @endforelse
-
+                            @endforeach
                             </tbody>
                         </table>
                     </div>
-                    <!--/ Invoices table -->
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-@endsection
 
-@section('scripts')
-@parent
-<script src="/app-assets/js/scripts/tables/datatables-extensions/datatable-select.min.js" type="text/javascript"></script>
+<div class="modal fade in" id="modal_user_add">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Add User</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form" method="post" action="{{ route('store.user.add', $store_id) }}">
+                    {{ csrf_field() }}
+                    <div class="form-body">
+
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input class="form-control border-primary" type="email" name="email" placeholder="email">
+                        </div>
+
+                    </div>
+
+                    <div class="form-actions right">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="icon-check2"></i> Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
