@@ -20,8 +20,17 @@ class TrackingNumberService
             });
         });
         $downloadedTrackingNumbers = collect($downloadedTrackingNumbers);
-        $trackings_to_remove = $all_saved_trackings->whereNotIn('carrier', $downloadedTrackingNumbers->pluck('carrier_used')->all())
-            ->whereNotIn('tracking_no', $downloadedTrackingNumbers->pluck('tracking_no')->all());
+        $trackings_to_remove = $all_saved_trackings->filter(function($saved) use ($downloadedTrackingNumbers){
+            $found = false;
+            $downloadedTrackingNumbers->each(function($downloaded) use ($saved, &$found){
+                if($downloaded->tracking_no == $saved->tracking_no && $downloaded->carrier_used == $saved->carrier){
+                    $found = true;
+                    return false;
+                }
+            });
+            return !$found;
+        });
+
         TrackingNumber::whereIn('id', $trackings_to_remove->pluck('id')->all())->delete();
 
         $newTrackings = $downloadedTrackingNumbers->whereNotIn('carrier_used', $all_saved_trackings->pluck('carrier')->all())
@@ -34,6 +43,7 @@ class TrackingNumberService
                 'tracking_no'   =>  $newTracking['tracking_no']
             ]);
         }
+        \Log::debug('trackings: ', ['saved'=>$all_saved_trackings,'downloaded'=>$downloadedTrackingNumbers, 'remove'=>$trackings_to_remove,'new'=>$newTrackings]);
     }
 
 }

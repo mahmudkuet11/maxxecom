@@ -50,6 +50,40 @@ Route::get('/store-price/sync', function(){
 });
 
 Route::get('/test', function(){
-    $service = 5;
-    dd(gettype($service));
+    $saved = collect([
+        ['carrier'=>'raju', 'tracking'=>'rajuv1'],
+        ['carrier'=>'raju', 'tracking'=>'rajuv2'],
+        ['carrier'=>'mahmud', 'tracking'=>'mahmudv1'],
+        ['carrier'=>'mahmud', 'tracking'=>'mahmudv2'],
+    ]);
+
+    dd(0 == false);
+
+    $downloaded = collect([
+        ['carrier'=>'raju', 'tracking'=>'rajuv1'],
+        ['carrier'=>'mahmud', 'tracking'=>'mahmudv1'],
+        ['carrier'=>'mahmud', 'tracking'=>'mahmudv3'],
+    ]);
+    $remove = $saved->filter(function($s) use ($downloaded){
+        $found = false;
+        $downloaded->each(function($d) use ($s, &$found){
+            if($d['tracking'] == $s['tracking'] && $d['carrier'] == $s['carrier']){
+                $found = true;
+                return false;
+            }
+        });
+        return !$found;
+    });
+
+    $new = $downloaded->filter(function($d) use ($saved){
+        return !$saved->search(function($s) use ($d){
+            return $d['carrier'] == $s['carrier'] && $d['tracking'] == $s['tracking'];
+        });
+    });
+
+
+
+    dd($new);
 });
+
+Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
