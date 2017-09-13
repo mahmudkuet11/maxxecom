@@ -69,7 +69,7 @@ class Order extends Model
         return $skus;
     }
 
-    public function scopeFilterByUser($builder){
+    public function scopeFilterStoreByUser($builder){
         $stores = \Auth::user()->user_stores->pluck('store_id')->toArray();
         return $builder->whereIn('store_id', $stores);
     }
