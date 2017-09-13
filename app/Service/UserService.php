@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Models\Acl\Permission;
+use App\Models\Store;
 use App\Models\UserStore;
 use Illuminate\Http\Request;
 use App\User;
@@ -83,5 +84,16 @@ class UserService
         $permission = $userPermissions->where('permission', $search)->first();
         if($permission) return true;
         return false;
+    }
+
+    public function setAllPermissions(Store $store, User $user){
+        $permissions = \App\Enum\Acl\Permission::keys();
+        foreach ($permissions as $permission){
+            Permission::updateOrCreate([
+                'store_id'  =>  $store->id,
+                'user_id'   =>  $user->id,
+                'permission'    =>  $permission
+            ], []);
+        }
     }
 }

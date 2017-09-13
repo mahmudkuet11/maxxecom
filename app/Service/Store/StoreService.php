@@ -8,6 +8,7 @@ use App\Models\Store;
 use App\Models\UserStore;
 use App\Service\eBay\GetOrderService;
 use App\Service\Order\OrderService;
+use App\Service\UserService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Auth;
@@ -16,6 +17,7 @@ use DB;
 class StoreService
 {
     public function store(Request $request){
+        $userService = app(UserService::class);
         DB::beginTransaction();
         try{
             $store = Store::create([
@@ -25,11 +27,12 @@ class StoreService
                 'auth_token'  =>  $request->get('auth_token'),
                 'oauth_token'  =>  $request->get('oauth_token'),
             ]);
-
+            $user = Auth::user();
             UserStore::create([
-                'user_id'   =>  Auth::user()->id,
+                'user_id'   =>  $user->id,
                 'store_id'  =>  $store->id
             ]);
+            $userService->setAllPermissions($store, $user);
 
             dispatch(new SetupStoreJob($store));
             DB::commit();

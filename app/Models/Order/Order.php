@@ -2,6 +2,7 @@
 
 namespace App\Models\Order;
 
+use App\Enum\Acl\Permission;
 use App\Enum\InternalOrderStatus;
 use App\Models\Store;
 use Carbon\Carbon;
@@ -75,33 +76,48 @@ class Order extends Model
     }
 
     public function scopeAwaitingPayment($builder){
+        $storeIds = auth()->user()->permissions
+            ->where('permission', Permission::search(Permission::VIEW_AWAITING_PAYMENT))
+            ->pluck('store_id')->all();
         return $builder->whereHas('transactions.skus', function($query){
             $query->where('status', InternalOrderStatus::AWAITING_PAYMENT);
-        });
+        })->whereIn('store_id', $storeIds);
     }
 
     public function scopeAwaitingShipment($builder){
+        $storeIds = auth()->user()->permissions
+            ->where('permission', Permission::search(Permission::VIEW_AWAITING_SHIPMENT))
+            ->pluck('store_id')->all();
         return $builder->whereHas('transactions.skus', function($query){
             $query->where('status', InternalOrderStatus::AWAITING_SHIPMENT);
-        });
+        })->whereIn('store_id', $storeIds);
     }
 
     public function scopeAwaitingOrder($builder){
+        $storeIds = auth()->user()->permissions
+            ->where('permission', Permission::search(Permission::VIEW_AWAITING_ORDER))
+            ->pluck('store_id')->all();
         return $builder->whereHas('transactions.skus', function($query){
             $query->where('status', InternalOrderStatus::AWAITING_ORDER);
-        });
+        })->whereIn('store_id', $storeIds);
     }
 
     public function scopePrintLabel($builder){
+        $storeIds = auth()->user()->permissions
+            ->where('permission', Permission::search(Permission::VIEW_PRINT_LABEL))
+            ->pluck('store_id')->all();
         return $builder->whereHas('transactions.skus', function($query){
             $query->where('status', InternalOrderStatus::PRINT_LABEL);
-        });
+        })->whereIn('store_id', $storeIds);
     }
 
     public function scopeAwaitingTracking($builder){
+        $storeIds = auth()->user()->permissions
+            ->where('permission', Permission::search(Permission::VIEW_AWAITING_TRACKING))
+            ->pluck('store_id')->all();
         return $builder->whereHas('transactions.skus', function($query){
             $query->where('status', InternalOrderStatus::AWAITING_TRACKING);
-        });
+        })->whereIn('store_id', $storeIds);
     }
 
     public function checkoutStatus(){
