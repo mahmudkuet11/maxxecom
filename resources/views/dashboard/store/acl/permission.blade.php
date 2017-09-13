@@ -29,9 +29,6 @@
                 <div class="card-header">
                     <h4 class="card-title">Manage Permission</h4>
                     <a class="heading-elements-toggle"><i class="icon-ellipsis font-medium-3"></i></a>
-                    <div class="heading-elements">
-                        <button data-toggle="modal" data-target="#modal_user_add" type="button" class="btn mr-1 mb-1 btn-primary btn-sm">Add User</button>
-                    </div>
                 </div>
             </div>
             <div class="card-body collapse in">
