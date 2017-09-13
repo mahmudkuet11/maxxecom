@@ -44,8 +44,6 @@ Route::middleware(['auth'])->group(function(){
 });
 
 
-
-
 Route::get('/store-price/sync', function(){
     $service = app(\App\Service\Store\PriceService::class);
     $service->save();
