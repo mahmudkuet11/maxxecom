@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Acl\AddUserRequest;
 use App\Models\Acl\Permission;
 use App\Models\Store;
+use App\Service\Store\StoreService;
 use App\Service\UserService;
 use App\User;
 use Illuminate\Http\Request;
@@ -19,10 +20,11 @@ class UserController extends Controller
     }
 
 
-    public function getStoreUsers($store_id){
+    public function getStoreUsers($store_id, StoreService $storeService){
         $users = $this->service->getStoreUsers($store_id)->get();
+        $store = $storeService->get($store_id)->first();
         return view('dashboard.store.acl.users', [
-            'store_id'  =>  $store_id,
+            'store'  =>  $store,
             'users' =>  $users
         ]);
     }

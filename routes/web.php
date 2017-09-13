@@ -46,5 +46,6 @@ Route::get('/store-price/sync', function(){
 });
 
 Route::get('/test', function(){
-
+    $service = 5;
+    dd(gettype($service));
 });

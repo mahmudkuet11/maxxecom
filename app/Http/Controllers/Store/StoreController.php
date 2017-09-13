@@ -19,7 +19,7 @@ class StoreController extends Controller
 
     public function index()
     {
-        $stores = $this->service->getAll()->get();
+        $stores = $this->service->getAll()->filterByUser()->get();
         return view('dashboard.store.index', ['active_menu'=>'store.index', 'stores'=>$stores]);
     }
 

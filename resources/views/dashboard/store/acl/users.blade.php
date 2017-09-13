@@ -1,3 +1,5 @@
+@inject('permissionService', 'App\Service\PermissionService')
+
 @extends('layouts.main')
 
 @section('content_header')
@@ -29,7 +31,9 @@
                     <h4 class="card-title">Added Users</h4>
                     <a class="heading-elements-toggle"><i class="icon-ellipsis font-medium-3"></i></a>
                     <div class="heading-elements">
+                        @if($permissionService->hasUserAddPermission($store))
                         <button data-toggle="modal" data-target="#modal_user_add" type="button" class="btn mr-1 mb-1 btn-primary btn-sm">Add User</button>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -54,7 +58,9 @@
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->email }}</td>
                                 <td>
-                                    <a href="{{ route('store.user.permission', ['store_id'=>$store_id, 'user_id'=>$user->id]) }}" class="btn btn-primary btn-sm">Manage Permissions</a>
+                                    @if($permissionService->hasPermissionGrantPermission($store) && $store->owner_id != $user->id)
+                                    <a href="{{ route('store.user.permission', ['store_id'=>$store->id, 'user_id'=>$user->id]) }}" class="btn btn-primary btn-sm">Manage Permissions</a>
+                                    @endif
                                 </td>
                             </tr>
                             @endforeach
@@ -76,7 +82,7 @@
                 <h4 class="modal-title">Add User</h4>
             </div>
             <div class="modal-body">
-                <form class="form" method="post" action="{{ route('store.user.add', $store_id) }}">
+                <form class="form" method="post" action="{{ route('store.user.add', $store->id) }}">
                     {{ csrf_field() }}
                     <div class="form-body">
 

@@ -1,3 +1,5 @@
+@inject('permissionService', 'App\Service\PermissionService')
+
 @extends('layouts.main')
 
 @section('content_header')
@@ -58,8 +60,12 @@
                                 <td>{{ $store->created_at }}</td>
                                 <td>{{ $store->updated_at }}</td>
                                 <td>
+                                    @if($permissionService->hasStoreEditPermission($store))
                                     <a href="{{ route('store.edit', $store->id) }}" class="btn btn-default">Edit</a>
+                                    @endif
+                                    @if($permissionService->hasUserManagePermission($store))
                                     <a href="{{ route('store.user.manage', $store->id) }}" class="btn btn-default">User Manage</a>
+                                    @endif
                                 </td>
                             </tr>
                             @empty
