@@ -44,6 +44,10 @@ class GetOrderService
         return self::_fetch($store, $request_body);
     }
 
+    public function getOrder($orderIDs){
+
+    }
+
     private function _fetch($store, $request_body){
         $client = new Client(
             [

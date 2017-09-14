@@ -41,4 +41,8 @@ class Transaction extends Model
     public function tracking_numbers(){
         return $this->hasMany(TrackingNumber::class, 'reference_id')->where('scope', TrackingNumberScope::TRANSACTION);
     }
+
+    public function order(){
+        return $this->belongsTo(Order::class);
+    }
 }

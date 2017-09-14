@@ -66,6 +66,19 @@ var Sku = {
             }
         }
         return null;
+    },
+    resetTrackingNumbers: function(sku_id, tracking_numbers){
+        var transactions = Global.order.data.transactions;
+        for(var i in transactions){
+            var skus = transactions[i].skus;
+            for(var j in skus){
+                if(skus[j].id == sku_id){
+                    skus[j].tracking_numbers = tracking_numbers;
+                    transactions[i].skus = skus;
+                    return;
+                }
+            }
+        }
     }
 };
 
@@ -359,7 +372,7 @@ var Invoice = {
 
 // Tracking Number
 var TrackingNumber = {
-    $selectedRow: null,
+    active_sku_id: null,
     $modal: null,
     $trackingList: null,
     url: Global.order.url,
@@ -371,7 +384,7 @@ var TrackingNumber = {
     listen: function(){
         var _this = this;
         $(".add_tracking_no_btn").click(function(){
-            _this.$selectedRow = $(this).closest("tr");
+            _this.active_sku_id = $(this).closest("tr").attr('data-sku-id');
             _this.showModal();
         });
         this.$modal.on('shown.bs.modal', function(){
@@ -391,28 +404,34 @@ var TrackingNumber = {
     hideModal: function(){
         this.$modal.modal('hide');
     },
+    getTrackingNumbers: function(){
+        var tracking_numbers = [];
+        var transaction_tracking_numbers = Transaction.getBySkuID(this.active_sku_id).tracking_numbers;
+        var sku_tracking_numbers = Sku.getBySkuID(this.active_sku_id).tracking_numbers;
+        for(var i in transaction_tracking_numbers){
+            tracking_numbers.push(transaction_tracking_numbers[i]);
+        }
+        for(var i in sku_tracking_numbers){
+            tracking_numbers.push(sku_tracking_numbers[i]);
+        }
+        return tracking_numbers;
+    },
     showTrackingNumbers: function(){
-        var trackings = JSON.parse(this.$selectedRow.attr('data-tracking-details'));
-        if(trackings.length == 0){
+        var tracking_numbers = this.getTrackingNumbers();
+        if(tracking_numbers.length == 0){
             this.addNewRow();
         }else{
             var template = Handlebars.compile($("#tracking_list_template").html());
-            var html = template({trackings: trackings});
+            var html = template({tracking_numbers: tracking_numbers});
             this.$trackingList.html(html);
         }
     },
     showTransactionInfo: function(){
-        var info = {
-            order_line_item_id: this.$selectedRow.attr('data-order-line-item-id'),
-            buyer_id: this.$selectedRow.attr('data-buyer-id'),
-            buyer_name: this.$selectedRow.attr('data-buyer-name'),
-            item_title: this.$selectedRow.attr('data-item-title'),
-            item_id: this.$selectedRow.attr('data-item-id'),
-        };
-        this.$modal.find('#buyer_id').text(info.buyer_id);
-        this.$modal.find('#buyer_name').text(info.buyer_name);
-        this.$modal.find('#item_title').text(info.item_title);
-        this.$modal.find('#item_id').text(info.item_id);
+        var transaction = Transaction.getBySkuID(this.active_sku_id);
+        this.$modal.find('#buyer_id').text(Global.order.data.buyer_id);
+        this.$modal.find('#buyer_name').text(transaction.buyer_user_first_name + ' ' + transaction.buyer_user_last_name);
+        this.$modal.find('#item_title').text(transaction.item_title);
+        this.$modal.find('#item_id').text(transaction.item_id);
     },
     appendNewRow: function(){
         var template = Handlebars.compile($("#empty_tracking_row_template").html());
@@ -427,7 +446,7 @@ var TrackingNumber = {
     saveTrackingNumbers: function(){
         var _this = this;
         var trackings = [];
-        this.$trackingList.find('.tracking_row').each(function(index){
+        this.$trackingList.find('.tracking_row').each(function(){
             var tracking = {
                 tracking_no: $(this).find('.tracking_no_input').val(),
                 carrier_used: $(this).find('.carrier_used_input').val()
@@ -440,13 +459,12 @@ var TrackingNumber = {
             method: 'POST',
             url: this.url,
             data: {
-                order_id: $("#transaction_details_table").attr('data-order-id'),
-                order_line_item_id: this.$selectedRow.attr('data-order-line-item-id'),
+                sku_id: this.active_sku_id,
                 trackings: trackings
             },
             success: function(resp){
                 if(resp.status == true){
-                    _this.$selectedRow.attr('data-tracking-details', JSON.stringify(trackings));
+                    Sku.resetTrackingNumbers(_this.active_sku_id, resp.tracking_numbers);
                     _this.hideModal();
                 }else{
                     alert(resp.msg);
@@ -456,5 +474,19 @@ var TrackingNumber = {
                 alert('Sorry, Tracking number could not be added. Please refresh the page and try again!');
             }
         });
+    }
+};
+
+
+var Transaction = {
+    getBySkuID: function(sku_id){
+        var transactions = Global.order.data.transactions;
+        for(var i in transactions){
+            var skus = transactions[i].skus;
+            for(var j in skus){
+                if(skus[j].id == sku_id) return transactions[i];
+            }
+        }
+        return null;
     }
 };

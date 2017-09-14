@@ -3,10 +3,12 @@
 namespace App\Service\Order;
 
 use App\Enum\InternalOrderStatus;
+use App\Enum\TrackingNumberScope;
 use App\Event\StoreSyncProgress;
 use App\Models\Order\Invoice;
 use App\Models\Order\Order;
 use App\Models\Order\Sku;
+use App\Models\Order\TrackingNumber;
 use App\Models\Order\Transaction;
 use App\Models\Store;
 use App\Service\eBay\CompleteSaleService;
@@ -137,25 +139,37 @@ class OrderService
     }
 
     public function saveTrackingNumber(Request $request){
-        $order_id = $request->get('order_id');
-        $order_line_item_id = $request->get('order_line_item_id');
+        $sku_id = $request->get('sku_id');
         $trackings = $request->get('trackings');
-        $order = self::get($order_id)->with('store')->first();
-        $store = $order->store;
+        $sku = Sku::where('id', $sku_id)->with('tracking_numbers', 'transaction', 'transaction.order', 'transaction.order.store')->first();
+        $order = $sku->transaction->order;
+        $store = $sku->transaction->order->store;
         $completeSalesService = new CompleteSaleService();
 
-        $response = $completeSalesService->saveTrackingNumber($store, $order, $order_line_item_id, $trackings);
+        $response = $completeSalesService->saveTrackingNumber($store, $order, $sku->transaction->order_line_item_id, $trackings);
         $msg = '';
         if($response->Ack == 'Success'){
-            Transaction::where('order_line_item_id', $order_line_item_id)->update([
-                'shipment_tracking_details' =>  json_encode($trackings)
-            ]);
+            foreach ($trackings as $tracking){
+                TrackingNumber::updateOrCreate([
+                    'scope' =>  TrackingNumberScope::SKU,
+                    'reference_id'  =>  $sku_id,
+                    'carrier'   =>  $tracking['carrier_used'],
+                    'tracking_no'   =>  $tracking['tracking_no'],
+                ]);
+            }
+            if(count($trackings) > 0){
+                $sku->update([
+                    'status'    =>  InternalOrderStatus::PAID_AND_SHIPPED
+                ]);
+            }
         }else{
             $msg = $response->Errors->LongMessage;
         }
+        $trackingNumbers = Sku::where('id', $sku_id)->with('tracking_numbers')->first()->tracking_numbers;
         return [
             'status'    =>  $response->Ack == 'Success',
-            'msg'   =>  (string)$msg
+            'msg'   =>  (string)$msg,
+            'tracking_numbers'  =>  $trackingNumbers
         ];
     }
 

@@ -191,7 +191,7 @@
                             @foreach($order->transactions as $transaction)
 
                             @if($transaction->skus->count() > 1)
-                            <tr data-tracking-details="{{ $transaction->shipment_tracking_details }}" data-order-line-item-id="{{ $transaction->order_line_item_id }}" data-buyer-id="{{ $order->buyer_user_id }}" data-buyer-name="{{ $transaction->buyer_name }}" data-item-title="{{ $transaction->item_title }}" data-item-id="{{ $transaction->item_id }}">
+                            <tr>
                                 <td>
 
                                 </td>
@@ -205,20 +205,21 @@
                                 </td>
                                 <td>${{ $transaction->transaction_price }}</td>
                                 <td>${{ number_format($transaction->sub_total, 2, ".", "") }}</td>
-                                <td><button class="btn btn-primary btn-sm add_tracking_no_btn">Add</button></td>
+                                <td></td>
                             </tr>
                             @foreach($transaction->skus as $sku)
-                            <tr data-transaction-id="{{ $transaction->id }}" data-price="{{ $transaction->transaction_price }}">
+                            <tr data-sku-id="{{ $sku->id }}" data-transaction-id="{{ $transaction->id }}" data-price="{{ $transaction->transaction_price }}">
                                 <td>
                                     <input type="radio" name="price_comparison_section" value="{{ $sku->sku }}" data-sku-id="{{ $sku->id }}">
                                 </td>
                                 <td colspan="3"></td>
-                                <td>{{ $sku }}</td>
-                                <td colspan="3"></td>
+                                <td>{{ $sku->sku }}</td>
+                                <td colspan="2"></td>
+                                <td><button class="btn btn-primary btn-sm add_tracking_no_btn">Add</button></td>
                             </tr>
                             @endforeach
                             @else
-                            <tr data-transaction-id="{{ $transaction->id }}" data-price="{{ $transaction->transaction_price }}" data-tracking-details="{{ $transaction->shipment_tracking_details }}" data-order-line-item-id="{{ $transaction->order_line_item_id }}" data-buyer-id="{{ $order->buyer_user_id }}" data-buyer-name="{{ $transaction->buyer_name }}" data-item-title="{{ $transaction->item_title }}" data-item-id="{{ $transaction->item_id }}">
+                            <tr data-transaction-id="{{ $transaction->id }}" data-price="{{ $transaction->transaction_price }}" data-sku-id="{{ $transaction->skus->first()->id }}">
                                 <td>
                                     @if($transaction->sku)
                                     <input type="radio" name="price_comparison_section" value="{{ $transaction->skus->first()->sku }}" data-sku-id="{{ $transaction->skus->first()->id }}">
@@ -544,22 +545,36 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.10/handlebars.min.js"></script>
 
 <script id="tracking_list_template" type="text/x-handlebars-template">
-    @{{#each trackings}}
+    @{{#each tracking_numbers}}
+    @{{#ifSku scope}}
     <div class="input-group tracking_row" data-repeater-item>
+    @{{else}}
+    <div class="input-group" data-repeater-item>
+    @{{/ifSku}}
         <div class="form-group">
             <div class="row">
                 <div class="col-md-5">
                     <label for="eventType2">Tracking number</label>
+                    @{{#ifSku scope}}
                     <input type="text" class="form-control tracking_no_input" value="@{{tracking_no}}">
+                    @{{else}}
+                    <input type="text" class="form-control tracking_no_input" value="@{{tracking_no}}" disabled>
+                    @{{/ifSku}}
                 </div>
                 <div class="col-md-5">
                     <label for="eventType2">Carrier</label>
-                    <input type="text" class="form-control carrier_used_input" value="@{{carrier_used}}">
+                    @{{#ifSku scope}}
+                    <input type="text" class="form-control carrier_used_input" value="@{{carrier}}">
+                    @{{else}}
+                    <input type="text" class="form-control carrier_used_input" value="@{{carrier}}" disabled>
+                    @{{/ifSku}}
                 </div>
+                @{{#ifSku scope}}
                 <div class="col-md-2">
                     <label for="eventType2">Delete</label>
                     <button type="button" data-repeater-delete="" class="btn btn-icon btn-danger mr-1"><i class="icon-cross2"></i></button>
                 </div>
+                @{{/ifSku}}
             </div>
         </div>
     </div>
@@ -586,13 +601,12 @@
         </div>
     </div>
 </script>
-
 <script>
     var Global = {
         order: {
             id: parseInt("{{ $order->id }}"),
             url: '{{ route("tracking_no.save") }}',
-            data: JSON.parse('{!! json_encode($order) !!}'),
+            data: JSON.parse(JSON.stringify({!! json_encode($order->toArray()) !!})),
         },
         store: {
             price: {
@@ -605,6 +619,15 @@
             order_submit: '{{ route("order.submit") }}',
         }
     };
+
+    Handlebars.registerHelper('ifSku', function(conditional, options) {
+        if(conditional == 'SKU') {
+            return options.fn(this);
+        }else {
+            return options.inverse(this);
+        }
+    });
+
 </script>
 
 <script type="text/javascript" src="/js/order_details.js"></script>
