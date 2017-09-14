@@ -37,6 +37,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/orders/awaiting-tracking', 'Order\OrderController@getAwaitingTrackingList')->name('orders.awaiting_tracking');
     Route::get('/order/{id}', 'Order\OrderController@show')->name('order.show');
     Route::post('/tracking-number/save', 'Order\OrderController@saveTrackingNumber')->name('tracking_no.save');
+    Route::post('/tracking-number/sync', 'Order\OrderController@syncTrackingNumber')->name('tracking_no.sync');
 
     Route::post('/order/invoice/save', 'Order\OrderController@saveInvoice')->name('invoice.save');
     Route::post('/order/submit', 'Order\OrderController@orderSubmit')->name('order.submit');

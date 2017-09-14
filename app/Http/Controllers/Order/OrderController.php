@@ -61,6 +61,19 @@ class OrderController extends Controller
         return $res;
     }
 
+    public function syncTrackingNumber(Request $request){
+        $res = $this->service->syncTrackingNumber($request);
+        if($res){
+            return [
+                'status'    =>  'success'
+            ];
+        }else{
+            return [
+                'status'    =>  'error'
+            ];
+        }
+    }
+
     public function saveInvoice(Request $request){
         $res = $this->service->saveInvoice($request);
         if($res){

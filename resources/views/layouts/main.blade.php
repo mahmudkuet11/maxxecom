@@ -43,6 +43,7 @@
     <!-- END Page Level CSS-->
     <!-- BEGIN Custom CSS-->
     <link rel="stylesheet" type="text/css" href="/assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
     <!-- END Custom CSS-->
     @yield('css')
 </head>
@@ -122,6 +123,7 @@
 <script src="/app-assets/js/core/app-menu.min.js" type="text/javascript"></script>
 <script src="/app-assets/js/core/app.min.js" type="text/javascript"></script>
 <script src="/app-assets/js/scripts/ui/fullscreenSearch.min.js" type="text/javascript"></script>
+<script src="/js/pre_loader.js" type="text/javascript"></script>
 
 @yield('scripts')
 

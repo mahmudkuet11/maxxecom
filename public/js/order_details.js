@@ -490,3 +490,31 @@ var Transaction = {
         return null;
     }
 };
+
+
+var SyncTrackingNumber = {
+    active_sku_id: null,
+    init: function(){
+        this.listen();
+    },
+    listen: function(){
+        var _this = this;
+        $(".sync_tracking_no_btn").click(function(){
+            _this.active_sku_id = $(this).closest("tr").attr('data-sku-id');
+            _this.sync();
+        });
+    },
+    sync: function(){
+        $.ajax({
+            method: 'POST',
+            url: Global.order.sync_tracking_url,
+            data: {sku_id: this.active_sku_id},
+            success: function(res){
+                console.log(res);
+            },
+            error: function(){
+                console.log('error');
+            }
+        });
+    }
+};

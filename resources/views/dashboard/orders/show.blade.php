@@ -8,6 +8,7 @@
 @section('css')
 @parent
 <link rel="stylesheet" type="text/css" href="/app-assets/css/plugins/forms/extended/form-extended.min.css">
+
 <style>
     #store_list_ul .list-group-item:hover{
         cursor: pointer;
@@ -215,7 +216,14 @@
                                 <td colspan="3"></td>
                                 <td>{{ $sku->sku }}</td>
                                 <td colspan="2"></td>
-                                <td><button class="btn btn-primary btn-sm add_tracking_no_btn">Add</button></td>
+                                <td>
+                                    @if($sku->status == \App\Enum\InternalOrderStatus::AWAITING_TRACKING)
+                                    <button class="btn btn-primary btn-sm add_tracking_no_btn">Add</button>
+                                    @endif
+                                    @if($sku->status == \App\Enum\InternalOrderStatus::PRINT_LABEL)
+                                    <button class="btn btn-primary btn-sm sync_tracking_no_btn">Sync</button>
+                                    @endif
+                                </td>
                             </tr>
                             @endforeach
                             @else
@@ -235,7 +243,14 @@
                                 </td>
                                 <td>${{ $transaction->transaction_price }}</td>
                                 <td>${{ number_format($transaction->sub_total, 2, ".", "") }}</td>
-                                <td><button class="btn btn-primary btn-sm add_tracking_no_btn">Add</button></td>
+                                <td>
+                                    @if($transaction->skus->first()->status == \App\Enum\InternalOrderStatus::AWAITING_TRACKING)
+                                    <button class="btn btn-primary btn-sm add_tracking_no_btn">Add</button>
+                                    @endif
+                                    @if($transaction->skus->first()->status == \App\Enum\InternalOrderStatus::PRINT_LABEL)
+                                    <button class="btn btn-warning btn-sm sync_tracking_no_btn">Sync</button>
+                                    @endif
+                                </td>
                             </tr>
                             @endif
                             @endforeach
@@ -607,6 +622,7 @@
             id: parseInt("{{ $order->id }}"),
             url: '{{ route("tracking_no.save") }}',
             data: JSON.parse(JSON.stringify({!! json_encode($order->toArray()) !!})),
+            sync_tracking_url: '{{ route("tracking_no.sync") }}',
         },
         store: {
             price: {
@@ -653,6 +669,7 @@
         });
 
         TrackingNumber.init();
+        SyncTrackingNumber.init();
 
     });
 </script>

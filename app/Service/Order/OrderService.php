@@ -12,6 +12,7 @@ use App\Models\Order\TrackingNumber;
 use App\Models\Order\Transaction;
 use App\Models\Store;
 use App\Service\eBay\CompleteSaleService;
+use App\Service\eBay\GetOrderService;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
@@ -171,6 +172,58 @@ class OrderService
             'msg'   =>  (string)$msg,
             'tracking_numbers'  =>  $trackingNumbers
         ];
+    }
+
+    public function syncTrackingNumber(Request $request){
+        $sku_id = $request->get('sku_id');
+        $sku = Sku::where('id', $sku_id)->with('transaction', 'transaction.order', 'transaction.order.store')->first();
+        $transactionModel = $sku->transaction;
+        $getOrderService = new GetOrderService();
+        $response = $getOrderService->getOrdersByOrderId($sku->transaction->order->store, [$sku->transaction->order->ebay_order_id]);
+        $tracking_array = [];
+        if($response->Ack == 'Success'){
+            if(isset($response->OrderArray->Order)){
+                $order_array = $response->OrderArray->Order;
+                $order = $order_array[0];
+                foreach($order->TransactionArray->Transaction as $transaction){
+                    if((string)$transaction->TransactionID == $transactionModel->ebay_transaction_id){
+                        $shipmentTrackingDetails = $transaction->ShippingDetails->ShipmentTrackingDetails;
+                        foreach ($shipmentTrackingDetails as $tracking){
+                            array_push($tracking_array, [
+                                'tracking_no'   =>  (string)$tracking->ShipmentTrackingNumber,
+                                'carrier'   =>  (string)$tracking->ShippingCarrierUsed,
+                            ]);
+                        }
+                    }
+                }
+            }
+        }
+        $downloadedTrackingNumbers = collect($tracking_array);
+        $savedTrackingNumbers = TrackingNumber::orWhere(function($query) use ($transactionModel){
+            $query->where('scope', TrackingNumberScope::TRANSACTION)->where('reference_id', $transactionModel->id);
+        })->orWhere(function($query) use ($transactionModel, $sku){
+            $query->where('scope', TrackingNumberScope::SKU)->where('reference_id', $sku->id);
+        })->get();
+        $newTrackingNumbers = $downloadedTrackingNumbers->filter(function($downloaded) use ($savedTrackingNumbers){
+            $found = $savedTrackingNumbers->search(function($saved) use ($downloaded){
+                return $saved->carrier == $downloaded['carrier'] && $saved->tracking_no == $downloaded['tracking_no'];
+            });
+            return $found === false;
+        });
+        foreach ($newTrackingNumbers as $number){
+            TrackingNumber::updateOrCreate([
+                'scope' =>  TrackingNumberScope::SKU,
+                'reference_id'  =>  $sku_id,
+                'carrier'   =>  $number['carrier'],
+                'tracking_no'   =>  $number['tracking_no'],
+            ], []);
+        }
+        if($newTrackingNumbers->count() > 0){
+            $sku->update([
+                'status'    =>  InternalOrderStatus::PAID_AND_SHIPPED
+            ]);
+        }
+        return true;
     }
 
     public function saveInvoice(Request $request){

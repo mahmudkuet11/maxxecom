@@ -5,6 +5,7 @@ namespace App\Service\eBay;
 use App\Models\Store;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
+use Spatie\ArrayToXml\ArrayToXml;
 
 class GetOrderService
 {
@@ -44,8 +45,25 @@ class GetOrderService
         return self::_fetch($store, $request_body);
     }
 
-    public function getOrder($orderIDs){
+    public function getOrdersByOrderId(Store $store, $orderIDs){
+        $reqArray = [
+            'RequesterCredentials'  =>  [
+                'eBayAuthToken' =>  $store->auth_token
+            ],
+        ];
+        foreach ($orderIDs as $id){
+            $reqArray['OrderIDArray'][] = [
+                'OrderID'    =>  $id,
+            ];
+        }
 
+        $request_body = ArrayToXml::convert($reqArray, [
+            'rootElementName'   =>  'GetOrdersRequest',
+            '_attributes'   =>  [
+                'xmlns' =>  'urn:ebay:apis:eBLBaseComponents'
+            ]
+        ], false, 'UTF-8');
+        return self::_fetch($store, $request_body);
     }
 
     private function _fetch($store, $request_body){
