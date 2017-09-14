@@ -21,20 +21,21 @@ class TrackingNumberService
         });
         $downloadedTrackingNumbers = collect($downloadedTrackingNumbers);
         $trackings_to_remove = $all_saved_trackings->filter(function($saved) use ($downloadedTrackingNumbers){
-            $found = false;
-            $downloadedTrackingNumbers->each(function($downloaded) use ($saved, &$found){
-                if($downloaded->tracking_no == $saved->tracking_no && $downloaded->carrier_used == $saved->carrier){
-                    $found = true;
-                    return false;
-                }
+            $found = $downloadedTrackingNumbers->search(function($download) use ($saved){
+                return $download['tracking_no'] == $saved['tracking_no'] && $download['carrier_used'] == $saved['carrier'];
             });
-            return !$found;
+            return $found === false;
         });
 
         TrackingNumber::whereIn('id', $trackings_to_remove->pluck('id')->all())->delete();
 
-        $newTrackings = $downloadedTrackingNumbers->whereNotIn('carrier_used', $all_saved_trackings->pluck('carrier')->all())
-            ->whereNotIn('tracking_no', $all_saved_trackings->pluck('tracking_no')->all());
+        $newTrackings = $downloadedTrackingNumbers->filter(function($download) use ($all_saved_trackings){
+            $found = $all_saved_trackings->search(function($saved) use ($download){
+                return $download['carrier_used'] == $saved['carrier'] && $download['tracking_no'] == $saved['tracking_no'];
+            });
+            return $found === false;
+        });
+
         foreach ($newTrackings as $newTracking){
             TrackingNumber::create([
                 'scope' =>  TrackingNumberScope::TRANSACTION,
@@ -43,7 +44,6 @@ class TrackingNumberService
                 'tracking_no'   =>  $newTracking['tracking_no']
             ]);
         }
-        \Log::debug('trackings: ', ['saved'=>$all_saved_trackings,'downloaded'=>$downloadedTrackingNumbers, 'remove'=>$trackings_to_remove,'new'=>$newTrackings]);
     }
 
 }
