@@ -120,6 +120,15 @@ class Order extends Model
         })->whereIn('store_id', $storeIds);
     }
 
+    public function scopePaidAndShipped($builder){
+        $storeIds = auth()->user()->permissions
+            ->where('permission', Permission::search(Permission::VIEW_PAID_AND_SHIPPED))
+            ->pluck('store_id')->all();
+        return $builder->whereHas('transactions.skus', function($query){
+            $query->where('status', InternalOrderStatus::PAID_AND_SHIPPED);
+        })->whereIn('store_id', $storeIds);
+    }
+
     public function checkoutStatus(){
         return $this->hasOne(CheckoutStatus::class);
     }

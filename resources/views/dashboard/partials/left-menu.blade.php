@@ -44,10 +44,8 @@
                     <li class="{{ active_menu('order.awaiting_tracking', $active_menu) }}">
                         <a href="{{ route('orders.awaiting_tracking') }}" class="menu-item">Awaiting Tracking</a>
                     </li>
-                    <li>
-                        <a href="active-listing.html" class="menu-item">
-                            Paid and Shipped
-                        </a>
+                    <li class="{{ active_menu('order.paid_and_shipped', $active_menu) }}">
+                        <a href="{{ route('orders.paid_and_shipped') }}" class="menu-item">Paid And Shipped</a>
                     </li>
                 </ul>
             </li>

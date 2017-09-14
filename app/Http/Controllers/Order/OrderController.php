@@ -48,6 +48,11 @@ class OrderController extends Controller
         $storeService->syncAll();
         return view('dashboard.orders.index', ['orders'=>$orders->paginate(config('order.orders_per_page')), 'active_menu'=>'order.awaiting_tracking']);
     }
+    public function getPaidAndShippedList(StoreService $storeService){
+        $orders = $this->service->getAll()->filterStoreByUser()->paidAndShipped()->orderBy('sales_record_no', 'DESC');
+        $storeService->syncAll();
+        return view('dashboard.orders.index', ['orders'=>$orders->paginate(config('order.orders_per_page')), 'active_menu'=>'order.paid_and_shipped']);
+    }
 
     public function show($id){
         $order = $this->service->get($id)->with('shippingAddress', 'transactions', 'transactions.tracking_numbers', 'transactions.skus', 'transactions.skus.tracking_numbers', 'transactions.skus.invoice')->first();
