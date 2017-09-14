@@ -51,7 +51,8 @@ Route::get('/store-price/sync', function(){
 });
 
 Route::get('/test', function(){
-
+    $today = \Carbon\Carbon::today();
+    dd($today->format('H:i:s'));
 });
 
 Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
