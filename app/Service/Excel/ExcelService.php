@@ -12,10 +12,11 @@ class ExcelService
     public function __construct($filePath)
     {
         $this->filePath = $filePath;
-        $this->chunkSize = 250;
+        $this->chunkSize = config('order.excel_chunk_size');
 
         $this->filter = new \App\Service\Excel\ChunkReadFilter();
         $this->excelReader = \PHPExcel_IOFactory::createReaderForFile($this->filePath);
+        $this->excelReader->setReadDataOnly(true);
         $this->excelReader->setReadFilter($this->filter);
     }
 
@@ -74,5 +75,13 @@ class ExcelService
             );
             call_user_func($callback, $data);
         }
+    }
+
+    public function getTotalRows(){
+        $objReader = \PHPExcel_IOFactory::createReaderForFile($this->filePath);
+        $objReader->setReadDataOnly(true);
+        $objPHPExcel = $objReader->load($this->filePath);
+        $highestRow = $objPHPExcel->setActiveSheetIndex(0)->getHighestRow();
+        return (int)$highestRow;
     }
 }

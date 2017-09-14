@@ -3,6 +3,7 @@
 namespace App\Service\Store;
 
 use App\Enum\Store;
+use App\Event\StorePriceSyncProgress;
 use App\Models\StorePrice;
 use App\Service\Excel\ExcelService;
 
@@ -107,7 +108,9 @@ class PriceService
     public function savePerfectFit(){
         StorePrice::truncate();
         $excelService = new ExcelService(public_path('/uploads/store_price/perfect_fit.xlsx'));
-        $excelService->chunk(function($rows){
+        $totalRows = $excelService->getTotalRows();
+        $completedRows = 0;
+        $excelService->chunk(function($rows) use (&$completedRows, $totalRows){
             $data = [];
             foreach ($rows as $row){
                 if($row['C']){
@@ -121,6 +124,9 @@ class PriceService
                 }
             }
             StorePrice::insert($data);
+
+            $completedRows += config('order.excel_chunk_size');
+            event(new StorePriceSyncProgress('Perfect Fit', $totalRows, $completedRows));
         });
     }
 }

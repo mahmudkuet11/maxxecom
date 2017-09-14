@@ -15,6 +15,9 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         'App\Event\StoreSyncProgress'   =>  [
             'App\Listeners\BroadcastStoreSyncProgress'
+        ],
+        'App\Event\StorePriceSyncProgress'   =>  [
+            'App\Listeners\BroadcastStorePriceSyncProgress'
         ]
     ];
 

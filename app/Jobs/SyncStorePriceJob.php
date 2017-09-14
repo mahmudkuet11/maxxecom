@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Service\Store\PriceService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -19,6 +20,7 @@ class SyncStorePriceJob implements ShouldQueue
 
     public function handle()
     {
-        //
+        $priceService = new PriceService();
+        $priceService->save();
     }
 }
