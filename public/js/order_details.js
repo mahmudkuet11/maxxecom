@@ -201,12 +201,14 @@ var Invoice = {
     save: function(){
         var invoice = this.getInvoice();
         $("#save_invoice_btn").prop('disabled', true);
+        $("body").trigger('pre_loader:show');
 
         $.ajax({
             method: 'POST',
             url: Global.invoice.url_save,
             data: invoice,
             success: function(res){
+                $("body").trigger('pre_loader:hide');
                 $("#save_invoice_btn").prop('disabled', false);
                 if(res.status == 'success'){
                     window.location.reload(true);
@@ -215,6 +217,7 @@ var Invoice = {
                 }
             },
             error: function(){
+                $("body").trigger('pre_loader:hide');
                 $("#save_invoice_btn").prop('disabled', false);
                 if(res.status != 'success'){
                     $("#save_invoice_btn").prop('disabled', false);
@@ -254,11 +257,13 @@ var Invoice = {
         $("#submit_order_btn").prop('disabled', true);
         invoice.order_id = order_id;
         invoice.msg = message ? message : '';
+        $("body").trigger('pre_loader:show');
         $.ajax({
             method: 'POST',
             url: Global.invoice.order_submit,
             data: invoice,
             success: function(res){
+                $("body").trigger('pre_loader:hide');
                 $("#submit_order_btn").prop('disabled', false);
                 if(res.status == 'success'){
                     window.location.reload(true);
@@ -267,6 +272,7 @@ var Invoice = {
                 }
             },
             error: function(){
+                $("body").trigger('pre_loader:hide');
                 $("#submit_order_btn").prop('disabled', false);
                 if(res.status != 'success'){
                     $("#submit_order_btn").prop('disabled', false);
@@ -455,6 +461,7 @@ var TrackingNumber = {
                 trackings.push(tracking);
             }
         });
+        $("body").trigger('pre_loader:show');
         $.ajax({
             method: 'POST',
             url: this.url,
@@ -463,6 +470,7 @@ var TrackingNumber = {
                 trackings: trackings
             },
             success: function(resp){
+                $("body").trigger('pre_loader:hide');
                 if(resp.status == true){
                     Sku.resetTrackingNumbers(_this.active_sku_id, resp.tracking_numbers);
                     _this.hideModal();
@@ -471,6 +479,7 @@ var TrackingNumber = {
                 }
             },
             error: function(){
+                $("body").trigger('pre_loader:hide');
                 alert('Sorry, Tracking number could not be added. Please refresh the page and try again!');
             }
         });
@@ -505,15 +514,18 @@ var SyncTrackingNumber = {
         });
     },
     sync: function(){
+        $("body").trigger('pre_loader:show');
         $.ajax({
             method: 'POST',
             url: Global.order.sync_tracking_url,
             data: {sku_id: this.active_sku_id},
             success: function(res){
-                console.log(res);
+                $("body").trigger('pre_loader:hide');
+                $("body").trigger('pre_loader:notification:show', ['success', 'Sync is completed']);
             },
             error: function(){
-                console.log('error');
+                $("body").trigger('pre_loader:hide');
+                $("body").trigger('pre_loader:notification:show', ['danger', 'Sorry, System problem']);
             }
         });
     }
