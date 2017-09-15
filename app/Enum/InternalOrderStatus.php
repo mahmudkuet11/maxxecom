@@ -6,6 +6,7 @@ use MyCLabs\Enum\Enum;
 
 class InternalOrderStatus extends Enum
 {
+    const CANCELLED = "CANCELLED";
     const AWAITING_PAYMENT = "AWAITING_PAYMENT";
     const AWAITING_SHIPMENT = "AWAITING_SHIPMENT";
     const AWAITING_ORDER = "AWAITING_ORDER";

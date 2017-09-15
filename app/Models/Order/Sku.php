@@ -29,6 +29,7 @@ class Sku extends Model
     }
 
     public static function parseInitialStatus(Order $order){
+        if($order->order_status == 'Cancelled') return InternalOrderStatus::CANCELLED;
         if($order->shipped_time != null) return InternalOrderStatus::PAID_AND_SHIPPED;
         if($order->paid_time == null) return InternalOrderStatus::AWAITING_PAYMENT;
         return InternalOrderStatus::AWAITING_SHIPMENT;
