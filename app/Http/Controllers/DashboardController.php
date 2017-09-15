@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class DashboardController extends Controller
 {
     public function getDashboard(SaleReportService $saleReportService){
-        $todaysOrders = $saleReportService->getTodaysSales();
-        return view('dashboard.dashboard', ['todays_orders'=>$todaysOrders]);
+        $data = $saleReportService->getTodaysSales();
+        return view('dashboard.dashboard', $data);
     }
 }

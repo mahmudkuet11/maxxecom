@@ -78,7 +78,7 @@
 
                         <ul class="nav nav-tabs nav-underline no-hover-bg">
                             <li class="nav-item">
-                                <a class="nav-link active" id="base-tab31" data-toggle="tab" aria-controls="tab31" href="#tab31" aria-expanded="true">Today <span class="tag tag-default tag-info">65</span> <span class="tag tag-pill  tag-default "> $4212</span></a>
+                                <a class="nav-link active" id="base-tab31" data-toggle="tab" aria-controls="tab31" href="#tab31" aria-expanded="true">Today <span class="tag tag-default tag-info">65</span> <span class="tag tag-pill  tag-default "> ${{ $total }}</span></a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="base-tab32" data-toggle="tab" aria-controls="tab32" href="#tab32" aria-expanded="false">Yesterday <span class="tag tag-default tag-info">65</span> <span class="tag tag-pill  tag-default "> $4212</span></a>
@@ -291,6 +291,7 @@
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script src="/app-assets/js/scripts/charts/chartjs/line/line.js" type="text/javascript"></script>
 <script src="/app-assets/js/scripts/charts/google/line/line.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
 
 <script>
     google.charts.load('current', { packages: ['corechart', 'line'] });
@@ -302,23 +303,18 @@
         data.addColumn('timeofday', 'Time of Day');
         data.addColumn('number', 'Amount of sales');
 
-        var orders_data = JSON.parse(JSON.stringify('{{ json_encode($todays_orders->toArray()) }}');
-        console.log(orders_data);
+        var orders_data = JSON.parse(JSON.stringify({!! json_encode($grouped_orders->toArray()) !!}));
+        var chartData = [];
+        for(var i in orders_data){
+            var total_sold = 0;
+            var orders = orders_data[i];
+            for(var j in orders){
+                total_sold += parseFloat(orders[j].total);
+            }
+            chartData.push([[parseInt(i), 0, 0], total_sold]);
+        }
 
-        data.addRows([
-            [[8, 30, 45], 200],
-            [[9, 0, 0], 400],
-            [[10, 0, 0, 0], 500],
-            [[10, 45, 0, 0], 700],
-            [[11, 0, 0, 0], 850],
-            [[12, 15, 45, 0], 1010],
-            [[13, 0, 0, 0], 1340],
-            [[15, 30, 0, 0], 1400],
-            [[18, 12, 0, 0], 1660],
-            [[20, 45, 0], 1800],
-            [[23, 59, 0], 2210]
-        ]);
-
+        data.addRows(chartData);
 
         var options = {
             title: 'May 31,2017',
@@ -328,9 +324,9 @@
             bar: { groupWidth: '95%' },
 
             hAxis: {
-                title: 'May 31, 2017',
+                title: moment().format('MMM Do, YYYY'),
                 titleTextStyle: { italic: false },
-                gridlines: { count: 25 }
+                gridlines: { count: 12 }
             },
             vAxis: {
                 title: 'Price in $',
