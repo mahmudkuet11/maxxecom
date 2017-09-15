@@ -11,6 +11,10 @@
                 <span>Summary</span><i data-toggle="tooltip" data-placement="right" data-original-title="Add Ons" class="icon-ellipsis icon-ellipsis"></i>
             </li>
 
+            <li class=" nav-item {{ active_menu('dashboard', $active_menu) }}">
+                <a href="{{ route('dashboard') }}"><i class="icon-cart4"></i><span class="menu-title">Dashboard</span></a>
+            </li>
+
             <li class=" nav-item">
                 <a href="#"><i class="icon-cart4"></i><span class="menu-title">My Store</span></a>
                 <ul class="menu-content">

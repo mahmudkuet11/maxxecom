@@ -19,6 +19,7 @@ class DashboardController extends Controller
             'last_week' =>  $lastWeek,
             'last_month'    =>  $lastMonth,
             'last_3_months'    =>  $last3Months,
+            'active_menu'   =>  'dashboard'
         ]);
     }
 }
