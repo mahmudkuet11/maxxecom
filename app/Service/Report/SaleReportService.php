@@ -59,6 +59,9 @@ class SaleReportService
             $time = Carbon::parse($item->created_time);
             return $time->format('Y-m-d');
         });
+        $grouped = $grouped->sortBy(function($order, $key){
+            return $key;
+        });
         return [
             'grouped_orders'    =>  $grouped,
             'total_amount' =>  $totalAmount,
@@ -79,6 +82,10 @@ class SaleReportService
             $time = Carbon::parse($item->created_time);
             return $time->format('Y-m-d');
         });
+
+        $grouped = $grouped->sortBy(function($order, $key){
+            return $key;
+        });
         return [
             'grouped_orders'    =>  $grouped,
             'total_amount' =>  $totalAmount,
@@ -98,6 +105,9 @@ class SaleReportService
         $grouped = $orders->groupBy(function($item){
             $time = Carbon::parse($item->created_time);
             return $time->format('Y-m-d');
+        });
+        $grouped = $grouped->sortBy(function($order, $key){
+            return $key;
         });
         return [
             'grouped_orders'    =>  $grouped,

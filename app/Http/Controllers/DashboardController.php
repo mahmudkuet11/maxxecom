@@ -11,7 +11,7 @@ class DashboardController extends Controller
         $today = $saleReportService->getTodaysSales();
         $yesterday = $saleReportService->getYesterdaySales();
         $lastWeek = $saleReportService->getLastWeekSales();
-        $lastMonth = $saleReportService->getLastWeekSales();
+        $lastMonth = $saleReportService->getLastMonthSales();
         $last3Months = $saleReportService->getLastThreeMonthsSales();
         return view('dashboard.dashboard', [
             'today' =>  $today,

@@ -468,7 +468,7 @@
             hAxis: {
                 title: 'From '+ from +' to ' + to,
                 titleTextStyle: { italic: false },
-                gridlines: { count: 30 }
+                gridlines: { count: 10 }
             },
             vAxis: {
                 title: 'Price in $',
@@ -515,7 +515,7 @@
             hAxis: {
                 title: 'From '+ from +' to ' + to,
                 titleTextStyle: { italic: false },
-                gridlines: { count: 10 }
+                gridlines: { count: 5 }
             },
             vAxis: {
                 title: 'Price in $',
