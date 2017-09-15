@@ -78,19 +78,19 @@
 
                         <ul class="nav nav-tabs nav-underline no-hover-bg">
                             <li class="nav-item">
-                                <a class="nav-link active" id="base-tab31" data-toggle="tab" aria-controls="tab31" href="#tab31" aria-expanded="true">Today <span class="tag tag-default tag-info">65</span> <span class="tag tag-pill  tag-default "> ${{ $total }}</span></a>
+                                <a class="nav-link active" id="base-tab31" data-toggle="tab" aria-controls="tab31" href="#tab31" aria-expanded="true">Today <span class="tag tag-default tag-info">{{ $today['total_orders'] }}</span> <span class="tag tag-pill  tag-default "> ${{ $today['total_amount'] }}</span></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="base-tab32" data-toggle="tab" aria-controls="tab32" href="#tab32" aria-expanded="false">Yesterday <span class="tag tag-default tag-info">65</span> <span class="tag tag-pill  tag-default "> $4212</span></a>
+                                <a class="nav-link" id="base-tab32" data-toggle="tab" aria-controls="tab32" href="#tab32" aria-expanded="false">Yesterday <span class="tag tag-default tag-info">{{ $yesterday['total_orders'] }}</span> <span class="tag tag-pill  tag-default "> ${{ $yesterday['total_amount'] }}</span></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="base-tab33" data-toggle="tab" aria-controls="tab33" href="#tab33" aria-expanded="false">Last 7 days <span class="tag tag-default tag-info">65</span> <span class="tag tag-pill  tag-default "> $4212</span></a>
+                                <a class="nav-link" id="base-tab33" data-toggle="tab" aria-controls="tab33" href="#tab33" aria-expanded="false">Last 7 days <span class="tag tag-default tag-info">{{ $last_week['total_orders'] }}</span> <span class="tag tag-pill  tag-default "> ${{ $last_week['total_amount'] }}</span></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="base-tab34" data-toggle="tab" aria-controls="tab34" href="#tab34" aria-expanded="false">Last 30 days <span class="tag tag-default tag-info">65</span> <span class="tag tag-pill  tag-default "> $4212</span></a>
+                                <a class="nav-link" id="base-tab34" data-toggle="tab" aria-controls="tab34" href="#tab34" aria-expanded="false">Last 30 days <span class="tag tag-default tag-info">{{ $last_month['total_orders'] }}</span> <span class="tag tag-pill  tag-default "> ${{ $last_month['total_amount'] }}</span></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="base-tab35" data-toggle="tab" aria-controls="tab35" href="#tab35" aria-expanded="false">Last 90 days <span class="tag tag-default tag-info">65</span> <span class="tag tag-pill  tag-default "> $4212</span></a>
+                                <a class="nav-link" id="base-tab35" data-toggle="tab" aria-controls="tab35" href="#tab35" aria-expanded="false">Last 90 days <span class="tag tag-default tag-info">{{ $last_3_months['total_orders'] }}</span> <span class="tag tag-pill  tag-default "> ${{ $last_3_months['total_amount'] }}</span></a>
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
@@ -299,25 +299,28 @@
 
     function drawBasic() {
 
-        var data = new google.visualization.DataTable();
-        data.addColumn('timeofday', 'Time of Day');
-        data.addColumn('number', 'Amount of sales');
+        /*
+        *   Today
+         */
+        var today_data = new google.visualization.DataTable();
+        today_data.addColumn('timeofday', 'Time of Day');
+        today_data.addColumn('number', 'Amount of sales');
 
-        var orders_data = JSON.parse(JSON.stringify({!! json_encode($grouped_orders->toArray()) !!}));
-        var chartData = [];
-        for(var i in orders_data){
+        var today_orders_data = JSON.parse(JSON.stringify({!! json_encode($today['grouped_orders']->toArray()) !!}));
+        var today_chart_data = [];
+        for(var i in today_orders_data){
             var total_sold = 0;
-            var orders = orders_data[i];
+            var orders = today_orders_data[i];
             for(var j in orders){
                 total_sold += parseFloat(orders[j].total);
             }
-            chartData.push([[parseInt(i), 0, 0], total_sold]);
+            today_chart_data.push([[parseInt(i), 0, 0], total_sold]);
         }
 
-        data.addRows(chartData);
+        today_data.addRows(today_chart_data);
 
-        var options = {
-            title: 'May 31,2017',
+        var today_sales_options = {
+            title: moment().format('MMM Do, YYYY'),
             width: 986,
             height: 400,
             pointSize: 5,
@@ -335,9 +338,195 @@
             }
         };
 
-        var chart = new google.visualization.LineChart(document.getElementById('chart_div1'));
+        var today_sales_chart = new google.visualization.LineChart(document.getElementById('chart_div1'));
 
-        chart.draw(data, options);
+        today_sales_chart.draw(today_data, today_sales_options);
+
+
+
+        /*
+        *   Yesterday
+         */
+        var yesterday_data = new google.visualization.DataTable();
+        yesterday_data.addColumn('timeofday', 'Time of Day');
+        yesterday_data.addColumn('number', 'Amount of sales');
+
+        var yesterday_orders_data = JSON.parse(JSON.stringify({!! json_encode($yesterday['grouped_orders']->toArray()) !!}));
+        var yesterday_chart_data = [];
+        for(var i in yesterday_orders_data){
+            var total_sold = 0;
+            var orders = yesterday_orders_data[i];
+            for(var j in orders){
+                total_sold += parseFloat(orders[j].total);
+            }
+            yesterday_chart_data.push([[parseInt(i), 0, 0], total_sold]);
+        }
+
+        yesterday_data.addRows(yesterday_chart_data);
+
+        var yesterday_sales_options = {
+            title: moment().subtract(1, 'days').format('MMM Do, YYYY'),
+            width: 986,
+            height: 400,
+            pointSize: 5,
+            bar: { groupWidth: '95%' },
+
+            hAxis: {
+                title: moment().subtract(1, 'days').format('MMM Do, YYYY'),
+                titleTextStyle: { italic: false },
+                gridlines: { count: 12 }
+            },
+            vAxis: {
+                title: 'Price in $',
+                titleTextStyle: { italic: false },
+                gridlines: { count: 7 }
+            }
+        };
+
+        var yesterday_sales_chart = new google.visualization.LineChart(document.getElementById('chart_div2'));
+
+        yesterday_sales_chart.draw(yesterday_data, yesterday_sales_options);
+
+
+        /*
+        *   Last 7 Days
+         */
+        var last_week_data = new google.visualization.DataTable();
+        last_week_data.addColumn('datetime', 'Day');
+        last_week_data.addColumn('number', 'Amount of sale');
+
+        var last_week_orders_data = JSON.parse(JSON.stringify({!! json_encode($last_week['grouped_orders']->toArray()) !!}));
+        var last_week_chart_data = [];
+        for(var i in last_week_orders_data){
+            var total_sold = 0;
+            var orders = last_week_orders_data[i];
+            for(var j in orders){
+                total_sold += parseFloat(orders[j].total);
+            }
+            var date = moment(i).toArray();
+            last_week_chart_data.push([new Date(date[0], date[1], date[2]), total_sold]);
+        }
+
+        last_week_data.addRows(last_week_chart_data);
+
+        var last_week_options = {
+            width: 900,
+            height: 500,
+            pointSize: 5,
+            legend: { position: 'none' },
+
+            chartArea: {
+                width: '85%'
+            },
+            hAxis: {
+
+                gridlines: {
+                    count: -1,
+                    units: {
+                        days: { format: ['MMM dd'] }
+                    }
+                }
+            }
+        };
+
+        var last_week_chart = new google.visualization.LineChart(document.getElementById('chart_div3'));
+
+        last_week_chart.draw(last_week_data, last_week_options);
+
+
+
+        /*
+        *   Last 30 days
+         */
+        var last_month_data = new google.visualization.DataTable();
+        last_month_data.addColumn('date', 'Day');
+        last_month_data.addColumn('number', 'Amount of sales');
+
+        var last_month_orders_data = JSON.parse(JSON.stringify({!! json_encode($last_month['grouped_orders']->toArray()) !!}));
+        var last_month_chart_data = [];
+        for(var i in last_month_orders_data){
+            var total_sold = 0;
+            var orders = last_month_orders_data[i];
+            for(var j in orders){
+                total_sold += parseFloat(orders[j].total);
+            }
+            var date = moment(i).toArray();
+            last_month_chart_data.push([new Date(date[0], date[1], date[2]), total_sold]);
+        }
+        last_month_data.addRows(last_month_chart_data);
+
+        var from = moment().subtract(30, 'days').format('MMM Do, YYYY');
+        var to = moment().format('MMM Do, YYYY');
+
+        var last_month_sales_options = {
+            title: 'From '+ from +' to ' + to,
+            width: 986,
+            height: 400,
+            pointSize: 5,
+            bar: { groupWidth: '95%' },
+
+            hAxis: {
+                title: 'From '+ from +' to ' + to,
+                titleTextStyle: { italic: false },
+                gridlines: { count: 30 }
+            },
+            vAxis: {
+                title: 'Price in $',
+                titleTextStyle: { italic: false },
+                gridlines: { count: 10 }
+            }
+        };
+
+        var last_month_sales_chart = new google.visualization.LineChart(document.getElementById('chart_div4'));
+
+        last_month_sales_chart.draw(last_month_data, last_month_sales_options);
+
+
+        /*
+        *   Last 90 days
+         */
+        var last_3_months_data = new google.visualization.DataTable();
+        last_3_months_data.addColumn('date', 'Day');
+        last_3_months_data.addColumn('number', 'Amount of sales');
+
+        var last_3_months_orders_data = JSON.parse(JSON.stringify({!! json_encode($last_3_months['grouped_orders']->toArray()) !!}));
+        var last_3_months_chart_data = [];
+        for(var i in last_3_months_orders_data){
+            var total_sold = 0;
+            var orders = last_3_months_orders_data[i];
+            for(var j in orders){
+                total_sold += parseFloat(orders[j].total);
+            }
+            var date = moment(i).toArray();
+            last_3_months_chart_data.push([new Date(date[0], date[1], date[2]), total_sold]);
+        }
+        last_3_months_data.addRows(last_3_months_chart_data);
+
+        var from = moment().subtract(90, 'days').format('MMM Do, YYYY');
+        var to = moment().format('MMM Do, YYYY');
+
+        var last_3_months_sales_options = {
+            title: 'From '+ from +' to ' + to,
+            width: 986,
+            height: 400,
+            pointSize: 5,
+            bar: { groupWidth: '95%' },
+
+            hAxis: {
+                title: 'From '+ from +' to ' + to,
+                titleTextStyle: { italic: false },
+                gridlines: { count: 10 }
+            },
+            vAxis: {
+                title: 'Price in $',
+                titleTextStyle: { italic: false },
+                gridlines: { count: 10 }
+            }
+        };
+
+        var last_3_months_sales_chart = new google.visualization.LineChart(document.getElementById('chart_div5'));
+
+        last_3_months_sales_chart.draw(last_3_months_data, last_3_months_sales_options);
     }
 
 </script>
