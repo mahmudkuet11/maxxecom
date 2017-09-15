@@ -69,6 +69,7 @@
                 </div>
                 <div class="card-body collapse in">
                     <div class="card-block card-dashboard">
+                        <!--
                         <div class="row">
                             <div class="col-xl-2 col-lg-6 col-md-12">
                                 <fieldset class="form-group">
@@ -130,6 +131,7 @@
                                 </fieldset>
                             </div>
                         </div>
+                        -->
                         <ul class="nav nav-tabs nav-underline no-hover-bg">
 
                             <li class="nav-item dropdown">
