@@ -27,7 +27,7 @@
                 </div>
                 <div class="card-body">
                     <div class="card-block">
-                        <div class="row">
+                        <!--<div class="row">
                             <div class="col-xl-2 col-lg-6 col-md-12">
                                 <div class="btn-group mr-1 mb-1">
                                     <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -74,7 +74,7 @@
                                     </div>
                                 </fieldset>
                             </div>
-                        </div>
+                        </div>-->
 
                         <ul class="nav nav-tabs nav-underline no-hover-bg">
                             <li class="nav-item">
@@ -92,7 +92,7 @@
                             <li class="nav-item">
                                 <a class="nav-link" id="base-tab35" data-toggle="tab" aria-controls="tab35" href="#tab35" aria-expanded="false">Last 90 days <span class="tag tag-default tag-info">{{ $last_3_months['total_orders'] }}</span> <span class="tag tag-pill  tag-default "> ${{ $last_3_months['total_amount'] }}</span></a>
                             </li>
-                            <li class="nav-item dropdown">
+                            <!--<li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                                     Select shop
                                 </a>
@@ -100,7 +100,7 @@
                                     <a class="dropdown-item" id="dropdown1-tab" href="#dropdown1" data-toggle="tab" aria-controls="dropdown1" aria-expanded="true">Amazon</a>
                                     <a class="dropdown-item" id="dropdown2-tab" href="#dropdown2" data-toggle="tab" aria-controls="dropdown2" aria-expanded="true">Ebay</a>
                                 </div>
-                            </li>
+                            </li>-->
                         </ul>
                         <div class="tab-content px-1 pt-1">
                             <div role="tabpanel" class="tab-pane active" id="tab31" aria-expanded="true" aria-labelledby="base-tab31">
@@ -468,7 +468,7 @@
             hAxis: {
                 title: 'From '+ from +' to ' + to,
                 titleTextStyle: { italic: false },
-                gridlines: { count: 10 }
+                gridlines: { count: 7 }
             },
             vAxis: {
                 title: 'Price in $',
@@ -515,7 +515,7 @@
             hAxis: {
                 title: 'From '+ from +' to ' + to,
                 titleTextStyle: { italic: false },
-                gridlines: { count: 5 }
+                gridlines: { count: 7 }
             },
             vAxis: {
                 title: 'Price in $',
