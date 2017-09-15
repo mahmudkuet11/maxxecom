@@ -66,14 +66,16 @@ class ExcelService
         while($hasMoreRows){
             $this->filter->setRows($startRow, $this->chunkSize);
             $excelObj = $this->excelReader->load($this->filePath);
-            if($excelObj->getActiveSheet()->getHighestDataRow() == 1){
+            $sheet = $excelObj->getActiveSheet();
+            if($sheet->getHighestDataRow() == 1){
                 return null;
             }
-            $data = $excelObj->getActiveSheet()->rangeToArray(
+            $data = $sheet->rangeToArray(
                 'A'.$startRow.':'.$excelObj->getActiveSheet()->getHighestColumn().($startRow+$this->chunkSize-1),
                 null, false, false, true
             );
             call_user_func($callback, $data);
+            $sheet->garbageCollect();
         }
     }
 

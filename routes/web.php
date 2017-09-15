@@ -48,6 +48,8 @@ Route::middleware(['auth'])->group(function(){
 
 Route::get('/store-price/sync', function(){
     dispatch(new \App\Jobs\SyncStorePriceJob());
+    /*$priceService = new \App\Service\Store\PriceService();
+    $priceService->save();*/
 });
 
 Route::get('/test', function(){

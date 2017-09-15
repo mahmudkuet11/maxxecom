@@ -2,131 +2,189 @@
 
 namespace App\Service\Store;
 
+use Akeneo\Component\SpreadsheetParser\SpreadsheetParser;
 use App\Enum\Store;
-use App\Event\StorePriceSyncProgress;
 use App\Models\StorePrice;
-use App\Service\Excel\ExcelService;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class PriceService
 {
     public function getPFPrice($sku){
+        $price = StorePrice::where('store', Store::PERFECT_FIT)
+            ->where('sku', $sku)
+            ->first();
+        if($price){
+            return [
+                'price' =>  (int)$price->price,
+                'shipping_cost'  =>  (int)$price->shipping_cost,
+                'handling_cost' =>  (int)$price->handling_cost
+            ];
+        }
         return [
-            'price' =>  rand(5,50),
-            'shipping_cost'  =>  rand(0,10),
-            'handling_cost' =>  rand(0,10)
+            'price' =>  0,
+            'shipping_cost'  =>  0,
+            'handling_cost' =>  0
         ];
     }
     public function getKeystoneQIPrice($sku){
+        $price = StorePrice::where('store', Store::KEYSTONE)
+            ->where('sku', $sku)
+            ->first();
+        if($price){
+            return [
+                'price' =>  (int)$price->price,
+                'shipping_cost'  =>  (int)$price->shipping_cost,
+                'handling_cost' =>  (int)$price->handling_cost
+            ];
+        }
         return [
-            'price' =>  rand(5,50),
-            'shipping_cost'  =>  rand(0,10),
-            'handling_cost' =>  rand(0,10)
+            'price' =>  0,
+            'shipping_cost'  =>  0,
+            'handling_cost' =>  0
         ];
     }
     public function getKeystoneLocalPrice($sku){
+        $price = StorePrice::where('store', Store::KEYSTONE)
+            ->where('sku', $sku)
+            ->first();
+        if($price){
+            return [
+                'price' =>  (int)$price->price,
+                'shipping_cost'  =>  (int)$price->shipping_cost,
+                'handling_cost' =>  (int)$price->handling_cost
+            ];
+        }
         return [
-            'price' =>  rand(5,50),
-            'shipping_cost'  =>  rand(0,10),
-            'handling_cost' =>  rand(0,10)
+            'price' =>  0,
+            'shipping_cost'  =>  0,
+            'handling_cost' =>  0
         ];
     }
     public function getWRPrice($sku){
         return [
-            'price' =>  rand(5,50),
-            'shipping_cost'  =>  rand(0,10),
-            'handling_cost' =>  rand(0,10)
+            'price' =>  0,
+            'shipping_cost'  =>  0,
+            'handling_cost' =>  0
         ];
     }
     public function getBSPrice($sku){
         return [
-            'price' =>  rand(5,50),
-            'shipping_cost'  =>  rand(0,10),
-            'handling_cost' =>  rand(0,10)
+            'price' =>  0,
+            'shipping_cost'  =>  0,
+            'handling_cost' =>  0
         ];
     }
     public function getCAPPrice($sku){
         return [
-            'price' =>  rand(5,50),
-            'shipping_cost'  =>  rand(0,10),
-            'handling_cost' =>  rand(0,10)
+            'price' =>  0,
+            'shipping_cost'  =>  0,
+            'handling_cost' =>  0
         ];
     }
     public function getAPWPrice($sku){
         return [
-            'price' =>  rand(5,50),
-            'shipping_cost'  =>  rand(0,10),
-            'handling_cost' =>  rand(0,10)
+            'price' =>  0,
+            'shipping_cost'  =>  0,
+            'handling_cost' =>  0
         ];
     }
     public function getRAPrice($sku){
         return [
-            'price' =>  rand(5,50),
-            'shipping_cost'  =>  rand(0,10),
-            'handling_cost' =>  rand(0,10)
+            'price' =>  0,
+            'shipping_cost'  =>  0,
+            'handling_cost' =>  0
         ];
     }
     public function getPGPrice($sku){
         return [
-            'price' =>  rand(5,50),
-            'shipping_cost'  =>  rand(0,10),
-            'handling_cost' =>  rand(0,10)
+            'price' =>  0,
+            'shipping_cost'  =>  0,
+            'handling_cost' =>  0
         ];
     }
     public function getAmazonPrice($sku){
         return [
-            'price' =>  rand(5,50),
-            'shipping_cost'  =>  rand(0,10),
-            'handling_cost' =>  rand(0,10)
+            'price' =>  0,
+            'shipping_cost'  =>  0,
+            'handling_cost' =>  0
         ];
     }
     public function getEbayPrice($sku){
         return [
-            'price' =>  rand(5,50),
-            'shipping_cost'  =>  rand(0,10),
-            'handling_cost' =>  rand(0,10)
+            'price' =>  0,
+            'shipping_cost'  =>  0,
+            'handling_cost' =>  0
         ];
     }
     public function getATDPrice($sku){
         return [
-            'price' =>  rand(5,50),
-            'shipping_cost'  =>  rand(0,10),
-            'handling_cost' =>  rand(0,10)
+            'price' =>  0,
+            'shipping_cost'  =>  0,
+            'handling_cost' =>  0
         ];
     }
     public function getFuturePrice($sku){
         return [
-            'price' =>  rand(5,50),
-            'shipping_cost'  =>  rand(0,10),
-            'handling_cost' =>  rand(0,10)
+            'price' =>  0,
+            'shipping_cost'  =>  0,
+            'handling_cost' =>  0
         ];
     }
 
     public function save(){
+        StorePrice::truncate();
         self::savePerfectFit();
+        self::saveKeystone();
     }
 
     public function savePerfectFit(){
-        StorePrice::truncate();
-        $excelService = new ExcelService(public_path('/uploads/store_price/perfect_fit.xlsx'));
-        $totalRows = $excelService->getTotalRows();
-        $completedRows = 0;
-        $excelService->chunk(function($rows) use (&$completedRows, $totalRows){
-            $data = [];
-            foreach ($rows as $row){
-                if($row['C']){
-                    $data[] = [
-                        'store' =>  Store::PERFECT_FIT,
-                        'sku'   =>  $row['C'],
-                        'price'   =>  $row['H'],
-                        'shipping_cost'   =>  $row['E'],
-                        'handling_cost'   =>  $row['F'],
-                    ];
-                }
-            }
-            StorePrice::insert($data);
+        $workbook = SpreadsheetParser::open(public_path('/upload/price/perfect_fit.xlsx'));
 
-            $completedRows += config('order.excel_chunk_size');
-            event(new StorePriceSyncProgress('Perfect Fit', $totalRows, $completedRows));
-        });
+        $myWorksheetIndex = $workbook->getWorksheetIndex('Q4 - 2');
+
+        $data = [];
+        $console = new ConsoleOutput();
+        foreach ($workbook->createRowIterator($myWorksheetIndex) as $rowIndex => $values) {
+            if($rowIndex < 2) continue;
+            $data[] = [
+                'store' =>  Store::PERFECT_FIT,
+                'sku'   =>  $values[3],
+                'price'   =>  $values[7],
+                'shipping_cost'   =>  $values[4],
+                'handling_cost'   =>  $values[5],
+            ];
+            if($rowIndex % 500 == 0){
+                StorePrice::insert($data);
+                $data = [];
+            }
+            $console->writeln("row: {$rowIndex}");
+        }
+        StorePrice::insert($data);
+    }
+
+    public function saveKeystone(){
+        $workbook = SpreadsheetParser::open(public_path('/upload/price/keystone.xlsx'));
+
+        $myWorksheetIndex = $workbook->getWorksheetIndex('keystoneparts (1)(1)');
+
+        $data = [];
+        $console = new ConsoleOutput();
+        foreach ($workbook->createRowIterator($myWorksheetIndex) as $rowIndex => $values) {
+            if($rowIndex < 2) continue;
+            $dataArray = explode('|', $values[0]);
+            $data[] = [
+                'store' =>  Store::KEYSTONE,
+                'sku'   =>  $dataArray[2],
+                'price'   =>  $dataArray[25],
+                'shipping_cost'   =>  0,
+                'handling_cost'   =>  0,
+            ];
+            if($rowIndex % 500 == 0){
+                StorePrice::insert($data);
+                $data = [];
+            }
+            $console->writeln("row: {$rowIndex}");
+        }
+        StorePrice::insert($data);
     }
 }
