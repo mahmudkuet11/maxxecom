@@ -292,7 +292,7 @@
                             <span class="float-xs-right"><input type="text" id="handling_cost_input" class="form-control" value=""/></span> Handling Cost:
                         </li>
                         <li class="list-group-item">
-                            <span class="float-xs-right"><input type="text" id="fees_input" class="form-control" value=""/></span> Fees:
+                            <span class="float-xs-right"><input disabled type="text" id="fees_input" class="form-control" value=""/></span> Fees:
                         </li>
                         <li class="list-group-item">
                             <span class="float-xs-right"><input disabled type="text" id="profit_input" class="form-control" value=""/></span> Profit:

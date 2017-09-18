@@ -153,7 +153,7 @@ var Invoice = {
                 $("input#shipping_cost_input").val(invoice.shipping_cost);
                 $("input#handling_cost_input").val(invoice.handling_cost);
                 $("input#fees_input").val(invoice.fees);
-                $("input#profit_input").val(invoice.profit);
+                this.renderProfit(invoice.profit, invoice.sold_price);
             }else{
                 this.setStorePriceToInvoice();
             }
@@ -173,7 +173,7 @@ var Invoice = {
         var product_cost = 0;
         var shipping_cost = 0;
         var handling_cost = 0;
-        var fees = 0;
+        var fees = parseFloat(sold_price * 0.12).toFixed(2);
         if(price){
             product_cost = price.price;
             shipping_cost = price.shipping_cost;
@@ -187,24 +187,31 @@ var Invoice = {
         $("input#shipping_cost_input").val(shipping_cost);
         $("input#handling_cost_input").val(handling_cost);
         $("input#fees_input").val(fees);
+        this.renderProfit(profit, sold_price);
+    },
+    renderProfit: function(profitAmount, sold_price){
+        var profitPercentage = profitAmount * 100 / sold_price;
+        var profit = parseFloat(profitAmount).toFixed(2) + " ("+ parseFloat(profitPercentage).toFixed(2) +"%)";
         $("input#profit_input").val(profit);
     },
     updateInputFieldOnKeyUp: function(){
+        var sold_price = $("#sold_price_input").val();
         var amount = {
-            sold_price: $("#sold_price_input").val(),
+            sold_price: sold_price,
             product_cost: $("#product_cost_input").val(),
             shipping_cost: $("#shipping_cost_input").val(),
             handling_cost: $("#handling_cost_input").val(),
-            fees: $("#fees_input").val(),
+            fees: sold_price * 0.12,
             profit: 0
         };
-        amount.sold_price = amount.sold_price ? parseInt(amount.sold_price) : 0;
-        amount.product_cost = amount.product_cost ? parseInt(amount.product_cost) : 0;
-        amount.shipping_cost = amount.shipping_cost ? parseInt(amount.shipping_cost) : 0;
-        amount.handling_cost = amount.handling_cost ? parseInt(amount.handling_cost) : 0;
-        amount.fees = amount.fees ? parseInt(amount.fees) : 0;
+        amount.sold_price = amount.sold_price ? parseFloat(amount.sold_price) : 0;
+        amount.product_cost = amount.product_cost ? parseFloat(amount.product_cost) : 0;
+        amount.shipping_cost = amount.shipping_cost ? parseFloat(amount.shipping_cost) : 0;
+        amount.handling_cost = amount.handling_cost ? parseFloat(amount.handling_cost) : 0;
+        amount.fees = amount.fees ? parseFloat(amount.fees) : 0;
         amount.profit = amount.sold_price - (amount.product_cost + amount.shipping_cost + amount.handling_cost + amount.fees);
-        $("input#profit_input").val(amount.profit);
+        $("input#fees_input").val(parseFloat(amount.fees).toFixed(2));
+        this.renderProfit(amount.profit, amount.sold_price);
     },
     save: function(){
         var invoice = this.getInvoice();
@@ -314,7 +321,7 @@ var Invoice = {
             shipping_cost: $("#shipping_cost_input").val(),
             handling_cost: $("#handling_cost_input").val(),
             fees: $("#fees_input").val(),
-            profit: $("#profit_input").val()
+            profit: this.sold_price - (this.product_cost + this.shipping_cost + this.handling_cost + this.fees)
         };
         return invoice;
     },
@@ -372,7 +379,7 @@ var Invoice = {
         $("input#shipping_cost_input").val(invoice.shipping_cost);
         $("input#handling_cost_input").val(invoice.handling_cost);
         $("input#fees_input").val(invoice.fees);
-        $("input#profit_input").val(invoice.profit);
+        this.renderProfit(invoice.profit, invoice.sold_price);
     },
     reset: function(){
         $("#store_list_ul .list-group-item.active").removeClass('active');
