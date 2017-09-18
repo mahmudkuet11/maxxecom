@@ -170,12 +170,13 @@ class PriceService
         $data = [];
         $console = new ConsoleOutput();
         foreach ($workbook->createRowIterator($myWorksheetIndex) as $rowIndex => $values) {
+            dd(explode("|", $values[0]));
             if($rowIndex < 2) continue;
             $dataArray = explode('|', $values[0]);
             $data[] = [
                 'store' =>  Store::KEYSTONE,
                 'sku'   =>  $dataArray[2],
-                'price'   =>  $dataArray[25],
+                'price'   =>  $dataArray[26],
                 'shipping_cost'   =>  0,
                 'handling_cost'   =>  0,
             ];

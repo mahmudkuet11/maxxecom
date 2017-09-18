@@ -47,9 +47,9 @@ Route::middleware(['auth'])->group(function(){
 
 
 Route::get('/store-price/sync', function(){
-    dispatch(new \App\Jobs\SyncStorePriceJob());
-    /*$priceService = new \App\Service\Store\PriceService();
-    $priceService->save();*/
+    //dispatch(new \App\Jobs\SyncStorePriceJob());
+    $priceService = new \App\Service\Store\PriceService();
+    $priceService->saveKeystone();
 });
 
 Route::get('/test', function(){

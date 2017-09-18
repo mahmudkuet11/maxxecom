@@ -627,7 +627,7 @@
         store: {
             price: {
                 url: '{{ route("store.price.get") }}',
-                data: {}
+                data: []
             }
         },
         invoice: {

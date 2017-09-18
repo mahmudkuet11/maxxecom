@@ -5,14 +5,18 @@ $(document).ready(function(){
     Invoice.init();
 
     $("#transaction_details_table input[name='price_comparison_section']").each(function(){
+        var sku = $(this).val();
         $.ajax({
             url: Global.store.price.url,
             method: 'GET',
             data: {
-                sku: $(this).val()
+                sku: sku
             },
             success: function(res){
-                Global.store.price.data = res;
+                Global.store.price.data.push({
+                    sku: sku,
+                    stores: res
+                });
             },
             error: function(){
                 alert('Can not fetch store price');
@@ -160,7 +164,11 @@ var Invoice = {
     setStorePriceToInvoice: function(){
         var $selectedStore = $("#store_list_ul .list-group-item.active");
         var store = $selectedStore.attr('data-store');
-        var price = Global.store.price.data[store];
+        for(var i in Global.store.price.data){
+            if(Global.store.price.data[i].sku == $("input[name='price_comparison_section']:checked").val()){
+                var price = Global.store.price.data[i].stores[store];
+            }
+        }
         var sold_price = $("input[name='price_comparison_section']:checked").closest('tr').attr('data-price');
         var product_cost = 0;
         var shipping_cost = 0;
@@ -172,7 +180,7 @@ var Invoice = {
             handling_cost = price.handling_cost;
 
         }
-        var profit = sold_price - (product_cost + shipping_cost + handling_cost);
+        var profit = parseFloat(sold_price - (product_cost + shipping_cost + handling_cost)).toFixed(2);
 
         $("input#sold_price_input").val(sold_price);
         $("input#product_cost_input").val(product_cost);
