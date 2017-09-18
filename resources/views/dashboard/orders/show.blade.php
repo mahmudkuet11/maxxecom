@@ -390,22 +390,12 @@
                 <div class="table-responsive">
                     <table class="table table-column">
                         <tbody>
-                        <tr>
-                            <td>
-                                <label for="">{{ $order->shippingAddress->shipping_service_selected }}</label>
-                            </td>
-                            <td><input type="text" class="form-control" id="currency-mask" placeholder="" value="{{ $order->shippingAddress->shipping_service_cost }}"></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <select class="form-control" id="basicSelect">
-                                    <option>FedEx ground or FedEx home delivery</option>
-                                    <option>DHL</option>
-                                    <option>Cargo</option>
-                                </select>
-                            </td>
-                            <td><input type="text" class="form-control currency-inputmask" id="currency-mask" placeholder="$____"></td>
-                        </tr>
+                            <tr>
+                                <td>
+                                    <label for="">{{ $order->shippingAddress->shipping_service_selected }}</label>
+                                </td>
+                                <td><input type="text" class="form-control" id="currency-mask" placeholder="" disabled value="{{ $order->shippingAddress->readable_shipping_service_cost }}"></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -415,7 +405,7 @@
     <div class="col-xs-6">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title">Sale Tax Rate <small class="text-muted" style="font-size:13px;"><input type="checkbox" /> Also charge sales tax on S&H</small></h4>
+                <h4 class="card-title">Sale Tax Rate</h4>
                 <a class="heading-elements-toggle"><i class="icon-ellipsis font-medium-3"></i></a>
                 <div class="heading-elements">
                     <ul class="list-inline mb-0">
@@ -430,31 +420,18 @@
 
                 <div class="table-responsive">
                     <table class="table ">
-
                         <tbody>
                         <tr>
                             <td>
                                 <label for="">{{ $order->sales_tax_state_value }}</label>
                             </td>
-                            <td><input type="text" class="form-control" id="percentage-mask" placeholder="__%" value="{{ $order->sales_tax_percent }}" /></td>
-                            <td><input type="text" class="form-control" id="currency-mask" placeholder="$____" value="${{ $order->sales_tax_amount }}"></td>
-
+                            <td><input type="text" class="form-control" disabled placeholder="" value="{{ $order->readable_sales_tax_percent }}" /></td>
+                            <td><input type="text" class="form-control" disabled placeholder="" value="{{ $order->readable_sales_tax_amount }}"></td>
                         </tr>
                         <tr>
-                            <td colspan="2" style="text-align:right;">
-                                Seller discount (-) or charges (+):
-                            </td>
-
-                            <td><input type="text" class="form-control currency-inputmask" id="currency-mask" placeholder="$____"></td>
-
-                        </tr>
-                        <tr>
-                            <td>
-                                <button class="btn btn-sm btn-success">Recalculate</button>
-                            </td>
+                            <td></td>
                             <th>Total</th>
                             <th>${{ $order->total }}</th>
-
                         </tr>
                         </tbody>
                     </table>

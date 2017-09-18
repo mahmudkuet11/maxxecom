@@ -70,6 +70,18 @@ class Order extends Model
         return $skus;
     }
 
+    public function getReadableSalesTaxPercentAttribute(){
+        $tax = $this->sales_tax_percent;
+        if($tax == 0) return "N/A";
+        return "{$tax}%";
+    }
+
+    public function getReadableSalesTaxAmountAttribute(){
+        $tax = $this->sales_tax_amount;
+        if($tax == 0) return "N/A";
+        return "${$tax}";
+    }
+
     public function scopeFilterStoreByUser($builder){
         $stores = \Auth::user()->user_stores->pluck('store_id')->toArray();
         return $builder->whereIn('store_id', $stores);

@@ -21,4 +21,10 @@ class ShippingAddress extends Model
         'shipping_service_selected',
         'shipping_service_cost',
     ];
+
+    public function getReadableShippingServiceCostAttribute(){
+        $cost = $this->shipping_service_cost;
+        if($cost == 0) return 'Free';
+        return $cost;
+    }
 }
