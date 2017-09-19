@@ -52,9 +52,17 @@ Route::get('/store-price/sync', function(){
     $priceService->saveKeystone();*/
 });
 
+Route::get('/store/listing/sync', function(){
+    dispatch(new \App\Jobs\SyncStoreListing(\App\Models\Store::first()));
+    //dd(\App\Service\Time::getDateFromISO8061Duration(\Carbon\Carbon::now(), 'PT23M'));
+    //(new \App\Service\Store\ItemService())->syncListings(\App\Models\Store::first());
+
+});
+
 Route::get('/test', function(){
-    $today = \Carbon\Carbon::today();
-    dd($today->format('H:i:s'));
+    dispatch(new \App\Jobs\SyncStoreListing(\App\Models\Store::first()));
+    //dd(\App\Service\Time::getDateFromISO8061Duration(\Carbon\Carbon::now(), 'PT23M'));
+    //(new \App\Service\Store\ItemService())->syncListings(\App\Models\Store::first());
 });
 
 Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');

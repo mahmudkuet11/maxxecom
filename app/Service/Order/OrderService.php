@@ -9,7 +9,6 @@ use App\Models\Order\Invoice;
 use App\Models\Order\Order;
 use App\Models\Order\Sku;
 use App\Models\Order\TrackingNumber;
-use App\Models\Order\Transaction;
 use App\Models\Store;
 use App\Service\eBay\CompleteSaleService;
 use App\Service\eBay\GetOrderService;
