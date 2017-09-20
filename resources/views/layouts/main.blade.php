@@ -123,6 +123,7 @@
 <script src="/app-assets/js/core/app-menu.min.js" type="text/javascript"></script>
 <script src="/app-assets/js/core/app.min.js" type="text/javascript"></script>
 <script src="/app-assets/js/scripts/ui/fullscreenSearch.min.js" type="text/javascript"></script>
+
 <script src="/js/pre_loader.js" type="text/javascript"></script>
 
 @yield('scripts')

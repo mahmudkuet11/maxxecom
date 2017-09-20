@@ -43,6 +43,8 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/order/invoice/save', 'Order\OrderController@saveInvoice')->name('invoice.save');
     Route::post('/order/submit', 'Order\OrderController@orderSubmit')->name('order.submit');
 
+    Route::get('/listing/active', 'Item\ListingController@getActiveListings')->name('item.listing.active');
+
 });
 
 

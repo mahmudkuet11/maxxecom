@@ -46,7 +46,7 @@ class ItemService
                 if($response->Ack == 'Success' || $response->Ack == 'Warning'){
                     $itemArray = $response->ActiveList->ItemArray;
                     if($itemArray){
-                        $this->saveItems($itemArray, ListingType::ACTIVE, $server_time);
+                        $this->saveItems($store, $itemArray, ListingType::ACTIVE, $server_time);
                     }
                     Console::writeln($response->ActiveList->PaginationResult->TotalNumberOfPages . "/" . $pageNum);
                 }else{
@@ -58,10 +58,11 @@ class ItemService
             Item::where('updated_at', '<', $now)->delete();
         }
 
-        public function saveItems($itemArray, $status, Carbon $server_time){
+        public function saveItems(Store $store, $itemArray, $status, Carbon $server_time){
             foreach ($itemArray->Item as $item){
                 try {
                     Item::updateOrCreate([
+                        'store_id'  =>  $store->id,
                         'item_id'  =>  $item->ItemID,
                     ], [
                         'buy_it_now_price'  =>  $item->BuyItNowPrice,
