@@ -127,12 +127,12 @@
                                     </select>
                                 </td>
                                 <td><span><img src="{{ $item->gallery_url }}" style="width:50px;" /></span></td>
-                                <td style="width:200px"><span><a href="" title="click to edit">{{ $item->title }}</a></span> </td>
+                                <td style="width:200px"><span><a href="{{ route('item.listing.revise', $item->id) }}" title="click to edit">{{ $item->title }}</a></span> </td>
                                 <td>{{ $item->sku }}</td>
                                 <td><a href="#"><div class="tag tag-pill tag-info"><i class="fa fa-list" aria-hidden="true"></i></div></a></td>
                                 <td>{{ $item->current_price }}</td>
                                 <td>{{ $item->quantity }}</td>
-                                <td>{{ $item->time_left }}</td>
+                                <td title="{{ $item->end_time }}">{{ $item->time_left }}</td>
                             </tr>
                             @endforeach
                             </tbody>

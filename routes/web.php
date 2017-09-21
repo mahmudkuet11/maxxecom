@@ -44,6 +44,7 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/order/submit', 'Order\OrderController@orderSubmit')->name('order.submit');
 
     Route::get('/listing/active', 'Item\ListingController@getActiveListings')->name('item.listing.active');
+    Route::get('/listing/{id}/revise', 'Item\ListingController@getReviseListing')->name('item.listing.revise');
 
 });
 

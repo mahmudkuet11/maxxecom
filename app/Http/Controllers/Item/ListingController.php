@@ -23,4 +23,8 @@ class ListingController extends Controller
             'items' =>  $items
         ]);
     }
+
+    public function getReviseListing($id){
+        return view('dashboard.item.revise');
+    }
 }
