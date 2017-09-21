@@ -93,18 +93,15 @@
                                 <th style="width:100px">Actions</th>
                                 <th style="width:100px">Photo</th>
                                 <th style="width:200px">Title</th>
-                                <th>Product</th>
                                 <th>Custom label (SKU)</th>
                                 <th>Format</th>
                                 <th>Current Price</th>
                                 <th>Available qty</th>
-                                <th>Watchers</th>
-                                <th>Bids</th>
-                                <th>Questions</th>
                                 <th>Time left</th>
                             </tr>
                             </thead>
                             <tbody>
+                            @foreach($items as $item)
                             <tr>
                                 <td style="width:40px;"><input type='checkbox' id='checkall' name='mydata' style="width:inherit;"></td>
                                 <td style="width:100px;">
@@ -129,19 +126,15 @@
                                         </option>
                                     </select>
                                 </td>
-                                <td><span><img src="../../../app-assets/images/product/BM10661061.jpg" style="width:100%;" /></span></td>
-                                <td style="width:200px"><span>Style Trunk Cargo Net for Toyota RAV4 2013 - 2017 NEW FREE SHIPPING</span> </td>
-                                <td>--</td>
-                                <td>GM1241342c-GM1241342c</td>
-                                <td><a href="#"><div class="tag tag-pill tag-info"><i class="fa fa-indent" aria-hidden="true"></i></div></a></td>
-                                <td>378.09</td>
-                                <td>1000</td>
-                                <td>0</td>
-                                <td>--</td>
-                                <td>0</td>
-                                <td>29d 10h 31m</td>
+                                <td><span><img src="{{ $item->gallery_url }}" style="width:50px;" /></span></td>
+                                <td style="width:200px"><span><a href="" title="click to edit">{{ $item->title }}</a></span> </td>
+                                <td>{{ $item->sku }}</td>
+                                <td><a href="#"><div class="tag tag-pill tag-info"><i class="fa fa-list" aria-hidden="true"></i></div></a></td>
+                                <td>{{ $item->current_price }}</td>
+                                <td>{{ $item->quantity }}</td>
+                                <td>{{ $item->time_left }}</td>
                             </tr>
-
+                            @endforeach
                             </tbody>
                         </table>
                     </div>

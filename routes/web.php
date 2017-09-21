@@ -62,9 +62,7 @@ Route::get('/store/listing/sync', function(){
 });
 
 Route::get('/test', function(){
-    dispatch(new \App\Jobs\SyncStoreListing(\App\Models\Store::first()));
-    //dd(\App\Service\Time::getDateFromISO8061Duration(\Carbon\Carbon::now(), 'PT23M'));
-    //(new \App\Service\Store\ItemService())->syncListings(\App\Models\Store::first());
+    dd(\Carbon\Carbon::parse('2017-09-20T11:44:11.000Z')->toDateTimeString());
 });
 
 Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');

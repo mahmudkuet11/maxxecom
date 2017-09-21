@@ -2,6 +2,8 @@
 
 namespace App\Models\Item;
 
+use App\Enum\ListingType;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Item extends Model
@@ -27,4 +29,20 @@ class Item extends Model
         'gallery_url',
         'listing_status',
     ];
+
+    public function getTimeLeftAttribute(){
+        $startTime = Carbon::parse($this->start_time);
+        $endTime = Carbon::parse($this->end_time);
+        $diff = $endTime->diffForHumans($startTime);
+        return $diff;
+    }
+
+    public function scopeFilterByUser($builder){
+        $stores = \Auth::user()->user_stores->pluck('store_id')->toArray();
+        return $builder->whereIn('store_id', $stores);
+    }
+
+    public function scopeActive($builder){
+        return $builder->where('listing_status', ListingType::search(ListingType::ACTIVE));
+    }
 }

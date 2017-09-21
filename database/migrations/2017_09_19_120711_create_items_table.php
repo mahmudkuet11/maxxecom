@@ -18,7 +18,7 @@ class CreateItemsTable extends Migration
             $table->integer('store_id');
             $table->decimal('buy_it_now_price');
             $table->string('item_id');
-            $table->timestamp('start_time');
+            $table->timestamp('start_time')->nullable();
             $table->mediumText('view_item_url');
             $table->mediumText('view_item_url_for_natural_search');
             $table->string('listing_duration');
