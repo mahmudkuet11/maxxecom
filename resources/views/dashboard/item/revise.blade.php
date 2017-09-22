@@ -47,7 +47,8 @@
                         </ul>
                     </div>
                 </div>
-                <div class="card-body collapse in">
+
+                <div class="card-body collapse in" id="listing_container">
                     <div class="card-block">
                         <div action="#" class="icons-tab-steps wizard-circle">
                             <!-- Step 1 -->
@@ -56,8 +57,8 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="firstName2">Title :</label>
-                                            <input type="text" class="form-control" id="firstName2">
+                                            <label for="input_title">Title :</label>
+                                            <input type="text" class="form-control" id="input_title" />
                                         </div>
                                         <div class="form-group">
                                             <label for="emailAddress3">Custom label :</label>
@@ -66,7 +67,6 @@
                                         <div class="form-group">
                                             <label for="emailAddress3">Second category :</label>
                                             <input type="email" class="form-control" id="#" value="Add a category">
-
                                         </div>
                                         <div class="form-group">
                                             <label for="eventType2">UPC</label>
@@ -898,6 +898,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -907,8 +908,17 @@
 
 @section('scripts')
 @parent
+
+<script>
+    var Global = {
+        item_id: parseInt('{{ $item->id }}'),
+        item_get_url: '{{ route("item.listing.get", $item->id) }}'
+    };
+</script>
+
 <script src="/app-assets/vendors/js/extensions/jquery.steps.min.js" type="text/javascript"></script>
 <script src="/app-assets/vendors/js/forms/validation/jquery.validate.min.js" type="text/javascript"></script>
 <script src="/app-assets/vendors/js/pickers/daterange/daterangepicker.js" type="text/javascript"></script>
 <script src="/app-assets/js/scripts/forms/wizard-steps.min.js" type="text/javascript"></script>
+<script src="/js/listing.js"></script>
 @endsection

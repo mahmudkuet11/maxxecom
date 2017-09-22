@@ -7,9 +7,9 @@ use GuzzleHttp\Client;
 
 abstract class EbayRequest
 {
-    public abstract function getCallName();
+    protected abstract function getCallName();
 
-    public function fetch(Store $store, $request_body){
+    protected function fetch(Store $store, $request_body){
         $client = new Client(
             [
                 "defaults" => [

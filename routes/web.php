@@ -45,7 +45,7 @@ Route::middleware(['auth'])->group(function(){
 
     Route::get('/listing/active', 'Item\ListingController@getActiveListings')->name('item.listing.active');
     Route::get('/listing/{id}/revise', 'Item\ListingController@getReviseListing')->name('item.listing.revise');
-
+    Route::get('/listing/item/{id}', 'Item\ListingController@getItem')->name('item.listing.get');
 });
 
 
@@ -63,7 +63,8 @@ Route::get('/store/listing/sync', function(){
 });
 
 Route::get('/test', function(){
-    dd(\Carbon\Carbon::parse('2017-09-20T11:44:11.000Z')->toDateTimeString());
+    $service = new \App\Service\Store\ItemService();
+    $service->fetchAndSaveItemDetails('110223231343');
 });
 
 Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');

@@ -1,0 +1,51 @@
+<?php
+
+namespace App\Models\Item;
+
+use Illuminate\Database\Eloquent\Model;
+
+class ItemDetail extends Model
+{
+    protected $fillable = [
+        'item_id',
+        'auto_pay',
+        'country',
+        'currency',
+        'description',
+        'ebay_item_id',
+        'start_time',
+        'end_time',
+        'listing_type',
+        'location',
+        'payment_method',
+        'paypal_email',
+        'primary_category_id',
+        'primary_category_name',
+        'upc',
+        'brand',
+        'quantity',
+        'weight_major',
+        'weight_minor',
+        'sales_tax_percent',
+        'sales_tax_state',
+        'is_shipping_included_in_tax',
+        'shipping_type',
+        'ship_to_location',
+        'site',
+        'store_category_id',
+        'store_category2_id',
+        'uuid',
+        'postal_code',
+        'gallery_url',
+        'dispatch_time_max',
+        'refund_option',
+        'returns_within_option',
+        'returns_accepted_option',
+        'return_policy_description',
+        'return_shipping_cost_paid_by',
+        'condition_id',
+        'hide_from_search',
+        'out_of_stock_control',
+    ];
+
+}

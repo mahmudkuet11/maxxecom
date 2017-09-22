@@ -3,6 +3,8 @@
 namespace App\Models\Item;
 
 use App\Enum\ListingType;
+use App\Enum\MetaScope;
+use App\Models\Store;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -45,4 +47,33 @@ class Item extends Model
     public function scopeActive($builder){
         return $builder->where('listing_status', ListingType::search(ListingType::ACTIVE));
     }
+
+    public function store(){
+        return $this->belongsTo(Store::class);
+    }
+
+    public function item_details(){
+        return $this->hasOne(ItemDetail::class);
+    }
+
+    public function images(){
+        return $this->hasMany(Image::class);
+    }
+
+    public function metas(){
+        return $this->hasMany(Meta::class, 'reference_id');
+    }
+
+    public function compatibility_metas(){
+        return $this->hasMany(Meta::class, 'reference_id')->where('scope', MetaScope::ITEM_COMPATIBILITY_LIST);
+    }
+
+    public function specifics_metas(){
+        return $this->hasMany(Meta::class, 'reference_id')->where('scope', MetaScope::ITEM_SPECIFICS);
+    }
+
+    public function shipping_service_options(){
+        return $this->hasMany(ShippingServiceOption::class);
+    }
+
 }
