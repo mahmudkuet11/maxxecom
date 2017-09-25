@@ -482,13 +482,11 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label for="projectinput5">Package Type</label>
+                                                            <?php $packageTypes = \App\Enum\Ebay\ShippingPackageDetails::toArray(); ?>
                                                             <select id="projectinput5" name="interested" class="form-control">
-                                                                <option value="none" selected="" disabled="">Package of thick envelop</option>
-                                                                <option value="design">design</option>
-                                                                <option value="development">development</option>
-                                                                <option value="illustration">illustration</option>
-                                                                <option value="branding">branding</option>
-                                                                <option value="video">video</option>
+                                                                @foreach($packageTypes as $k=>$v)
+                                                                <option value="{{ $k }}">{{ $v }}</option>
+                                                                @endforeach
                                                             </select>
                                                         </div>
                                                     </div>

@@ -67,6 +67,11 @@ var Listing = {
         $("#return_policy_description").val(item.item_details.return_policy_description);
         $("#input_restocking_fee").val(item.item_details.return_restocking_fee);
         $("input[name='is_return_accepted'][value='no']").prop('checked', item.item_details.returns_accepted_option == 'ReturnsNotAccepted');
+
+        // step 3
+
+
+
     },
     fillUpItemSpecifics: function(item){
         var specs = _.filter(item.specifics_metas, {scope: "ITEM_SPECIFICS"});
