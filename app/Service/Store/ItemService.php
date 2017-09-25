@@ -115,6 +115,7 @@ class ItemService
                         'paypal_email'  =>  (string)$response->Item->PayPalEmailAddress,
                         'primary_category_id'  =>  (int)$response->Item->PrimaryCategory->CategoryID,
                         'primary_category_name'  =>  (string)$response->Item->PrimaryCategory->CategoryName,
+                        'secondary_category_id'  =>  (string)$response->Item->SecondaryCategory->CategoryID,
                         'upc'  =>  (string)$response->Item->ProductListingDetails->UPC,
                         'brand'  =>  (string)$response->Item->ProductListingDetails->BrandMPN->Brand,
                         'quantity'  =>  (int)$response->Item->Quantity,
@@ -137,6 +138,7 @@ class ItemService
                         'returns_accepted_option'  =>  (string)$response->Item->ReturnPolicy->ReturnsAcceptedOption,
                         'return_policy_description'  =>  (string)$response->Item->ReturnPolicy->Description,
                         'return_shipping_cost_paid_by'  =>  (string)$response->Item->ReturnPolicy->ShippingCostPaidByOption,
+                        'return_restocking_fee'  =>  (string)$response->Item->ReturnPolicy->RestockingFeeValueOption,
                         'condition_id'  =>  (int)$response->Item->ConditionID,
                         'hide_from_search'  =>  (boolean)$response->Item->HideFromSearch,
                         'out_of_stock_control'  =>  (boolean)$response->Item->OutOfStockControl,
@@ -161,15 +163,22 @@ class ItemService
                             'free_shipping'  =>  (boolean)$opt->FreeShipping,
                         ]);
                     }
-                    if(isset($response->Item->ItemCompatibilityList->Compatibility->NameValueList)){
-                        foreach ($response->Item->ItemCompatibilityList->Compatibility->NameValueList as $compatibility){
-                            if((string)$compatibility->Name){
-                                $item->compatibility_metas()->updateOrCreate([
-                                    'reference_id'   =>  $item->id,
-                                    'name'  =>  $compatibility->Name,
-                                    'value'  =>  $compatibility->Value,
-                                ], []);
+                    if(isset($response->Item->ItemCompatibilityList->Compatibility)){
+                        foreach ($response->Item->ItemCompatibilityList->Compatibility as $compatibility){
+                            $data = [];
+                            foreach ($compatibility->NameValueList as $nameValueList){
+                                $name = (string)$nameValueList->Name;
+                                $value = (string)$nameValueList->Value;
+                                if($name){
+                                    $data[$name] = $value;
+                                }
                             }
+                            $item->compatibility_metas()->updateOrCreate([
+                                'reference_id'   =>  $item->id,
+                                'name'  =>  'NameValueList',
+                                'value'  =>  json_encode($data),
+                                'scope' =>  MetaScope::ITEM_COMPATIBILITY_LIST
+                            ], []);
                         }
                     }
 
@@ -178,6 +187,7 @@ class ItemService
                             'reference_id'   =>  $item->id,
                             'name'  =>  $specs->Name,
                             'value'  =>  $specs->Value,
+                            'scope' =>  MetaScope::ITEM_SPECIFICS
                         ], []);
                     }
                     DB::commit();

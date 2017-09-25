@@ -27,8 +27,9 @@ class CreateItemDetailsTable extends Migration
             $table->string('location');
             $table->string('payment_method');
             $table->string('paypal_email');
-            $table->integer('primary_category_id');
+            $table->string('primary_category_id');
             $table->string('primary_category_name');
+            $table->string('secondary_category_id');
             $table->string('upc');
             $table->string('brand');
             $table->integer('quantity');
@@ -51,6 +52,7 @@ class CreateItemDetailsTable extends Migration
             $table->string('returns_accepted_option');
             $table->text('return_policy_description');
             $table->string('return_shipping_cost_paid_by');
+            $table->string('return_restocking_fee');
             $table->integer('condition_id');
             $table->boolean('hide_from_search');
             $table->boolean('out_of_stock_control');
