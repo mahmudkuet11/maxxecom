@@ -11,8 +11,8 @@ class Site extends Enum{
     ];
     const EBAY_GB = [
         'site_id'   =>  3,
-        'site_name'   =>  '	eBay UK',
-        'global_id'   =>  '	EBAY-GB'
+        'site_name'   =>  'eBay UK',
+        'global_id'   =>  'EBAY-GB'
     ];
     const EBAY_MOTOR = [
         'site_id'   =>  100,

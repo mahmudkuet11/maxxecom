@@ -57,6 +57,9 @@
             <li class=" nav-item">
                 <a href="#"><i class="icon-clipboard2"></i><span class="menu-title">Listing</span></a>
                 <ul class="menu-content">
+                    <li class="{{ active_menu('item.listing.find', $active_menu) }}">
+                        <a href="{{ route('item.listing.find') }}" class="menu-item">New</a>
+                    </li>
                     <li class="{{ active_menu('item.listing.active', $active_menu) }}">
                         <a href="{{ route('item.listing.active') }}" class="menu-item">Active</a>
                     </li>

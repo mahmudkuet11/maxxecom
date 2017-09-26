@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Item;
 
 use App\Enum\ListingType;
 use App\Service\Item\ListingService;
+use App\Service\Store\StoreService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -34,5 +35,24 @@ class ListingController extends Controller
     public function getItem($id){
         $item = $this->service->getItem($id);
         return $item;
+    }
+
+    public function updateListing($id, Request $request){
+        try {
+            return $this->service->updateListing($id, $request);
+        } catch (\Exception $e) {
+            return [
+                'status'    =>  'error',
+                'msg'   =>  $e->getMessage()
+            ];
+        }
+    }
+
+    public function getFindListing(StoreService $storeService){
+        $stores = $storeService->getMyStores()->get();
+        return view('dashboard.item.find-listing', [
+            'active_menu'   =>  'item.listing.find',
+            'stores'    =>  $stores
+        ]);
     }
 }

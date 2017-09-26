@@ -57,6 +57,10 @@ class StoreService
         return new Store();
     }
 
+    public function getMyStores(){
+        return self::getAll()->filterByUser();
+    }
+
     public function get($id){
         return Store::where('id', $id);
     }

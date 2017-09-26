@@ -1,5 +1,10 @@
 @extends('layouts.main')
 
+@section('meta')
+@parent
+<meta name="csrf-token" content="{{ csrf_token() }}">
+@endsection
+
 @section('css')
 @parent
 <link rel="stylesheet" type="text/css" href="/app-assets/css/plugins/forms/wizard.min.css">
@@ -286,6 +291,22 @@
                                             </div>
                                         </div>
                                         <div class="form-group row">
+                                            <label class="col-md-3 label-control" for="input_condition_id">Condition</label>
+                                            <div class="col-md-9">
+                                                <select name="input_condition_id" id="input_condition_id" class="form-control">
+                                                    <option value="1000">New</option>
+                                                    <option value="1750">New with defects</option>
+                                                    <option value="2000">Manufacturer refurbished</option>
+                                                    <option value="2500">Seller refurbished</option>
+                                                    <option value="2750">Like New</option>
+                                                    <option value="3000">Used</option>
+                                                    <option value="5000">Good</option>
+                                                    <option value="6000">Acceptable</option>
+                                                    <option value="7000">For parts or not working</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
                                             <label class="col-md-3 label-control" for="input_price">Price</label>
                                             <div class="col-md-9">
                                                 <input type="text" class="form-control" id="input_price" />
@@ -329,8 +350,8 @@
                                                         <option value="Months_1">1 month</option>
                                                     </select>
                                                     <p>Refund will be given as</p>
-                                                    <select id="input_refund_given_as" name="budget" class="form-control">
-                                                        <option value="MoneyBack" selected="" disabled="">Money Back</option>
+                                                    <select id="input_refund_given_as" name="input_refund_given_as" class="form-control">
+                                                        <option value="MoneyBack">Money Back</option>
                                                         <option value="MoneyBackOrExchange">Money Back Or Exchange</option>
                                                         <option value="MoneyBackOrReplacement">Money Back Or Replacement</option>
                                                     </select>
@@ -460,16 +481,8 @@
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <label for="issueinput4">Cost</label>
-                                                            Handling time
-                                                            <select id="projectinput6" name="interested" class="form-control">
-                                                                <option value="none" selected="" disabled="">1 business day</option>
-                                                                <option value="design">design</option>
-                                                                <option value="development">development</option>
-                                                                <option value="illustration">illustration</option>
-                                                                <option value="branding">branding</option>
-                                                                <option value="video">video</option>
-                                                            </select>
+                                                            <label for="issueinput4">Max dispatch time</label>
+                                                            <input type="number" class="form-control" id="input_dispatch_time_max">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -532,6 +545,17 @@
                                             </div>
                                         </div>-->
                                         <div class="form-group row">
+                                            <label class="col-md-3 label-control" for="projectinput6">Country</label>
+                                            <div class="col-md-9">
+                                                <?php $countryCodes = \App\Enum\Ebay\CountryCodeType::toArray() ?>
+                                                <select name="input_country" id="input_country" class="form-control">
+                                                    @foreach($countryCodes as $k=>$v)
+                                                    <option value="{{ $k }}">{{ $v }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
                                             <label class="col-md-3 label-control" for="projectinput6">Item location</label>
                                             <div class="col-md-9">
                                                 <input type="text" class="form-control" id="input_location">
@@ -559,7 +583,8 @@
 <script>
     var Global = {
         item_id: parseInt('{{ $item->id }}'),
-        item_get_url: '{{ route("item.listing.get", $item->id) }}'
+        item_get_url: '{{ route("item.listing.get", $item->id) }}',
+        post_revise_item_url: '{{ route("item.listing.update", $item->id) }}',
     };
 </script>
 
@@ -569,11 +594,19 @@
 <script src="/app-assets/js/scripts/forms/wizard-steps.min.js" type="text/javascript"></script>
 <script src="https://cdn.ckeditor.com/4.7.3/full/ckeditor.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
-<script src="/js/listing.js"></script>
+<script src="/js/pre_loader.js"></script>
+<script src="/js/revise-listing.js"></script>
 
 <script>
     $(document).ready(function(){
         CKEDITOR.replace('description_editor');
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
     });
 </script>
 

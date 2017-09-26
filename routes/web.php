@@ -43,8 +43,10 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/order/invoice/save', 'Order\OrderController@saveInvoice')->name('invoice.save');
     Route::post('/order/submit', 'Order\OrderController@orderSubmit')->name('order.submit');
 
+    Route::get('/listing/find', 'Item\ListingController@getFindListing')->name('item.listing.find');
     Route::get('/listing/active', 'Item\ListingController@getActiveListings')->name('item.listing.active');
     Route::get('/listing/{id}/revise', 'Item\ListingController@getReviseListing')->name('item.listing.revise');
+    Route::post('/listing/{id}/revise', 'Item\ListingController@updateListing')->name('item.listing.update');
     Route::get('/listing/item/{id}', 'Item\ListingController@getItem')->name('item.listing.get');
 });
 

@@ -203,6 +203,4 @@ class ItemService
             }
             throw new \Exception('Item not found');
         }
-
-
 }
