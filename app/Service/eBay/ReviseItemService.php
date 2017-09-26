@@ -87,7 +87,7 @@ class ReviseItemService extends EbayRequest
                 ],
                 'ListingType'   =>  'FixedPriceItem',
                 'ListingDuration'  =>  $request->get('duration'),
-                'StartPrice'  =>  $request->get('price'),
+                'BuyItNowPrice'  =>  $request->get('price'),
                 'Quantity'  =>  $request->get('quantity'),
                 'PaymentMethods'  =>  $request->get('payment_method', 'PayPal'),
                 'PayPalEmailAddress'  =>  $request->get('paypal_email'),

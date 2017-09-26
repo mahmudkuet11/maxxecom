@@ -55,4 +55,12 @@ class ListingController extends Controller
             'stores'    =>  $stores
         ]);
     }
+
+    public function getNewListing(Request $request){
+        $search = $request->has('store_id') && $request->has('site_id') && $request->has('item_id');
+        return view('dashboard.item.new', [
+            'active_menu'   =>  'item.listing.find',
+            'search'    =>  $search
+        ]);
+    }
 }

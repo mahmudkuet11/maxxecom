@@ -4,6 +4,13 @@ namespace App\Enum\Ebay;
 use MyCLabs\Enum\Enum;
 
 class Site extends Enum{
+
+    const EBAY_MOTOR = [
+        'site_id'   =>  100,
+        'site_name'   =>  'eBay Motors',
+        'global_id'   =>  'EBAY-MOTOR'
+    ];
+
     const EBAY_US = [
         'site_id'   =>  0,
         'site_name'   =>  'eBay United States',
@@ -13,11 +20,6 @@ class Site extends Enum{
         'site_id'   =>  3,
         'site_name'   =>  'eBay UK',
         'global_id'   =>  'EBAY-GB'
-    ];
-    const EBAY_MOTOR = [
-        'site_id'   =>  100,
-        'site_name'   =>  'eBay Motors',
-        'global_id'   =>  'EBAY-MOTOR'
     ];
 
     public static function getSiteBySiteID($siteID){

@@ -44,10 +44,14 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/order/submit', 'Order\OrderController@orderSubmit')->name('order.submit');
 
     Route::get('/listing/find', 'Item\ListingController@getFindListing')->name('item.listing.find');
+    Route::get('/listing/new', 'Item\ListingController@getNewListing')->name('item.listing.new');
+    Route::post('/listing/new', 'Item\ListingController@postNewListing')->name('item.listing.new.store');
     Route::get('/listing/active', 'Item\ListingController@getActiveListings')->name('item.listing.active');
     Route::get('/listing/{id}/revise', 'Item\ListingController@getReviseListing')->name('item.listing.revise');
     Route::post('/listing/{id}/revise', 'Item\ListingController@updateListing')->name('item.listing.update');
     Route::get('/listing/item/{id}', 'Item\ListingController@getItem')->name('item.listing.get');
+
+    Route::get('ebay/find/{store_id}/{item_id}', 'Item\ItemController@findItem')->name('ebay.item.find');
 });
 
 

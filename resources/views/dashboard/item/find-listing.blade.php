@@ -43,7 +43,7 @@
                 <div class="card-body collapse in">
                     <div class="card-block card-dashboard">
 
-                        <form method="post" action="">
+                        <form action="{{ route('item.listing.new') }}">
                             <div class="form-group row">
                                 <label class="col-md-3 label-control" for="store_id">Company</label>
                                 <div class="col-md-9">
