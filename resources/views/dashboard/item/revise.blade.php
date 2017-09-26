@@ -481,9 +481,9 @@
                                                 <div class="row">
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <label for="projectinput5">Package Type</label>
+                                                            <label for="input_shipping_package_type">Package Type</label>
                                                             <?php $packageTypes = \App\Enum\Ebay\ShippingPackageDetails::toArray(); ?>
-                                                            <select id="projectinput5" name="interested" class="form-control">
+                                                            <select id="input_shipping_package_type" name="interested" class="form-control">
                                                                 @foreach($packageTypes as $k=>$v)
                                                                 <option value="{{ $k }}">{{ $v }}</option>
                                                                 @endforeach
@@ -493,62 +493,48 @@
 
                                                     <div class="col-md-9">
                                                         <div class="form-group">
-                                                            <label for="eventType2">Dimensions :</label>
+                                                            <label for="eventType2">Dimensions (L X W X D) :</label>
                                                             <div class="row">
                                                                 <div class="col-md-4">
-                                                                    <input type="number" id="issueinput4" class="form-control" placeholder="width in inch">
+                                                                    <input type="number" id="input_package_length" class="form-control" placeholder="Length in inch">
                                                                 </div>
                                                                 <div class="col-md-4">
-                                                                    <input type="number" id="issueinput4" class="form-control" placeholder="width in inch">
+                                                                    <input type="number" id="input_package_width" class="form-control" placeholder="Width in inch">
                                                                 </div>
                                                                 <div class="col-md-4">
-                                                                    <input type="number" id="issueinput4" class="form-control" placeholder="width in inch">
+                                                                    <input type="number" id="input_package_depth" class="form-control" placeholder="Depth in inch">
                                                                 </div>
                                                             </div>
 
                                                         </div>
                                                     </div>
 
-
-
-
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="eventType2">Weight :</label>
                                                     <div class="row">
                                                         <div class="col-md-4">
-                                                            <select id="projectinput5" name="interested" class="form-control">
-                                                                <option value="none" selected="" disabled="">Custom weight</option>
-                                                                <option value="design">design</option>
-                                                                <option value="development">development</option>
-                                                                <option value="illustration">illustration</option>
-                                                                <option value="branding">branding</option>
-                                                                <option value="video">video</option>
-                                                            </select>
+                                                            <input type="number" id="input_weight_major" class="form-control" placeholder="Weight Major in lbs">
                                                         </div>
                                                         <div class="col-md-4">
-                                                            <input type="number" id="issueinput4" class="form-control" placeholder="width in inch">
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <input type="number" id="issueinput4" class="form-control" placeholder="width in inch">
+                                                            <input type="number" id="input_weight_minor" class="form-control" placeholder="Weight minor in oz">
                                                         </div>
                                                     </div>
 
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="form-group row">
+                                        <!--<div class="form-group row">
                                             <label class="col-md-3 label-control" for="projectinput6">Excluded shippiing locations</label>
                                             <div class="col-md-9">
                                                 <p>Alaska/Hawaii, US Protectorates, APO/FPO, Equatorial Guinea, Kenya, Egypt, Niger, Zambia</p>
                                                 <a href="#">Edit list</a>
                                             </div>
-                                        </div>
+                                        </div>-->
                                         <div class="form-group row">
                                             <label class="col-md-3 label-control" for="projectinput6">Item location</label>
                                             <div class="col-md-9">
-                                                <p>Alaska/Hawaii, US Protectorates, APO/FPO, Equatorial Guinea, Kenya, Egypt, Niger, Zambia</p>
-                                                <a href="#">Edit list</a>
+                                                <input type="text" class="form-control" id="input_location">
                                             </div>
                                         </div>
                                     </div>

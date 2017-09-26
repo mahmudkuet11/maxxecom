@@ -33,8 +33,12 @@ class CreateItemDetailsTable extends Migration
             $table->string('upc');
             $table->string('brand');
             $table->integer('quantity');
+            $table->string('shipping_package');
             $table->decimal('weight_major');
             $table->decimal('weight_minor');
+            $table->decimal('package_length');
+            $table->decimal('package_width');
+            $table->decimal('package_depth');
             $table->decimal('sales_tax_percent');
             $table->string('sales_tax_state');
             $table->boolean('is_shipping_included_in_tax');

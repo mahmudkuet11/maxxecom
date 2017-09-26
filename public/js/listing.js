@@ -69,9 +69,13 @@ var Listing = {
         $("input[name='is_return_accepted'][value='no']").prop('checked', item.item_details.returns_accepted_option == 'ReturnsNotAccepted');
 
         // step 3
-
-
-
+        $("#input_shipping_package_type").val(item.item_details.shipping_package);
+        $("#input_package_length").val(item.item_details.package_length);
+        $("#input_package_width").val(item.item_details.package_width);
+        $("#input_package_depth").val(item.item_details.package_depth);
+        $("#input_weight_major").val(item.item_details.weight_major);
+        $("#input_weight_minor").val(item.item_details.weight_minor);
+        $("#input_location").val(item.item_details.location);
     },
     fillUpItemSpecifics: function(item){
         var specs = _.filter(item.specifics_metas, {scope: "ITEM_SPECIFICS"});
