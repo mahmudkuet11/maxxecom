@@ -14,7 +14,8 @@
         "myclabs/php-enum": "^1.5",
         "phpoffice/phpexcel": "^1.8",
         "rap2hpoutre/laravel-log-viewer": "^0.10.4",
-        "spatie/array-to-xml": "^2.6"
+        "spatie/array-to-xml": "^2.6",
+        "unisharp/laravel-filemanager": "^1.8"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

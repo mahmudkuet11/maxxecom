@@ -53,6 +53,24 @@ class AddItemService extends EbayRequest
                 ]
             ];
         }
+        $images = [];
+        foreach ($request->get('images') as $image){
+            $images[] = $image;
+        }
+
+        $shippingServices = [];
+        $priority = 1;
+        foreach ($request->get('domestic_shipping_services') as $service){
+            $shippingServices[] = [
+                'FreeShipping'  =>  $service['is_free'] == true ? 'true' : 'false',
+                'ShippingService'   =>  $service['shipping_service'],
+                'ShippingServicePriority'   =>  $priority,
+                'ShippingServiceCost'   =>  $service['cost'],
+                'ShippingServiceAdditionalCost'   =>  $service['additional_cost'],
+                'ShippingSurcharge'   =>  $service['surcharge'],
+            ];
+            $priority++;
+        }
 
         $reqArray = [
             'RequesterCredentials'  =>  [
@@ -78,8 +96,8 @@ class AddItemService extends EbayRequest
                 ],
                 'PictureDetails'    =>  [
                     'GalleryType'   =>  'Gallery',
-                    'GalleryURL'  =>  'https://vignette2.wikia.nocookie.net/harrypotter/images/0/00/Harry_James_Potter34.jpg',
-                    'PictureURL'  =>  'https://vignette2.wikia.nocookie.net/harrypotter/images/0/00/Harry_James_Potter34.jpg',
+                    'GalleryURL'  =>  $images[0],
+                    'PictureURL'  =>  $images,
                 ],
                 'ItemSpecifics' =>  $specificsArray,
                 'ItemCompatibilityList' =>  $compatibilitiesArray,
@@ -106,11 +124,7 @@ class AddItemService extends EbayRequest
                 ],
                 'ShippingDetails'   =>  [
                     'ShippingType'  =>  'Flat',
-                    'ShippingServiceOptions'    =>  [
-                        'ShippingService'   =>  'USPSPriority',
-                        'ShippingServicePriority'   =>  1,
-                        'ShippingServiceCost'   =>  2.50
-                    ]
+                    'ShippingServiceOptions'    =>  $shippingServices
                 ],
                 'Site'  =>  'US'
             ]

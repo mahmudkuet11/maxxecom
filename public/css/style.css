@@ -117,3 +117,31 @@
         transform: rotate(360deg);
     }
 }
+
+#image_container{}
+#image_container ul{
+    list-style: none;
+}
+#image_container ul li{
+    display: inline-block;
+    position: relative;
+    margin-right: 10px;
+}
+#image_container ul li img{
+    width: 115px;
+    height: auto;
+}
+#image_container ul li a{
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #e74c3c;
+    color: #fff;
+    font-size: 14px;
+    padding: 0 10px;
+    opacity: 0.6;
+    font-weight: bold;
+}
+#image_container ul li:hover a{
+    opacity: 1;
+}
