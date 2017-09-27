@@ -123,7 +123,7 @@ var Listing = {
         // step 2
         $("#input_listing_duration").val(item.listing_duration);
         $("#input_condition_id").val(item.item_details.condition_id);
-        $("#input_price").val(item.buy_it_now_price);
+        $("#input_price").val(item.current_price);
         $("#input_quantity").val(item.quantity);
         $("#input_paypal_email").val(item.item_details.paypal_email);
         $("#input_checkout_instruction").val(item.item_details.paypal_email);

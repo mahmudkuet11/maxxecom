@@ -43,13 +43,15 @@ class ListingService
             $itemService->fetchAndSaveItemDetails($item->item_id);
             return [
                 'status'    =>  'success',
-                'msg'   =>  'Listing is updated successfully'
+                'msg'   =>  'Listing is updated successfully',
+                'errors'    =>  EbayRequest::parseErrorMessage($response)
             ];
 
         }else{
             return [
                 'status'    =>  'error',
-                'msg'   =>  'Listing could not be updated'
+                'msg'   =>  'Listing could not be updated',
+                'errors'    =>  EbayRequest::parseErrorMessage($response)
             ];
         }
     }

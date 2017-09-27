@@ -27,7 +27,9 @@ var Item = {
 
 var Listing = {
     init: function(){
-        Item.fetchByItemID(Global.item_id, _.bind(this.fillUpWizard, this));
+        if(Global.ebay_item_search){
+            Item.fetchByItemID(Global.item_id, _.bind(this.fillUpWizard, this));
+        }
         this.listen();
         Compatibility.init();
     },
