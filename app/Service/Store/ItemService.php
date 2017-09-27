@@ -95,6 +95,135 @@ class ItemService
             }
         }
 
+        public function fetchAndSaveItem($ebayItemId, Store $store){
+            $getItemService = new GetItemService();
+            $response = $getItemService->getItem($store, $ebayItemId);
+            \Log::debug((string)$response->Item->ItemID);
+            $server_time = Carbon::parse((string)$response->Timestamp);
+            DB::beginTransaction();
+            try {
+                $item = Item::create([
+                    'store_id'  =>  $store->id,
+                    'item_id'  =>  $response->Item->ItemID,
+                    'buy_it_now_price'  =>  (double)$response->Item->BuyItNowPrice,
+                    'start_time'  =>  Carbon::parse($response->Item->ListingDetails->StartTime)->toDateTimeString(),
+                    'view_item_url'  =>  (string)$response->Item->ListingDetails->ViewItemURL,
+                    'view_item_url_for_natural_search'  =>  (string)$response->Item->ListingDetails->ViewItemURLForNaturalSearch,
+                    'listing_duration'  =>  (string)$response->Item->ListingDuration,
+                    'is_global_shipping'  =>  (bool)$response->Item->ShippingDetails,
+                    'listing_type'  =>  (string)$response->Item->ListingType,
+                    'quantity'  =>  (int)$response->Item->Quantity,
+                    'current_price'  =>  (double)$response->Item->SellingStatus->CurrentPrice,
+                    'shipping_service_cost'  =>  (double)$response->Item->ShippingDetails->ShippingServiceOptions->ShippingServiceCost,
+                    'shipping_type'  =>  (string)$response->Item->ShippingDetails->ShippingType->GlobalShipping,
+                    'end_time'  =>  Time::getDateFromISO8061Duration($server_time, (string)$response->Item->TimeLeft),
+                    'title'  =>  (string)$response->Item->Title,
+                    'sku'  =>  (string)$response->Item->SKU,
+                    'gallery_url'  =>  (string)$response->Item->PictureDetails->GalleryURL,
+                    'listing_status'  =>  ListingType::ACTIVE,
+                ]);
+
+                $item->item_details()->create([
+                    'item_id'   =>  $item->id,
+                    'auto_pay'  =>  (boolean)$response->Item->AutoPay,
+                    'country'  =>  (string)$response->Item->Country,
+                    'currency'  =>  (string)$response->Item->Currency,
+                    'description'  =>  (string)$response->Item->Description,
+                    'ebay_item_id'  =>  (string)$response->Item->ItemID,
+                    'start_time'  =>  Carbon::parse($response->Item->ListingDetails->StartTime)->toDateTimeString(),
+                    'end_time'  =>  Carbon::parse($response->Item->ListingDetails->EndTime)->toDateTimeString(),
+                    'listing_type'  =>  (string)$response->Item->ListingType,
+                    'location'  =>  (string)$response->Item->Location,
+                    'payment_method'  =>  (string)$response->Item->PaymentMethods,
+                    'paypal_email'  =>  (string)$response->Item->PayPalEmailAddress,
+                    'primary_category_id'  =>  (int)$response->Item->PrimaryCategory->CategoryID,
+                    'primary_category_name'  =>  (string)$response->Item->PrimaryCategory->CategoryName,
+                    'secondary_category_id'  =>  (string)$response->Item->SecondaryCategory->CategoryID,
+                    'upc'  =>  (string)$response->Item->ProductListingDetails->UPC,
+                    'brand'  =>  (string)$response->Item->ProductListingDetails->BrandMPN->Brand,
+                    'quantity'  =>  (int)$response->Item->Quantity,
+                    'shipping_package'  =>  (string)$response->Item->ShippingPackageDetails->ShippingPackage,
+                    'weight_major'  =>  (double)$response->Item->ShippingPackageDetails->WeightMajor,
+                    'weight_minor'  =>  (double)$response->Item->ShippingPackageDetails->WeightMinor,
+                    'package_length'  =>  (double)$response->Item->ShippingPackageDetails->PackageLength,
+                    'package_width'  =>  (double)$response->Item->ShippingPackageDetails->PackageWidth,
+                    'package_depth'  =>  (double)$response->Item->ShippingPackageDetails->PackageDepth,
+                    'sales_tax_percent'  =>  (double)$response->Item->ShippingDetails->SalesTax->SalesTaxPercent,
+                    'sales_tax_state'  =>  (string)$response->Item->ShippingDetails->SalesTax->SalesTaxState,
+                    'is_shipping_included_in_tax'  =>  (boolean)$response->Item->ShippingDetails->SalesTax->ShippingIncludedInTax,
+                    'shipping_type'  =>  (string)$response->Item->ShippingDetails->ShippingType,
+                    'ship_to_location'  =>  (string)$response->Item->ShipToLocations,
+                    'site'  =>  (string)$response->Item->Site,
+                    'store_category_id'  =>  (int)$response->Item->Storefront->StoreCategoryID,
+                    'store_category2_id'  =>  (int)$response->Item->Storefront->StoreCategory2ID,
+                    'uuid'  =>  (string)$response->Item->UUID,
+                    'postal_code'  =>  (string)$response->Item->PostalCode,
+                    'gallery_url'  =>  (string)$response->Item->PictureDetails->GalleryURL,
+                    'dispatch_time_max'  =>  (int)$response->Item->DispatchTimeMax,
+                    'refund_option'  =>  (string)$response->Item->ReturnPolicy->RefundOption,
+                    'returns_within_option'  =>  (string)$response->Item->ReturnPolicy->ReturnsWithinOption,
+                    'returns_accepted_option'  =>  (string)$response->Item->ReturnPolicy->ReturnsAcceptedOption,
+                    'return_policy_description'  =>  (string)$response->Item->ReturnPolicy->Description,
+                    'return_shipping_cost_paid_by'  =>  (string)$response->Item->ReturnPolicy->ShippingCostPaidByOption,
+                    'return_restocking_fee'  =>  (string)$response->Item->ReturnPolicy->RestockingFeeValueOption,
+                    'condition_id'  =>  (int)$response->Item->ConditionID,
+                    'hide_from_search'  =>  (boolean)$response->Item->HideFromSearch,
+                    'out_of_stock_control'  =>  (boolean)$response->Item->OutOfStockControl,
+                ]);
+                foreach ($response->Item->PictureDetails->PictureURL as $pic){
+                    $item->images()->create([
+                        'item_id'   =>  $item->id,
+                        'url'   =>  (string)$pic
+                    ]);
+                }
+
+                foreach ($response->Item->ShippingDetails->ShippingServiceOptions as $opt){
+                    $item->shipping_service_options()->create([
+                        'item_id'   =>  $item->id,
+                        'shipping_service'  =>  (string)$opt->ShippingService,
+                        'shipping_service_cost'  =>  (double)$opt->ShippingServiceCost,
+                        'shipping_service_additional_cost'  =>  (double)$opt->ShippingServiceAdditionalCost,
+                        'shipping_service_priority'  =>  (int)$opt->ShippingServicePriority,
+                        'shipping_time_min'  =>  (int)$opt->ShippingTimeMin,
+                        'shipping_time_max'  =>  (int)$opt->ShippingTimeMax,
+                        'free_shipping'  =>  (boolean)$opt->FreeShipping,
+                    ]);
+                }
+                if(isset($response->Item->ItemCompatibilityList->Compatibility)){
+                    foreach ($response->Item->ItemCompatibilityList->Compatibility as $compatibility){
+                        $data = [];
+                        foreach ($compatibility->NameValueList as $nameValueList){
+                            $name = (string)$nameValueList->Name;
+                            $value = (string)$nameValueList->Value;
+                            if($name){
+                                $data[$name] = $value;
+                            }
+                        }
+                        $item->compatibility_metas()->create([
+                            'reference_id'   =>  $item->id,
+                            'name'  =>  'NameValueList',
+                            'value'  =>  json_encode($data),
+                            'scope' =>  MetaScope::ITEM_COMPATIBILITY_LIST
+                        ]);
+                    }
+                }
+
+                foreach ($response->Item->ItemSpecifics->NameValueList as $specs){
+                    $item->specifics_metas()->create([
+                        'reference_id'   =>  $item->id,
+                        'name'  =>  $specs->Name,
+                        'value'  =>  $specs->Value,
+                        'scope' =>  MetaScope::ITEM_SPECIFICS
+                    ]);
+                }
+                DB::commit();
+                return true;
+            } catch (\Exception $e) {
+                DB::rollback();
+                throw $e;
+            }
+        }
+
         public function fetchAndSaveItemDetails($ebayItemId){
             $item = Item::where('item_id', $ebayItemId)->first();
             $getItemService = new GetItemService();

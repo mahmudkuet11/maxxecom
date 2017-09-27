@@ -45,7 +45,7 @@ Route::middleware(['auth'])->group(function(){
 
     Route::get('/listing/find', 'Item\ListingController@getFindListing')->name('item.listing.find');
     Route::get('/listing/new', 'Item\ListingController@getNewListing')->name('item.listing.new');
-    Route::post('/listing/new', 'Item\ListingController@postNewListing')->name('item.listing.new.store');
+    Route::post('/listing/new/{store_id}', 'Item\ListingController@postNewListing')->name('item.listing.new.store');
     Route::get('/listing/active', 'Item\ListingController@getActiveListings')->name('item.listing.active');
     Route::get('/listing/{id}/revise', 'Item\ListingController@getReviseListing')->name('item.listing.revise');
     Route::post('/listing/{id}/revise', 'Item\ListingController@updateListing')->name('item.listing.update');
@@ -69,8 +69,16 @@ Route::get('/store/listing/sync', function(){
 });
 
 Route::get('/test', function(){
-    $service = new \App\Service\Store\ItemService();
-    $service->fetchAndSaveItemDetails('110223231343');
+    $test = [
+        'a' =>  [1,2,3]
+    ];
+    $request_body = \Spatie\ArrayToXml\ArrayToXml::convert($test, [
+        'rootElementName'   =>  'AddItemRequest',
+        '_attributes'   =>  [
+            'xmlns' =>  'urn:ebay:apis:eBLBaseComponents'
+        ]
+    ], false, 'UTF-8');
+    dd($request_body);
 });
 
 Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');

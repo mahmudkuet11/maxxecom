@@ -2,20 +2,20 @@
 
 namespace App\Service\eBay;
 
-use App\Models\Item\Item;
+
 use App\Models\Store;
 use Illuminate\Http\Request;
 use Spatie\ArrayToXml\ArrayToXml;
 
-class ReviseItemService extends EbayRequest
+class AddItemService extends EbayRequest
 {
 
-    protected function getCallName(){
-        return 'ReviseItem';
+    protected function getCallName()
+    {
+        return 'AddItem';
     }
 
-    public function updateList(Item $item, Store $store, Request $request){
-
+    public function addItem(Store $store, Request $request){
         $specifics = $request->get('specifics');
         $specificsArray = [];
         foreach ($specifics as $specific){
@@ -59,7 +59,7 @@ class ReviseItemService extends EbayRequest
                 'eBayAuthToken' =>  $store->auth_token
             ],
             'Item'  =>  [
-                'ItemID'    =>  $item->item_id,
+                'Currency'  =>  'USD',
                 'Country'  =>  $request->get('country'),
                 'Location'  =>  $request->get('location'),
                 'DispatchTimeMax'  =>  $request->get('max_dispatch_time'),
@@ -103,12 +103,21 @@ class ReviseItemService extends EbayRequest
                     'ShippingPackage'  =>  $request->get('shipping_package_type'),
                     'WeightMajor'  =>  $request->get('weight_major'),
                     'WeightMinor'  =>  $request->get('weight_minor'),
-                ]
+                ],
+                'ShippingDetails'   =>  [
+                    'ShippingType'  =>  'Flat',
+                    'ShippingServiceOptions'    =>  [
+                        'ShippingService'   =>  'USPSPriority',
+                        'ShippingServicePriority'   =>  1,
+                        'ShippingServiceCost'   =>  2.50
+                    ]
+                ],
+                'Site'  =>  'US'
             ]
         ];
 
         $request_body = ArrayToXml::convert($reqArray, [
-            'rootElementName'   =>  'ReviseItemRequest',
+            'rootElementName'   =>  'AddItemRequest',
             '_attributes'   =>  [
                 'xmlns' =>  'urn:ebay:apis:eBLBaseComponents'
             ]
@@ -116,4 +125,5 @@ class ReviseItemService extends EbayRequest
 
         return $this->fetch($store, $request_body);
     }
+
 }

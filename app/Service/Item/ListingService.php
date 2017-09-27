@@ -4,6 +4,9 @@ namespace App\Service\Item;
 
 use App\Models\Item\Item;
 use App\Models\Item\ItemDetail;
+use App\Models\Store;
+use App\Service\eBay\AddItemService;
+use App\Service\eBay\EbayRequest;
 use App\Service\eBay\ReviseItemService;
 use App\Service\Store\ItemService;
 use Illuminate\Http\Request;
@@ -49,5 +52,34 @@ class ListingService
                 'msg'   =>  'Listing could not be updated'
             ];
         }
+    }
+
+    public function postNewListing(Store $store, Request $request){
+        $addItemService = new AddItemService();
+        $response = $addItemService->addItem($store, $request);
+        if($response->Ack == 'Success' || $response->Ack == 'Warning'){
+            $itemService = new ItemService();
+            try {
+                $res = $itemService->fetchAndSaveItem((string)$response->ItemID, $store);
+                if($res){
+                    return [
+                        'status'    =>  'success',
+                        'msg'   =>  'Item is listed successfully',
+                        'errors'    =>  EbayRequest::parseErrorMessage($response)
+                    ];
+                }
+            } catch (\Exception $e) {
+                return [
+                    'status'    =>  'error',
+                    'msg'   =>  $e->getTraceAsString(),
+                    'errors'    =>  EbayRequest::parseErrorMessage($response)
+                ];
+            }
+        }
+        return [
+            'status'    =>  'error',
+            'msg'   =>  'Item could not be listed',
+            'errors'    =>  EbayRequest::parseErrorMessage($response)
+        ];
     }
 }

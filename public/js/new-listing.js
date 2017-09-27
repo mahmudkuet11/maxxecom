@@ -89,9 +89,10 @@ var Listing = {
         $("body").trigger('pre_loader:show');
         $.ajax({
             method: 'POST',
-            url: Global.post_revise_item_url,
+            url: Global.post_store_item_url,
             data: item,
             success: function(res){
+                console.log(res);
                 $("body").trigger('pre_loader:hide');
                 if(res.status == 'success'){
                     $("body").trigger('pre_loader:notification:show', ['success', res.msg]);
@@ -107,7 +108,6 @@ var Listing = {
 
     },
     fillUpWizard: function(item){
-        console.log(item);
         // step 1
         $("#input_title").val(item.title);
         $("#input_category").val(item.item_details.primary_category_id);

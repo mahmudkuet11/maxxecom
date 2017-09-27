@@ -38,4 +38,12 @@ abstract class EbayRequest
         $response = simplexml_load_string($request->getBody()->getContents());
         return $response;
     }
+
+    public static function parseErrorMessage($response){
+        $error_messages = [];
+        foreach ($response->Errors as $error){
+            $error_messages[] = (string)$error->LongMessage;
+        }
+        return $error_messages;
+    }
 }

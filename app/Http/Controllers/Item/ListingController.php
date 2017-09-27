@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Item;
 
 use App\Enum\ListingType;
+use App\Models\Store;
 use App\Service\Item\ListingService;
 use App\Service\Store\StoreService;
 use Illuminate\Http\Request;
@@ -62,5 +63,10 @@ class ListingController extends Controller
             'active_menu'   =>  'item.listing.find',
             'search'    =>  $search
         ]);
+    }
+
+    public function postNewListing($store_id, Request $request){
+        $store = Store::find($store_id);
+        return $this->service->postNewListing($store, $request);
     }
 }

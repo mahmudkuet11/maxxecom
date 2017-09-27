@@ -585,7 +585,7 @@
         ebay_item_search: '{{ $search }}' == '1',
         item_id: parseInt('{{ request("item_id") }}'),
         item_get_url: '{{ route("ebay.item.find", ["store_id"=>request("store_id"), "item_id"=>request("item_id")]) }}',
-        post_store_item_url: '{{ route("item.listing.new.store") }}',
+        post_store_item_url: '{{ route("item.listing.new.store", ["store_id"=>request("store_id")]) }}',
         store_id: parseInt('{{ request("store_id") }}'),
     };
 </script>
