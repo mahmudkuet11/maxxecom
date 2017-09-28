@@ -11,6 +11,7 @@ class UserTableSeeder extends Seeder
      */
     public function run()
     {
+        \App\User::truncate();
         \App\User::create([
             'name'  =>  'Mahmud',
             'email' =>  'mahmudkuet11@gmail.com',

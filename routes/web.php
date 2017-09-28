@@ -69,16 +69,7 @@ Route::get('/store/listing/sync', function(){
 });
 
 Route::get('/test', function(){
-    $test = [
-        'a' =>  [1,2,'true']
-    ];
-    $request_body = \Spatie\ArrayToXml\ArrayToXml::convert($test, [
-        'rootElementName'   =>  'AddItemRequest',
-        '_attributes'   =>  [
-            'xmlns' =>  'urn:ebay:apis:eBLBaseComponents'
-        ]
-    ], false, 'UTF-8');
-    dd($request_body);
+    
 });
 
 Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
