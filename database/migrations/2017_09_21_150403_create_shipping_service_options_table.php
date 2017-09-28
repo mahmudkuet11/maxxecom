@@ -20,6 +20,7 @@ class CreateShippingServiceOptionsTable extends Migration
             $table->decimal('shipping_service_cost');
             $table->decimal('shipping_service_additional_cost');
             $table->integer('shipping_service_priority');
+            $table->decimal('surcharge');
             $table->integer('shipping_time_min');
             $table->integer('shipping_time_max');
             $table->boolean('free_shipping');

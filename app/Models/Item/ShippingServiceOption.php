@@ -12,6 +12,7 @@ class ShippingServiceOption extends Model
         'shipping_service_cost',
         'shipping_service_additional_cost',
         'shipping_service_priority',
+        'surcharge',
         'shipping_time_min',
         'shipping_time_max',
         'free_shipping',

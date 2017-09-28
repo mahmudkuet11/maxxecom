@@ -150,6 +150,7 @@ $(document).ready(function(){
         var template = Global.shipping_service_row_template;
         var html = template();
         $("#domestic_shipping_container").append(html);
+        $("#domestic_shipping_container .domestic_shipping_row:not(:first-child)").find('.free_shipping_checkbox').closest('label').remove();
     });
 
     $("#domestic_shipping_container").on('change', '.free_shipping_checkbox', function(){

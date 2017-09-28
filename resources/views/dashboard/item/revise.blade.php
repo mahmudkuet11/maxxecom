@@ -94,7 +94,18 @@
                                     </div>
 
                                     <div class="col-md-12">
-                                        <!--Image upload-->
+                                        <form>
+                                            <h4 class="form-section"><i class="icon-file-text"></i> Upload Images</h4>
+                                            <div class="row" id="image_container">
+                                                <ul>
+                                                    <li>
+                                                        <button type="button" id="upload_image_btn" class="btn btn-primary btn-sm">
+                                                            <i class="icon-plus"></i> Upload
+                                                        </button>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </form>
                                     </div>
 
                                 </div>
@@ -104,90 +115,9 @@
                                         <form>
                                             <h4 class="form-section"><i class="icon-file-text"></i> Item specifies</h4>
                                             <div class="row" id="item_specifics_container">
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label for="input_brand">Brand</label>
-                                                        <input type="text" class="form-control" id="input_brand">
-                                                    </div>
-                                                </div>
 
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label for="input_mpn">Manufacturer part number</label>
-                                                        <input type="text" class="form-control" id="input_mpn">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label for="input_ipn">Interchange part number</label>
-                                                        <input type="text" class="form-control" id="input_ipn">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label for="input_opn">Other part number</label>
-                                                        <input type="text" class="form-control" id="input_opn">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label for="input_placement_in_vehicle">Placement in vehicle</label>
-                                                        <input type="text" class="form-control" id="input_placement_in_vehicle">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label for="input_surface_finish">Surface finish</label>
-                                                        <input type="text" class="form-control" id="input_surface_finish">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label for="input_warranty">Warranty</label>
-                                                        <input type="text" class="form-control" id="input_warranty">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label for="input_type">Type</label>
-                                                        <input type="text" class="form-control" id="input_type">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label for="input_fitment_type">Fitment Type</label>
-                                                        <input type="text" class="form-control" id="input_fitment_type">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label for="input_material">Material</label>
-                                                        <input type="text" class="form-control" id="input_material">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label for="input_country_of_region_manufacturer">Country or region of manufacturer</label>
-                                                        <input type="text" class="form-control" id="input_country_of_region_manufacturer">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label for="input_superseded_part_no">Superseded Part Number</label>
-                                                        <input type="text" class="form-control" id="input_superseded_part_no">
-                                                    </div>
-                                                </div>
                                             </div>
+                                            <button type="button" id="add_item_specifics_row" class="btn btn-primary btn-sm">Add Item Specific</button>
                                         </form>
                                     </div>
                                 </div>
@@ -395,93 +325,117 @@
                                         <div class="form-group row">
                                             <label class="col-md-3 label-control" for="projectinput6">Domestic shipping</label>
                                             <div class="col-md-9">
-                                                <select id="projectinput6" name="interested" class="form-control">
-                                                    <option value="none" selected="" disabled="">Flat: same cost to all buyers</option>
-                                                    <option value="design">design</option>
-                                                    <option value="development">development</option>
-                                                    <option value="illustration">illustration</option>
-                                                    <option value="branding">branding</option>
-                                                    <option value="video">video</option>
-                                                </select>
-                                                <div class="c-inputs-stacked">
-                                                    <label class="inline custom-control custom-checkbox block">
-                                                        <input type="checkbox" class="custom-control-input" checked>
-                                                        <span class="custom-control-indicator"></span>
-                                                        <span class="custom-control-description ml-0">Use my rate tables</span>
-
-                                                    </label>
-
-                                                </div>
-                                                <a class="cm-link" href="#">Create/Edit rate tables</a>
                                                 <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label for="issueinput3">Services</label><a href="#" target="_blank"> Calculate Shipping</a>
-                                                            <input type="text" class="form-control">
-                                                            <div class="c-inputs-stacked">
-                                                                <label class="inline custom-control custom-checkbox block">
-                                                                    <input type="checkbox" class="custom-control-input" checked>
-                                                                    <span class="custom-control-indicator"></span>
-                                                                    <span class="custom-control-description ml-0">Add a surcharge for Alaska, Hawawii and Puerto Rico</span><input />
-
-                                                                </label>
-
+                                                    <div id="domestic_shipping_container">
+                                                        <!--
+                                                        <div class="domestic_shipping_row">
+                                                            <div class="col-md-3">
+                                                                <label for="">&nbsp;</label>
+                                                                <select name="input_domestic_service" class="form-control">
+                                                                    <option value="">-- Choose a service --</option>
+                                                                    <optgroup label="Economy Services"></optgroup>
+                                                                    <option value="US_DGMSmartMailGroundFromHK">DGM SmartMail Ground From HK</option>
+                                                                    <option value="US_DGMSmartMailGroundFromCN">DGM SmartMail Ground From CN</option>
+                                                                    <option value="US_DGMSmartMailGroundFromTW">DGM SmartMail Ground From TW</option>
+                                                                    <option value="FedExSmartPost">FedEx SmartPost</option>
+                                                                    <option value="US_UPSSurePostFromHK">UPS Surepost From HK</option>
+                                                                    <option value="US_UPSSurePostFromCN">UPS Surepost From CN</option>
+                                                                    <option value="US_UPSSurePostFromTW">UPS Surepost From TW</option>
+                                                                    <option value="US_UPSSurePost">UPS Surepost</option>
+                                                                    <option value="USPSMedia">USPS Media Mail</option>
+                                                                    <option value="USPSParcel">USPS Parcel Select Ground</option>
+                                                                    <option value="USPSStandardPost">USPS Retail Ground</option>
+                                                                    <option value="US_DGMSmartMailGround">DGM SmartMail Ground</option>
+                                                                    <option value="Other">Economy Shipping</option>
+                                                                    <optgroup label="Standard Services"></optgroup>
+                                                                    <option value="FedExHomeDelivery">FedEx Ground or FedEx Home Delivery</option>
+                                                                    <option value="UPSGround">UPS Ground</option>
+                                                                    <option value="USPSFirstClass">USPS First Class Package</option>
+                                                                    <option value="US_DGMSmartMailExpeditedFromHK">DGM SmartMail Expedited From HK</option>
+                                                                    <option value="US_DGMSmartMailExpeditedFromCN">DGM SmartMail Expedited From CN</option>
+                                                                    <option value="US_DGMSmartMailExpeditedFromTW">DGM SmartMail Expedited From TW</option>
+                                                                    <option value="US_DGMSmartMailExpedited">DGM SmartMail Expedited</option>
+                                                                    <option value="ShippingMethodStandard">Standard Shipping</option>
+                                                                    <optgroup label="Expedited Services"></optgroup>
+                                                                    <option value="FedEx2Day">FedEx 2Day</option>
+                                                                    <option value="FedExExpressSaver">FedEx Express Saver</option>
+                                                                    <option value="FedExPriorityOvernight">FedEx Priority Overnight</option>
+                                                                    <option value="FedExStandardOvernight">FedEx Standard Overnight</option>
+                                                                    <option value="UPS2ndDay">UPS 2nd Day Air</option>
+                                                                    <option value="UPS3rdDay">UPS 3 Day Select</option>
+                                                                    <option value="UPSNextDayAir">UPS Next Day Air</option>
+                                                                    <option value="UPSNextDay">UPS Next Day Air Saver</option>
+                                                                    <option value="USPSPriority">USPS Priority Mail</option>
+                                                                    <option value="USPSExpressMail">USPS Priority Mail Express</option>
+                                                                    <option value="USPSExpressFlatRateEnvelope">USPS Priority Mail Express Flat Rate Envelope</option>
+                                                                    <option value="USPSExpressMailLegalFlatRateEnvelope">USPS Priority Mail Express Legal Flat Rate Envelope</option>
+                                                                    <option value="USPSPriorityFlatRateEnvelope">USPS Priority Mail Flat Rate Envelope</option>
+                                                                    <option value="USPSPriorityMailLargeFlatRateBox">USPS Priority Mail Large Flat Rate Box</option>
+                                                                    <option value="USPSPriorityMailLegalFlatRateEnvelope">USPS Priority Mail Legal Flat Rate Envelope</option>
+                                                                    <option value="USPSPriorityFlatRateBox">USPS Priority Mail Medium Flat Rate Box</option>
+                                                                    <option value="USPSPriorityMailPaddedFlatRateEnvelope">USPS Priority Mail Padded Flat Rate Envelope</option>
+                                                                    <option value="USPSPriorityMailSmallFlatRateBox">USPS Priority Mail Small Flat Rate Box</option>
+                                                                    <option value="ShippingMethodExpress">Expedited Shipping</option>
+                                                                    <option value="ShippingMethodOvernight">One-day Shipping</option>
+                                                                    <optgroup label="Other Services"></optgroup>
+                                                                    <option value="US_FedExIntlEconomy">FedEx International Economy</option>
+                                                                    <option value="US_UPSWorldwideExpeditedFromHK">UPS WorldWide Expedited From HK</option>
+                                                                    <option value="US_UPSWorldwideExpeditedFromCN">UPS WorldWide Expedited From CN</option>
+                                                                    <option value="US_UPSWorldwideExpeditedFromTW">UPS WorldWide Expedited From TW</option>
+                                                                    <option value="US_UPSWorldwideExpressSaverFromHK">UPS Worldwide Express Saver From HK</option>
+                                                                    <option value="US_UPSWorldwideExpressSaverFromCN">UPS Worldwide Express Saver From CN</option>
+                                                                    <option value="US_UPSWorldwideExpressSaverFromTW">UPS Worldwide Express Saver From TW</option>
+                                                                    <option value="US_DHLGlobalMailParcelDirectFromHK">DHL Global Mail Parcel Direct From HK</option>
+                                                                    <option value="US_DHLGlobalMailParcelDirectFromCN">DHL Global Mail Parcel Direct From CN</option>
+                                                                    <option value="US_DHLGlobalMailParcelDirectFromTW">DHL Global Mail Parcel Direct From TW</option>
+                                                                    <option value="US_EconomyShippingFromGC">Economy Shipping from China/Hong Kong/Taiwan to worldwide</option>
+                                                                    <option value="EconomyShippingFromOutsideUS">Economy Shipping from outside US</option>
+                                                                    <option value="ePacketChina">ePacket delivery from China</option>
+                                                                    <option value="ePacketHongKong">ePacket delivery from Hong Kong</option>
+                                                                    <option value="US_ExpeditedShippingFromGC">Expedited Shipping from China/Hong Kong/Taiwan to worldwide</option>
+                                                                    <option value="ExpeditedShippingFromOutsideUS">Expedited Shipping from outside US</option>
+                                                                    <option value="FlatRateFreight">Flat Rate Freight</option>
+                                                                    <option value="US_StandardShippingFromGC">Standard Shipping from China/Hong Kong/Taiwan to worldwide</option>
+                                                                    <option value="StandardShippingFromOutsideUS">Standard Shipping from outside US</option>
+                                                                    <optgroup label="Local Pickup"></optgroup>
+                                                                    <option value="Pickup">Local Pickup</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label for="issueinput4">Cost</label>
+                                                                    <label class="inline custom-control custom-checkbox block">
+                                                                        <input type="checkbox" class="custom-control-input" checked>
+                                                                        <span class="custom-control-indicator"></span>
+                                                                        <span class="custom-control-description ml-0"> <a href="#" target="_blank"> Free shipping</a></span>
+                                                                    </label>
+                                                                    <input type="text" class="form-control currency-inputmask" id="currency-mask" placeholder="Enter Currency in USD">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label for="issueinput4">Each Additional</label>
+                                                                    <input type="text" class="form-control currency-inputmask" id="currency-mask" placeholder="Enter Currency in USD">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label for="issueinput4">AK/HI/PR Surcharge</label>
+                                                                    <input type="text" class="form-control currency-inputmask" id="currency-mask" placeholder="Enter Currency in USD">
+                                                                </div>
                                                             </div>
                                                         </div>
+                                                        -->
                                                     </div>
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label for="issueinput4">Cost</label>
-                                                            <label class="inline custom-control custom-checkbox block">
-                                                                <input type="checkbox" class="custom-control-input" checked>
-                                                                <span class="custom-control-indicator"></span>
-                                                                <span class="custom-control-description ml-0"> <a href="#" target="_blank"> Free shipping</a></span>
-                                                            </label>
-                                                            <input type="text" class="form-control currency-inputmask" id="currency-mask" placeholder="Enter Currency in USD">
-                                                        </div>
+                                                    <div class="col-md-12">
+                                                        <a class="cm-link" href="#" id="edit_rate_table_btn"><i class="icon-plus-square"></i> Edit rate tables</a>
                                                     </div>
                                                 </div>
+                                                <hr />
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <label for="issueinput3">Services</label><a href="#" target="_blank"> Offer additional service</a>
-                                                            <input type="text" class="form-control">
-                                                            <div class="c-inputs-stacked">
-                                                                <label class="inline custom-control custom-checkbox block">
-                                                                    <input type="checkbox" class="custom-control-input" checked>
-                                                                    <span class="custom-control-indicator"></span>
-                                                                    <span class="custom-control-description ml-0">Add a surcharge for Alaska, Hawawii and Puerto Rico</span><input />
-
-                                                                </label>
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label for="issueinput4">Cost</label>
-                                                            <a href="#" target="_blank">Remove service</a>
-                                                            <input type="text" class="form-control currency-inputmask" id="currency-mask" placeholder="Enter Currency in USD">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-
-                                                            <label class="inline custom-control custom-checkbox block">
-                                                                <input type="checkbox" class="custom-control-input" checked>
-                                                                <span class="custom-control-indicator"></span>
-                                                                <span class="custom-control-description ml-0">Offer local pickup</span>
-                                                            </label>
-                                                            <input type="text" id="issueinput4" class="form-control" placeholder="Enter pickup cost">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label for="issueinput4">Max dispatch time</label>
+                                                            <label for="input_dispatch_time_max">Max dispatch time</label>
                                                             <input type="number" class="form-control" id="input_dispatch_time_max">
                                                         </div>
                                                     </div>
@@ -575,6 +529,36 @@
     </div>
 </section>
 
+<div class="modal fade in" id="new_item_specifics_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                <fieldset>
+                    <form class="form form-horizontal">
+                        <div class="form-body">
+                            <div class="form-group row">
+                                <label class="col-md-3 label-control" for="input_new_item_specific_label">Item specific label</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="input_new_item_specific_label">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </fieldset>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary save_btn">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @section('scripts')
@@ -594,6 +578,7 @@
 <script src="/app-assets/js/scripts/forms/wizard-steps.min.js" type="text/javascript"></script>
 <script src="https://cdn.ckeditor.com/4.7.3/full/ckeditor.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
+<script src="/js/script.js"></script>
 <script src="/js/pre_loader.js"></script>
 <script src="/js/revise-listing.js"></script>
 

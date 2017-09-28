@@ -183,6 +183,7 @@ class ItemService
                         'shipping_service'  =>  (string)$opt->ShippingService,
                         'shipping_service_cost'  =>  (double)$opt->ShippingServiceCost,
                         'shipping_service_additional_cost'  =>  (double)$opt->ShippingServiceAdditionalCost,
+                        'surcharge'  =>  (double)$opt->ShippingSurcharge,
                         'shipping_service_priority'  =>  (int)$opt->ShippingServicePriority,
                         'shipping_time_min'  =>  (int)$opt->ShippingTimeMin,
                         'shipping_time_max'  =>  (int)$opt->ShippingTimeMax,
@@ -294,6 +295,7 @@ class ItemService
                         ], [
                             'shipping_service_cost'  =>  (double)$opt->ShippingServiceCost,
                             'shipping_service_additional_cost'  =>  (double)$opt->ShippingServiceAdditionalCost,
+                            'surcharge'  =>  (double)$opt->ShippingSurcharge,
                             'shipping_service_priority'  =>  (int)$opt->ShippingServicePriority,
                             'shipping_time_min'  =>  (int)$opt->ShippingTimeMin,
                             'shipping_time_max'  =>  (int)$opt->ShippingTimeMax,
@@ -416,6 +418,7 @@ class ItemService
                         'shipping_service'  =>  (string)$opt->ShippingService,
                         'shipping_service_cost'  =>  (double)$opt->ShippingServiceCost,
                         'shipping_service_additional_cost'  =>  (double)$opt->ShippingServiceAdditionalCost,
+                        'surcharge'  =>  (double)$opt->ShippingSurcharge,
                         'shipping_service_priority'  =>  (int)$opt->ShippingServicePriority,
                         'shipping_time_min'  =>  (int)$opt->ShippingTimeMin,
                         'shipping_time_max'  =>  (int)$opt->ShippingTimeMax,

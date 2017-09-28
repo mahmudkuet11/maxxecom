@@ -112,7 +112,6 @@ var Listing = {
         });
 
         item.images = images;
-
         $("body").trigger('pre_loader:show');
         $.ajax({
             method: 'POST',
@@ -135,7 +134,6 @@ var Listing = {
 
     },
     fillUpWizard: function(item){
-        console.log(item);
         // step 1
         $("#input_title").val(item.title);
         $("#input_category").val(item.item_details.primary_category_id);
@@ -211,12 +209,11 @@ var Listing = {
         for(var i in services){
             var html = Global.shipping_service_row_template();
             $("#domestic_shipping_container").append(html);
+            $("#domestic_shipping_container .domestic_shipping_row:not(:first-child)").find('.free_shipping_checkbox').closest('label').remove();
             var row = $("#domestic_shipping_container .domestic_shipping_row:last-child");
             row.find('select').val(services[i].shipping_service);
             row.find('input.cost').val(services[i].shipping_service_cost);
             row.find('input.additional_cost').val(services[i].shipping_service_additional_cost);
-            //@Todo Add surcharge field in table (database)
-            // @Todo check free shipping checkbox value is not working properly
             row.find('input.surcharge').val(services[i].surcharge);
             row.find('input.free_shipping_checkbox').prop('checked', services[i].free_shipping);
         }
