@@ -52,6 +52,9 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/listing/item/{id}', 'Item\ListingController@getItem')->name('item.listing.get');
 
     Route::get('ebay/find/{store_id}/{item_id}', 'Item\ItemController@findItem')->name('ebay.item.find');
+    Route::get('/ebay/{site_id}/category', 'EBayCategoryController@getCategories')->name('ebay.category.get');
+
+
 });
 
 
@@ -69,7 +72,7 @@ Route::get('/store/listing/sync', function(){
 });
 
 Route::get('/test', function(){
-    
+
 });
 
 Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
