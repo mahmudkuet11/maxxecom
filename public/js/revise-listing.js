@@ -82,6 +82,28 @@ var Listing = {
             });
         });
         item.compatibilities = compatibilities;
+
+        var shipping_services = [];
+        $(".domestic_shipping_row").each(function(){
+            var service = $(this).find('select').val();
+            var cost = $(this).find('input.cost').val();
+            var additional_cost = $(this).find('input.additional_cost').val();
+            var surcharge = $(this).find('input.surcharge').val();
+            var isFree = $(this).find('input.free_shipping_checkbox').prop('checked');
+            shipping_services.push({
+                shipping_service: service,
+                cost: cost,
+                additional_cost: additional_cost,
+                surcharge: surcharge,
+                is_free: isFree
+            });
+        });
+        item.domestic_shipping_services = shipping_services;
+        var images = [];
+        $("#image_container img").each(function(){
+            images.push($(this).attr('src'));
+        });
+        item.images = images;
         $("body").trigger('pre_loader:show');
         $.ajax({
             method: 'POST',
@@ -113,6 +135,8 @@ var Listing = {
         $("#input_store_category2_id").val(item.item_details.store_category2_id);
         $("#input_upc").val(item.item_details.upc);
 
+        this.fillUpImages(item);
+
         // Item specifics
         this.fillUpItemSpecifics(item);
 
@@ -136,6 +160,7 @@ var Listing = {
         $("input[name='is_return_accepted'][value='no']").prop('checked', item.item_details.returns_accepted_option == 'ReturnsNotAccepted');
 
         // step 3
+        this.fillUpDomesticShippingServices(item);
         $("#input_dispatch_time_max").val(item.item_details.dispatch_time_max);
         $("#input_shipping_package_type").val(item.item_details.shipping_package);
         $("#input_package_length").val(item.item_details.package_length);
@@ -158,6 +183,32 @@ var Listing = {
                                     <% }); %>');
         var compiled = template({specs: specs});
         $("#item_specifics_container").html(compiled);
+    },
+    fillUpImages: function(item){
+        var images = item.images;
+        var single_image_template = _.
+        template('<li>\
+                    <img src="<%- src %>" alt="">\
+                    <a href="#" class="remove_img_btn">X</a>\
+                </li>');
+        for(var i in images){
+            var html = single_image_template({src: images[i].url});
+            $("#image_container ul li:last-child").before(html);
+        }
+    },
+    fillUpDomesticShippingServices: function(item){
+        var services = item.shipping_service_options;
+        for(var i in services){
+            var html = Global.shipping_service_row_template();
+            $("#domestic_shipping_container").append(html);
+            $("#domestic_shipping_container .domestic_shipping_row:not(:first-child)").find('.free_shipping_checkbox').closest('label').remove();
+            var row = $("#domestic_shipping_container .domestic_shipping_row:last-child");
+            row.find('select').val(services[i].shipping_service);
+            row.find('input.cost').val(services[i].shipping_service_cost);
+            row.find('input.additional_cost').val(services[i].shipping_service_additional_cost);
+            row.find('input.surcharge').val(services[i].surcharge);
+            row.find('input.free_shipping_checkbox').prop('checked', services[i].free_shipping);
+        }
     }
 };
 

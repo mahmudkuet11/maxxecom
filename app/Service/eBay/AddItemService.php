@@ -60,19 +60,15 @@ class AddItemService extends EbayRequest
 
         $shippingServices = [];
         $priority = 1;
-        \Log::debug('services: ', [$request->get('domestic_shipping_services')]);
         foreach ($request->get('domestic_shipping_services') as $service){
             if(array_key_exists('is_free', $service)){
-                \Log::debug('is_free_value', [$service['is_free']]);
                 if($service['is_free'] == 'true'){
-                    \Log::debug('is_free: ', ['true']);
                     $shippingServices[] = [
                         'FreeShipping'  =>  'true',
                         'ShippingService'   =>  $service['shipping_service'],
                         'ShippingServicePriority'   =>  $priority,
                     ];
                 }else{
-                    \Log::debug('is_free: ', ['false']);
                     $shippingServices[] = [
                         'FreeShipping'  =>  'false',
                         'ShippingService'   =>  $service['shipping_service'],

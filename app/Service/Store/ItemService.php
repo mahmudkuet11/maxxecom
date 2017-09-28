@@ -98,7 +98,6 @@ class ItemService
         public function fetchAndSaveItem($ebayItemId, Store $store){
             $getItemService = new GetItemService();
             $response = $getItemService->getItem($store, $ebayItemId);
-            \Log::debug((string)$response->Item->ItemID);
             $server_time = Carbon::parse((string)$response->Timestamp);
             DB::beginTransaction();
             try {
@@ -229,9 +228,29 @@ class ItemService
             $item = Item::where('item_id', $ebayItemId)->first();
             $getItemService = new GetItemService();
             $response = $getItemService->getItem($item->store, $item->item_id);
+            $server_time = Carbon::parse((string)$response->Timestamp);
             if($response->Ack == 'Success'){
                 DB::beginTransaction();
                 try {
+
+                    $item->update([
+                        'item_id'  =>  $response->Item->ItemID,
+                        'buy_it_now_price'  =>  (double)$response->Item->BuyItNowPrice,
+                        'start_time'  =>  Carbon::parse($response->Item->ListingDetails->StartTime)->toDateTimeString(),
+                        'view_item_url'  =>  (string)$response->Item->ListingDetails->ViewItemURL,
+                        'view_item_url_for_natural_search'  =>  (string)$response->Item->ListingDetails->ViewItemURLForNaturalSearch,
+                        'listing_duration'  =>  (string)$response->Item->ListingDuration,
+                        'is_global_shipping'  =>  (bool)$response->Item->ShippingDetails,
+                        'listing_type'  =>  (string)$response->Item->ListingType,
+                        'quantity'  =>  (int)$response->Item->Quantity,
+                        'current_price'  =>  (double)$response->Item->SellingStatus->CurrentPrice,
+                        'shipping_service_cost'  =>  (double)$response->Item->ShippingDetails->ShippingServiceOptions->ShippingServiceCost,
+                        'shipping_type'  =>  (string)$response->Item->ShippingDetails->ShippingType->GlobalShipping,
+                        'end_time'  =>  Time::getDateFromISO8061Duration($server_time, (string)$response->Item->TimeLeft),
+                        'title'  =>  (string)$response->Item->Title,
+                        'sku'  =>  (string)$response->Item->SKU,
+                        'gallery_url'  =>  (string)$response->Item->PictureDetails->GalleryURL,
+                    ]);
 
                     $item->item_details()->updateOrCreate([
                         'item_id'   =>  $item->id

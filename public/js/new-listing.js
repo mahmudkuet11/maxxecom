@@ -118,7 +118,6 @@ var Listing = {
             url: Global.post_store_item_url,
             data: item,
             success: function(res){
-                console.log(res);
                 $("body").trigger('pre_loader:hide');
                 if(res.status == 'success'){
                     $("body").trigger('pre_loader:notification:show', ['success', res.msg]);
