@@ -66,6 +66,7 @@
                                     @if($permissionService->hasUserManagePermission($store))
                                     <a href="{{ route('store.user.manage', $store->id) }}" class="btn btn-default">User Manage</a>
                                     @endif
+                                    <a href="{{ route('store.settings.get', $store->id) }}" class="btn btn-default">Settings</a>
                                 </td>
                             </tr>
                             @empty

@@ -55,6 +55,10 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/ebay/{site_id}/category', 'EBayCategoryController@getCategories')->name('ebay.category.get');
     Route::get('/ebay/category/hierarchy-name', 'EBayCategoryController@getCategoryHierarchyName')->name('ebay.category.hierarchy_name');
 
+    Route::get('/store/{id}/settings', 'Store\SettingsController@getSettings')->name('store.settings.get');
+
+    Route::post('/store/{id}/settings', 'Store\SettingsController@updateSettings')->name('store.settings.update');
+
 });
 
 
