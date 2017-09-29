@@ -19,4 +19,23 @@ class EBayCategoryService
         }
         return $builder;
     }
+
+    public function getCategoryHierarchyName($ebayCatID, $siteID){
+        $catCollection = collect([]);
+        $cat = EbayCategory::where('site_id', $siteID)
+            ->where('category_id', $ebayCatID)->first();
+        if($cat){
+            $level = $cat->level;
+            $catCollection->push($cat);
+            for ($i=$level; $i>=1; $i--){
+                $cat = EbayCategory::where('site_id', $siteID)
+                    ->where('category_id', $cat->parent_id)->first();
+                $catCollection->push($cat);
+            }
+            $catCollection->pop();
+            return $catCollection->reverse()->implode('name', ' > ');
+        }else{
+            return '';
+        }
+    }
 }

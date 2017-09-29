@@ -87,7 +87,7 @@
                                                 </span>
                                                 <input type="text" class="form-control" id="input_category" value="" disabled>
                                             </div>
-                                            <small id="category_hierarchy"></small>
+                                            <small id="category_hierarchy" class="text-success"></small>
                                         </div>
                                         <div class="form-group">
                                             <label for="input_store_category_id">Store category :</label>
@@ -579,7 +579,6 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary save_btn">Save</button>
             </div>
         </div>
     </div>
@@ -598,6 +597,8 @@
         item_get_url: '{{ route("ebay.item.find", ["store_id"=>request("store_id"), "item_id"=>request("item_id")]) }}',
         post_store_item_url: '{{ route("item.listing.new.store", ["store_id"=>request("store_id")]) }}',
         store_id: parseInt('{{ request("store_id") }}'),
+        category_hierarchy_name_url: '{{ route("ebay.category.hierarchy_name") }}',
+        site_id: parseInt('{{ request("site_id") }}')
     };
 </script>
 

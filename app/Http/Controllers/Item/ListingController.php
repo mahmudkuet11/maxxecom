@@ -27,7 +27,7 @@ class ListingController extends Controller
     }
 
     public function getReviseListing($id){
-        $item = $this->service->get($id)->first();
+        $item = $this->service->get($id)->with('store')->first();
         return view('dashboard.item.revise', [
             'item'  =>  $item
         ]);

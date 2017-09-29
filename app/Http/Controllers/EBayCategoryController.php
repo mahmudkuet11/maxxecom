@@ -17,4 +17,10 @@ class EBayCategoryController extends Controller
     public function getCategories($site_id, Request $request){
         return $this->service->getCategories($site_id, $request)->get();
     }
+
+    public function getCategoryHierarchyName(Request $request){
+        $catID = $request->get('category_id');
+        $siteID = $request->get('site_id');
+        return $this->service->getCategoryHierarchyName($catID, $siteID);
+    }
 }

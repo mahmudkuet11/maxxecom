@@ -15,8 +15,8 @@ $(document).ready(function(){
 
     $.when($.getStylesheet('/css/jqtree.css'), $.getScript('/js/tree.jquery.js'))
         .then(function () {
-
-            $(".ebay_category_tree").tree({
+            var $tree = $(".ebay_category_tree");
+            $tree.tree({
                 closedIcon: $('<i class="fa icon-plus-square"></i>'),
                 openedIcon: $('<i class="fa icon-minus-square"></i>'),
                 dataFilter: function(data){
@@ -34,7 +34,7 @@ $(document).ready(function(){
                 $("#select_category_modal").modal('show');
             });
 
-            $('.ebay_category_tree').bind(
+            $tree.bind(
                 'tree.select',
                 function(event) {
                     if (event.node) {

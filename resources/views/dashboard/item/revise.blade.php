@@ -81,7 +81,13 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="input_category">Category :</label>
-                                            <input type="text" class="form-control" id="input_category" value="">
+                                            <div class="input-group">
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-default" type="button" id="select_ebay_category">Select Category</button>
+                                                </span>
+                                                <input type="text" class="form-control" id="input_category" value="" disabled>
+                                            </div>
+                                            <small id="category_hierarchy" class="text-success"></small>
                                         </div>
                                         <div class="form-group">
                                             <label for="input_store_category_id">Store category :</label>
@@ -559,6 +565,25 @@
     </div>
 </div>
 
+<div class="modal fade in" id="select_category_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                <div class="ebay_category_tree" data-url="{{ route('ebay.category.get', $item->store->site_id) }}"></div>
+                <!--<div class="ebay_category_tree"></div>-->
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @section('scripts')
@@ -569,6 +594,8 @@
         item_id: parseInt('{{ $item->id }}'),
         item_get_url: '{{ route("item.listing.get", $item->id) }}',
         post_revise_item_url: '{{ route("item.listing.update", $item->id) }}',
+        category_hierarchy_name_url: '{{ route("ebay.category.hierarchy_name") }}',
+        site_id: parseInt('{{ $item->store->site_id }}')
     };
 </script>
 
@@ -578,6 +605,7 @@
 <script src="/app-assets/js/scripts/forms/wizard-steps.min.js" type="text/javascript"></script>
 <script src="https://cdn.ckeditor.com/4.7.3/full/ckeditor.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
+<script src="/js/ebay-category-select.js"></script>
 <script src="/js/script.js"></script>
 <script src="/js/pre_loader.js"></script>
 <script src="/js/revise-listing.js"></script>

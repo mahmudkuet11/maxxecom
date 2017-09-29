@@ -33,6 +33,23 @@ var Listing = {
             _this.onWizardSubmit();
         });
     },
+    categoryInit: function(){
+        var cat_id = $("#input_category").val();
+        $.ajax({
+            method: 'GET',
+            url: Global.category_hierarchy_name_url,
+            data: {
+                site_id: Global.site_id,
+                category_id: cat_id
+            },
+            success: function(res){
+                $("#category_hierarchy").text(res);
+            },
+            error: function(){
+                console.log('Can not get category hierarchy');
+            }
+        });
+    },
     onWizardSubmit: function(){
         var item = {
             title: $("#input_title").val(),
@@ -170,6 +187,8 @@ var Listing = {
         $("#input_weight_minor").val(item.item_details.weight_minor);
         $("#input_country").val(item.item_details.country);
         $("#input_location").val(item.item_details.location);
+
+        this.categoryInit();
     },
     fillUpItemSpecifics: function(item){
         var specs = _.filter(item.specifics_metas, {scope: "ITEM_SPECIFICS"});

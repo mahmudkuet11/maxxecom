@@ -72,10 +72,12 @@
                                 </div>
                             </div>
                             <div class="form-actions">
-                                <button type="submit" class="btn btn-success mr-1">
+                                <button type="submit" class="btn btn-success mr-1" name="find">
                                     <i class="icon-search2"></i> Find product
                                 </button>
-                                <a href="" class="btn btn-primary"><i class="icon-plus2"></i> Create New Listing</a>
+                                <button type="submit" class="btn btn-primary mr-1" name="new">
+                                    <i class="icon-plus2"></i> Create New Listing
+                                </button>
                             </div>
                         </form>
                     </div>
