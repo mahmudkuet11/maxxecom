@@ -141,6 +141,21 @@ class Order extends Model
         })->whereIn('store_id', $storeIds);
     }
 
+    public function scopeSearch($builder, $search){
+        if($search){
+            $builder = $builder->where('id', 'LIKE', "%{$search}%")
+                ->orWhere('sales_record_no', 'LIKE', "%{$search}%")
+                ->orWhere('buyer_user_id', 'LIKE', "%{$search}%")
+                ->orWhere('buyer_user_id', 'LIKE', "%{$search}%")
+                ->orWhereHas('transactions', function($query) use ($search){
+                    $query->where('buyer_email', 'LIEK', "%{$search}%")
+                        ->orWhere('item_id', 'LIKE', "%{$search}%")
+                        ->orWhere('item_title', 'LIKE', "%{$search}%");
+                });
+        }
+        return $builder;
+    }
+
     public function checkoutStatus(){
         return $this->hasOne(CheckoutStatus::class);
     }

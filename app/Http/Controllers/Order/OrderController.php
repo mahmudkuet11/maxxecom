@@ -16,10 +16,14 @@ class OrderController extends Controller
         $this->service = $service;
     }
 
-    public function getAll(StoreService $storeService){
-        $storeService->syncAll();
-        $orders = $this->service->getAll()->filterStoreByUser()->orderBy('sales_record_no', 'DESC');
-        return view('dashboard.orders.index', ['orders'=>$orders->paginate(config('order.orders_per_page')), 'active_menu'=>'order.all']);
+    public function getAll(StoreService $storeService, Request $request){
+        if($request->ajax()){
+            $orders = $this->service->getAll()->with('transactions')->filterStoreByUser()->orderBy('id', 'DESC');
+            return $this->service->prepareOrdersForDataTable($orders, $request);
+        }else{
+            $storeService->syncAll();
+            return view('dashboard.orders.index', ['active_menu'=>'order.all']);
+        }
     }
 
     public function getAwaitingPaymentOrders(StoreService $storeService){

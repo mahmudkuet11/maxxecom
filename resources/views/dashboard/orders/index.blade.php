@@ -69,69 +69,6 @@
                 </div>
                 <div class="card-body collapse in">
                     <div class="card-block card-dashboard">
-                        <!--
-                        <div class="row">
-                            <div class="col-xl-2 col-lg-6 col-md-12">
-                                <fieldset class="form-group">
-                                    <select class="form-control" id="basicSelect">
-                                        <option>Select buyer email</option>
-                                        <option>Option 1</option>
-                                        <option>Option 2</option>
-                                        <option>Option 3</option>
-                                        <option>Option 4</option>
-                                        <option>Option 5</option>
-                                    </select>
-                                </fieldset>
-                            </div>
-                            <div class="col-xl-2 col-lg-6 col-md-12">
-                                <fieldset class="form-group">
-                                    <select class="form-control" id="basicSelect">
-                                        <option>Select store category</option>
-                                        <option>Option 1</option>
-                                        <option>Option 2</option>
-                                        <option>Option 3</option>
-                                        <option>Option 4</option>
-                                        <option>Option 5</option>
-                                    </select>
-                                </fieldset>
-                            </div>
-                            <div class="col-xl-2 col-lg-6 col-md-12">
-                                <fieldset class="form-group">
-                                    <select class="form-control" id="basicSelect">
-                                        <option>Select status</option>
-                                        <option>Option 1</option>
-                                        <option>Option 2</option>
-                                        <option>Option 3</option>
-                                        <option>Option 4</option>
-                                        <option>Option 5</option>
-                                    </select>
-                                </fieldset>
-                            </div>
-                            <div class="col-xl-2 col-lg-6 col-md-12">
-                                <fieldset class="form-group">
-                                    <select class="form-control" id="basicSelect">
-                                        <option>Select period</option>
-                                        <option>Option 1</option>
-                                        <option>Option 2</option>
-                                        <option>Option 3</option>
-                                        <option>Option 4</option>
-                                        <option>Option 5</option>
-                                    </select>
-                                </fieldset>
-                            </div>
-
-                            <div class="col-xl-4 col-lg-6 col-md-12">
-                                <fieldset>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" placeholder="Enter search keyword" aria-describedby="button-addon2">
-                                        <span class="input-group-btn" id="button-addon2">
-                                                            <button class="btn btn-primary bg-info border-info" type="button">Search</button>
-                                                        </span>
-                                    </div>
-                                </fieldset>
-                            </div>
-                        </div>
-                        -->
                         <ul class="nav nav-tabs nav-underline no-hover-bg">
 
                             <li class="nav-item dropdown">
@@ -180,56 +117,22 @@
                             Toggle columns: <a class="toggle-vis" data-column="0">Check All</a> - <a class="toggle-vis" data-column="1">Record</a> - <a class="toggle-vis" data-column="2">Buyer username</a> - <a class="toggle-vis" data-column="3">Email</a> - <a class="toggle-vis" data-column="4">Item no</a> - <a class="toggle-vis" data-column="5">Product</a> - <a class="toggle-vis" data-column="6">Tracking number</a> - <a class="toggle-vis" data-column="7">Format</a> - <a class="toggle-vis" data-column="8">Qty</a> - <a class="toggle-vis" data-column="9">Sold for</a> - <a class="toggle-vis" data-column="10">Total</a> - <a class="toggle-vis" data-column="11">Date sold</a> - <a class="toggle-vis" data-column="12">Date paid</a>
                         </div>
                         <br />
-                        <table class="table table-striped table-bordered hide-columns-dynamically" width="100%">
+                        <table id="order_list_table" class="table table-striped table-bordered hide-columns-dynamically" width="100%" data-page-length="25">
                             <thead>
                             <tr>
-                                <th class="check" style="width:13px;">
-                                    <input type="checkbox" class="flowcheckall" value="" />
-                                </th>
                                 <th>Record</th>
                                 <th>Buyer username</th>
                                 <th >Email</th>
                                 <th>Item no</th>
                                 <th style="width:200px">Product</th>
-                                <th>Tracking number</th>
-                                <th>Format</th>
                                 <th>Qty</th>
                                 <th>Sold for</th>
                                 <th>Total</th>
                                 <th>Date sold</th>
                                 <th>Date paid</th>
-                                <!--<th><i class="icon-star-o"></i></th>
-                                <th><i class="icon-star-o"></i></th>
-                                <th><i class="icon-star-o"></i></th>
-                                <th><i class="icon-star-o"></i></th>
-                                <th><i class="icon-star-o"></i></th>-->
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($orders as $order)
-                            <tr>
-                                <td style=""><input type='checkbox' class='checkall' name='mydata'></td>
-                                <td>
-                                    <a href="{{ route('order.show', $order->id) }}">#{{ $order->id . '-' . $order->sales_record_no }}</a>
-                                </td>
-                                <td><a href="#">{{ $order->buyer_user_id }}</a><code>01</code>()</td>
-                                <td><span>{{ $order->transactions->first()->buyer_email }}</span> </td>
-                                <td>{{ $order->transactions->pluck('item_id')->implode(", ") }}</td>
-                                <td style="width:200px">{{ $order->transactions->pluck('item_title')->implode(", ") }}</td>
-                                <td><a href="#">Add</a></td>
-                                <td><a href="#"><div class="tag tag-pill tag-info"><i class="icon-newspaper-o"></i></div></a></td>
-                                <td>{{ $order->transactions->sum('quantity') }}</td>
-                                <td>${{ $order->sub_total }}</td>
-                                <td>${{ $order->total }}</td>
-                                <td>{{ $order->sold_date }}</td>
-                                <td>{{ $order->paid_date }}</td>
-                                <!--<th><i class="icon-star-o"></i></th>
-                                <th><i class="icon-star-o"></i></th>
-                                <th><i class="icon-star-o"></i></th>
-                                <th><i class="icon-star-o"></i></th>
-                                <th><i class="icon-star-o"></i></th>-->
-                            </tr>
-                            @endforeach
 
                             </tbody>
                         </table>
@@ -244,7 +147,7 @@
 
 @section('scripts')
 @parent
-<script src="/app-assets/js/scripts/tables/datatables/datatable-api.min.js" type="text/javascript"></script>
+<!--<script src="/app-assets/js/scripts/tables/datatables/datatable-api.min.js" type="text/javascript"></script>-->
 <script>
     $(document).ready(function () {
         $(".flowcheckall").click(function () {
@@ -260,6 +163,22 @@
                 $(this).css({ "color": "rgb(77, 182, 172)" });
             }
         });
+
+        $("#order_list_table").DataTable({
+            scrollX: true,
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: '{{ route("orders.all") }}',
+                dataSrc: function(json){
+                    for(var i in json.data){
+                        json.data[i][0] = '<a href="/order/'+ json.data[i][0] +'">#'+ json.data[i][0] +'</a>';
+                    }
+                    return json.data;
+                }
+            }
+        });
+
     });
 </script>
 @endsection

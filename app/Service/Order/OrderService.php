@@ -10,11 +10,14 @@ use App\Models\Order\Order;
 use App\Models\Order\Sku;
 use App\Models\Order\TrackingNumber;
 use App\Models\Store;
+use App\Service\Console;
 use App\Service\eBay\CompleteSaleService;
 use App\Service\eBay\GetOrderService;
 use Carbon\Carbon;
 use DB;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class OrderService
 {
@@ -313,5 +316,38 @@ class OrderService
                 'msg'   =>  $e->getMessage()
             ];
         }
+    }
+
+    public function prepareOrdersForDataTable(Builder $orderBuilder, Request $request){
+        $start = $request->get('start');
+        $length = $request->get('length');
+        $draw = $request->get('draw');
+        $search = $request->get('search')['value'];
+
+        $orderBuilder = $orderBuilder->search($search);
+
+        $all_orders = $orderBuilder->get();
+        $orders = $orderBuilder->skip($start)->take($length)->get();
+        $response = [
+            'draw'  =>  $draw,
+            'recordsTotal'  =>  $all_orders->count(),
+            'recordsFiltered'  =>  $all_orders->count(),
+            'data'  =>  []
+        ];
+        $orders->each(function($order) use (&$response){
+            $response['data'][] = [
+                $order->id,
+                $order->buyer_user_id,
+                $order->transactions->first()->buyer_email,
+                $order->transactions->pluck('item_id')->implode(", "),
+                $order->transactions->pluck('item_title')->implode(", "),
+                $order->transactions->sum('quantity'),
+                $order->sub_total,
+                $order->total,
+                $order->sold_date,
+                $order->paid_date,
+            ];
+        });
+        return $response;
     }
 }
