@@ -202,7 +202,6 @@
                                 <td>
                                     <a href="#" class="text-bold-600">{{ $transaction->item_title }}</a>
                                     <p>{{ $transaction->sku }}</p>
-                                    <p class="text-muted font-small-2">Phasellus vel elit volutpat, egestas urna a.</p>
                                 </td>
                                 <td>${{ $transaction->transaction_price }}</td>
                                 <td>${{ number_format($transaction->sub_total, 2, ".", "") }}</td>
@@ -239,7 +238,6 @@
                                 <td>
                                     <a href="#" class="text-bold-600">{{ $transaction->item_title }}</a>
                                     <p>{{ $transaction->sku }}</p>
-                                    <p class="text-muted font-small-2">Phasellus vel elit volutpat, egestas urna a.</p>
                                 </td>
                                 <td>${{ $transaction->transaction_price }}</td>
                                 <td>${{ number_format($transaction->sub_total, 2, ".", "") }}</td>
