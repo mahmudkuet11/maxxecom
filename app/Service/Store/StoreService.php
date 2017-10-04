@@ -118,4 +118,8 @@ class StoreService
         }while($response->HasMoreOrders == 'true' && ((int)$response->PageNumber <= (int)$response->PaginationResult->TotalNumberOfPages));
         $syncService->setLastSyncTime($store, $to, Scope::ORDER);
     }
+
+    public function saveExcel(Request $request){
+        return $request->file('excel')->move('/public/upload/price', $request->get('name'));
+    }
 }

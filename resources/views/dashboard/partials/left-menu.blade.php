@@ -24,6 +24,9 @@
                     <li class="{{ active_menu('store.create', $active_menu) }}">
                         <a href="{{ route('store.create') }}" class="menu-item">New Store</a>
                     </li>
+                    <li class="{{ active_menu('store.excel.upload', $active_menu) }}">
+                        <a href="{{ route('store.excel.upload.get') }}" class="menu-item">Upload Excel</a>
+                    </li>
                 </ul>
             </li>
 

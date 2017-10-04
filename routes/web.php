@@ -28,6 +28,8 @@ Route::middleware(['auth'])->group(function(){
     Route::get('store/{store_id}/user/{user_id}/permission', 'UserController@showUsersPermission')->name('store.user.permission');
     Route::post('store/{store_id}/user/{user_id}/permission', 'UserController@updateUsersPermission')->name('store.user.permission.update');
     Route::get('/store/price/', 'Store\ItemController@getStorePrices')->name('store.price.get');
+    Route::get('/store/excel/upload', 'Store\StoreController@uploadExcel')->name('store.excel.upload.get');
+    Route::post('/store/excel/upload', 'Store\StoreController@saveExcel')->name('store.excel.upload.post');
 
     Route::get('/orders', 'Order\OrderController@getAll')->name('orders.all');
     Route::get('/orders/awaiting-payment', 'Order\OrderController@getAwaitingPaymentOrders')->name('orders.awaiting_payment');
@@ -59,6 +61,9 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/store/{id}/settings', 'Store\SettingsController@getSettings')->name('store.settings.get');
 
     Route::post('/store/{id}/settings', 'Store\SettingsController@updateSettings')->name('store.settings.update');
+
+    Route::post('meta', 'MetaController@save')->name('meta.save');
+    Route::get('meta', 'MetaController@get')->name('meta.get');
 
 });
 

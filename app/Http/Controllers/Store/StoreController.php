@@ -75,4 +75,22 @@ class StoreController extends Controller
     {
         //
     }
+
+    public function uploadExcel(){
+        return view('dashboard.store.excel-upload', ['active_menu'=>'store.excel.upload']);
+    }
+
+    public function saveExcel(Request $request){
+        $res = $this->service->saveExcel($request);
+        if($res){
+            return back()->with([
+                'status'=>'success',
+                'msg'   =>  'Excel is uploaded successfully'
+            ]);
+        }
+        return back()->with([
+            'status'=>'error',
+            'msg'   =>  'Excel could not be uploaded'
+        ]);
+    }
 }
