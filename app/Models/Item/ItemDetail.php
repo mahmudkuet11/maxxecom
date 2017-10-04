@@ -2,6 +2,7 @@
 
 namespace App\Models\Item;
 
+use App\Enum\Ebay\ItemCondition;
 use Illuminate\Database\Eloquent\Model;
 
 class ItemDetail extends Model
@@ -53,5 +54,10 @@ class ItemDetail extends Model
         'hide_from_search',
         'out_of_stock_control',
     ];
+
+    public function getConditionNameAttribute(){
+        return ItemCondition::getNameByID($this->condition_id);
+    }
+
 
 }

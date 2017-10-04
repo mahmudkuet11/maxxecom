@@ -19,7 +19,7 @@ class CreateItemDetailsTable extends Migration
             $table->boolean('auto_pay');
             $table->string('country');
             $table->string('currency');
-            $table->text('description');
+            $table->mediumText('description');
             $table->string('ebay_item_id');
             $table->timestamp('start_time')->nullable();
             $table->timestamp('end_time')->nullable();

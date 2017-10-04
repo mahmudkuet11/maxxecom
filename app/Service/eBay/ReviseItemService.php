@@ -16,15 +16,20 @@ class ReviseItemService extends EbayRequest
 
     public function updateList(Item $item, Store $store, Request $request){
 
-        $specifics = $request->get('specifics');
+        $specifics = collect($request->get('specifics'))->groupBy('name');
         $specificsArray = [];
-        foreach ($specifics as $specific){
+        $specifics->each(function($specific, $key) use (&$specificsArray){
+            $values = [];
+            foreach ($specific as $val){
+                $values[] = $val['value'];
+            }
             $specificsArray['NameValueList'][] = [
-                'Name'  =>  $specific['name'],
-                'Value'  =>  $specific['value'],
+                'Name'  =>  $key,
+                'Value'  =>  $values,
                 'Source'  =>  'ItemSpecific',
             ];
-        }
+        });
+
         $compatibilities = $request->get('compatibilities');
         $compatibilitiesArray = [];
         foreach ($compatibilities as $compatibility){
