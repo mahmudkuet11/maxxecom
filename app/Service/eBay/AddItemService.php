@@ -31,31 +31,33 @@ class AddItemService extends EbayRequest
         });
         $compatibilities = $request->get('compatibilities');
         $compatibilitiesArray = [];
-        foreach ($compatibilities as $compatibility){
-            $compatibilitiesArray['Compatibility'][] = [
-                'NameValueList' =>  [
-                    [
-                        'Name'  =>  'Year',
-                        'Value'  =>  $compatibility['year'],
-                    ],
-                    [
-                        'Name'  =>  'Make',
-                        'Value'  =>  $compatibility['make'],
-                    ],
-                    [
-                        'Name'  =>  'Model',
-                        'Value'  =>  $compatibility['model'],
-                    ],
-                    [
-                        'Name'  =>  'Trim',
-                        'Value'  =>  $compatibility['trim'],
-                    ],
-                    [
-                        'Name'  =>  'Engine',
-                        'Value'  =>  $compatibility['engine'],
-                    ],
-                ]
-            ];
+        if($compatibilities){
+            foreach ($compatibilities as $compatibility){
+                $compatibilitiesArray['Compatibility'][] = [
+                    'NameValueList' =>  [
+                        [
+                            'Name'  =>  'Year',
+                            'Value'  =>  $compatibility['year'],
+                        ],
+                        [
+                            'Name'  =>  'Make',
+                            'Value'  =>  $compatibility['make'],
+                        ],
+                        [
+                            'Name'  =>  'Model',
+                            'Value'  =>  $compatibility['model'],
+                        ],
+                        [
+                            'Name'  =>  'Trim',
+                            'Value'  =>  $compatibility['trim'],
+                        ],
+                        [
+                            'Name'  =>  'Engine',
+                            'Value'  =>  $compatibility['engine'],
+                        ],
+                    ]
+                ];
+            }
         }
         $images = [];
         foreach ($request->get('images') as $image){
@@ -147,7 +149,8 @@ class AddItemService extends EbayRequest
                 ],
                 'ShippingDetails'   =>  [
                     'ShippingType'  =>  'Flat',
-                    'ShippingServiceOptions'    =>  $shippingServices
+                    'ShippingServiceOptions'    =>  $shippingServices,
+                    'ExcludeShipToLocation'  =>  $request->get('excluded_shipping_location')
                 ],
                 'Site'  =>  'US'
             ]

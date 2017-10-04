@@ -85,6 +85,7 @@ var Listing = {
             country: $("#input_country").val(),
             location: $("#input_location").val(),
             max_dispatch_time: $("#input_dispatch_time_max").val(),
+            excluded_shipping_location: _.map(ExcludeShippingLocation.getExcludedLocations(), 'key')
         };
         var item_specifics = [];
         $("#item_specifics_container .form-group").each(function(){
@@ -129,6 +130,7 @@ var Listing = {
         });
 
         item.images = images;
+
         $("body").trigger('pre_loader:show');
         $.ajax({
             method: 'POST',
@@ -265,6 +267,31 @@ var Compatibility = {
     }
 };
 
+var ExcludeShippingLocation = {
+    $exclude_shipping_location_checkbox: $("input[name='exclude_shipping_location[]']"),
+    $exclude_shipping_location_text: $("#exclude_shipping_location_text"),
+    init: function(){
+        this.listen();
+    },
+    listen: function(){
+        this.$exclude_shipping_location_checkbox.change(_.bind(this.updateText, this));
+    },
+    updateText: function(){
+        var locations = this.getExcludedLocations();
+        this.$exclude_shipping_location_text.text(_.join(_.map(locations, 'name'), ', '));
+    },
+    getExcludedLocations: function(){
+        var locations = [];
+        this.$exclude_shipping_location_checkbox.each(function(){
+            if($(this).prop('checked')){
+                locations.push({key: $(this).val(), name: $(this).attr('data-name')});
+            }
+        });
+        return locations;
+    }
+};
+
 $(document).ready(function(){
     Listing.init();
+    ExcludeShippingLocation.init();
 });

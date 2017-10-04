@@ -210,7 +210,7 @@
                                             <label class="col-md-3 label-control" for="projectinput6">Duration</label>
                                             <div class="col-md-9">
                                                 <select id="input_listing_duration" name="" class="form-control">
-                                                    <option value="GTC" selected="" disabled="">Good 'Til Cancelled</option>
+                                                    <option value="GTC">Good 'Til Cancelled</option>
                                                     <option value="Days_1">1 Day</option>
                                                     <option value="Days_3">3 Days</option>
                                                     <option value="Days_5">5 Days</option>
@@ -510,13 +510,13 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <!--<div class="form-group row">
-                                            <label class="col-md-3 label-control" for="projectinput6">Excluded shippiing locations</label>
+                                        <div class="form-group row">
+                                            <label class="col-md-3 label-control">Excluded shipping locations</label>
                                             <div class="col-md-9">
-                                                <p>Alaska/Hawaii, US Protectorates, APO/FPO, Equatorial Guinea, Kenya, Egypt, Niger, Zambia</p>
-                                                <a href="#">Edit list</a>
+                                                <p id="exclude_shipping_location_text"></p>
+                                                <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#exclude_shipping_location_modal">Edit list</button>
                                             </div>
-                                        </div>-->
+                                        </div>
                                         <div class="form-group row">
                                             <label class="col-md-3 label-control" for="projectinput6">Country</label>
                                             <div class="col-md-9">
@@ -624,6 +624,29 @@
             <div class="modal-body">
 
                 <div class="ebay_store_category2_tree" data-url="{{ route('ebay.store.category.get', request('store_id')) }}"></div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in" id="exclude_shipping_location_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Exclude Shipping Location</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    @foreach($countryCodes as $k=>$v)
+                    <div class="col-md-4"><input type="checkbox" name="exclude_shipping_location[]" value="{{ $k }}" data-name="{{ $v }}"> {{ $v }}</div>
+                    @endforeach
+                </div>
 
             </div>
             <div class="modal-footer">
