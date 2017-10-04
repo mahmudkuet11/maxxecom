@@ -200,7 +200,7 @@
                                 <td>{{ $transaction->item_id }}</td>
                                 <td><span><img src="../../../app-assets/images/product/BM10661061.jpg" style="width:100%;" /></span></td>
                                 <td>
-                                    <a href="#" class="text-bold-600">{{ $transaction->item_title }}</a>
+                                    <a href="http://www.ebay.com/itm/{{ $transaction->item_id }}" class="text-bold-600">{{ $transaction->item_title }}</a>
                                     <p>{{ $transaction->sku }}</p>
                                 </td>
                                 <td>${{ $transaction->transaction_price }}</td>
@@ -236,7 +236,7 @@
                                 <td>{{ $transaction->item_id }}</td>
                                 <td><span><img src="../../../app-assets/images/product/BM10661061.jpg" style="width:100%;" /></span></td>
                                 <td>
-                                    <a href="#" class="text-bold-600">{{ $transaction->item_title }}</a>
+                                    <a href="http://www.ebay.com/itm/{{ $transaction->item_id }}" class="text-bold-600">{{ $transaction->item_title }}</a>
                                     <p>{{ $transaction->sku }}</p>
                                 </td>
                                 <td>${{ $transaction->transaction_price }}</td>
