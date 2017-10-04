@@ -79,6 +79,7 @@ var Listing = {
             country: $("#input_country").val(),
             location: $("#input_location").val(),
             max_dispatch_time: $("#input_dispatch_time_max").val(),
+            excluded_shipping_location: _.map(ExcludeShippingLocation.getExcludedLocations(), 'key')
         };
         var item_specifics = [];
         $("#item_specifics_container .form-group").each(function(){
@@ -121,6 +122,7 @@ var Listing = {
             images.push($(this).attr('src'));
         });
         item.images = images;
+
         $("body").trigger('pre_loader:show');
         $.ajax({
             method: 'POST',
@@ -142,7 +144,6 @@ var Listing = {
 
     },
     fillUpWizard: function(item){
-        console.log(item);
         // step 1
         $("#input_title").val(item.title);
         $("#input_category").val(item.item_details.primary_category_id);
@@ -187,6 +188,9 @@ var Listing = {
         $("#input_weight_minor").val(item.item_details.weight_minor);
         $("#input_country").val(item.item_details.country);
         $("#input_location").val(item.item_details.location);
+
+        var excluded_shipping_locations = JSON.parse(item.item_details.exclude_ship_to_location);
+        ExcludeShippingLocation.setExcludedLocations(excluded_shipping_locations);
 
         this.categoryInit();
     },
@@ -258,6 +262,43 @@ var Compatibility = {
     }
 };
 
+var ExcludeShippingLocation = {
+    $exclude_shipping_location_checkbox: $("input[name='exclude_shipping_location[]']"),
+    $exclude_shipping_location_text: $("#exclude_shipping_location_text"),
+    init: function(){
+        this.listen();
+    },
+    listen: function(){
+        this.$exclude_shipping_location_checkbox.change(_.bind(this.updateText, this));
+    },
+    updateText: function(){
+        var locations = this.getExcludedLocations();
+        this.$exclude_shipping_location_text.text(_.join(_.map(locations, 'name'), ', '));
+    },
+    getExcludedLocations: function(){
+        var locations = [];
+        this.$exclude_shipping_location_checkbox.each(function(){
+            if($(this).prop('checked')){
+                locations.push({key: $(this).val(), name: $(this).attr('data-name')});
+            }
+        });
+        return locations;
+    },
+    setExcludedLocations: function(locations){
+        this.$exclude_shipping_location_checkbox.each(function(){
+            var val = $(this).val();
+            var found = _.findIndex(locations, function(loc){
+                return val === loc;
+            });
+            if(found > -1){
+                $(this).prop('checked', true);
+            }
+        });
+        this.updateText();
+    }
+};
+
 $(document).ready(function(){
     Listing.init();
+    ExcludeShippingLocation.init();
 });

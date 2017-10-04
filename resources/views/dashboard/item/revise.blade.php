@@ -9,6 +9,7 @@
 @parent
 <link rel="stylesheet" type="text/css" href="/app-assets/css/plugins/forms/wizard.min.css">
 <link rel="stylesheet" type="text/css" href="/app-assets/css/plugins/pickers/daterange/daterange.min.css">
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 @endsection
 
 @section('content_header')
@@ -80,10 +81,10 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="input_category">Category :</label>
+                                            <label for="input_category">eBay Category :</label>
                                             <div class="input-group">
                                                 <span class="input-group-btn">
-                                                    <button class="btn btn-default" type="button" id="select_ebay_category">Select Category</button>
+                                                    <button class="btn btn-default" type="button" id="select_ebay_category">Select eBay Category</button>
                                                 </span>
                                                 <input type="text" class="form-control" id="input_category" value="" disabled>
                                             </div>
@@ -91,11 +92,23 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="input_store_category_id">Store category :</label>
-                                            <input type="text" class="form-control" id="input_store_category_id" value="">
+                                            <div class="input-group">
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-default" type="button" id="select_ebay_store_category">Select Store Category</button>
+                                                </span>
+                                                <input type="text" class="form-control" id="input_store_category_id" value="" disabled>
+                                            </div>
+                                            <small id="store_category_hierarchy" class="text-success"></small>
                                         </div>
                                         <div class="form-group">
                                             <label for="input_store_category2_id">Store category 2 :</label>
-                                            <input type="text" class="form-control" id="input_store_category2_id" value="">
+                                            <div class="input-group">
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-default" type="button" id="select_ebay_store_category2">Select Store Category 2</button>
+                                                </span>
+                                                <input type="text" class="form-control" id="input_store_category2_id" value="" disabled>
+                                            </div>
+                                            <small id="store_category2_hierarchy" class="text-success"></small>
                                         </div>
                                     </div>
 
@@ -104,7 +117,7 @@
                                             <h4 class="form-section"><i class="icon-file-text"></i> Upload Images</h4>
                                             <div class="row" id="image_container">
                                                 <ul>
-                                                    <li>
+                                                    <li id="upload_btn_li">
                                                         <button type="button" id="upload_image_btn" class="btn btn-primary btn-sm">
                                                             <i class="icon-plus"></i> Upload
                                                         </button>
@@ -497,13 +510,13 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <!--<div class="form-group row">
-                                            <label class="col-md-3 label-control" for="projectinput6">Excluded shippiing locations</label>
+                                        <div class="form-group row">
+                                            <label class="col-md-3 label-control">Excluded shipping locations</label>
                                             <div class="col-md-9">
-                                                <p>Alaska/Hawaii, US Protectorates, APO/FPO, Equatorial Guinea, Kenya, Egypt, Niger, Zambia</p>
-                                                <a href="#">Edit list</a>
+                                                <p id="exclude_shipping_location_text"></p>
+                                                <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#exclude_shipping_location_modal">Edit list</button>
                                             </div>
-                                        </div>-->
+                                        </div>
                                         <div class="form-group row">
                                             <label class="col-md-3 label-control" for="projectinput6">Country</label>
                                             <div class="col-md-9">
@@ -584,6 +597,65 @@
     </div>
 </div>
 
+<div class="modal fade in" id="select_store_category_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                <div class="ebay_store_category_tree" data-url="{{ route('ebay.store.category.get', $item->store->id) }}"></div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in" id="select_store_category2_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                <div class="ebay_store_category2_tree" data-url="{{ route('ebay.store.category.get', $item->store->id) }}"></div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in" id="exclude_shipping_location_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Exclude Shipping Location</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    @foreach($countryCodes as $k=>$v)
+                    <div class="col-md-4"><input type="checkbox" name="exclude_shipping_location[]" value="{{ $k }}" data-name="{{ $v }}"> {{ $v }}</div>
+                    @endforeach
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @section('scripts')
@@ -605,6 +677,7 @@
 <script src="/app-assets/js/scripts/forms/wizard-steps.min.js" type="text/javascript"></script>
 <script src="https://cdn.ckeditor.com/4.7.3/full/ckeditor.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="/js/ebay-category-select.js"></script>
 <script src="/js/script.js"></script>
 <script src="/js/pre_loader.js"></script>
@@ -618,6 +691,12 @@
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
+        });
+
+        $( "#image_container ul" ).sortable({
+            axis: "x",
+            cursor: "move",
+            items: "> li:not(#upload_btn_li)"
         });
 
     });

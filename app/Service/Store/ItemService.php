@@ -17,6 +17,7 @@ use App\Service\eBay\GetMyEbaySellingService;
 use App\Service\Time;
 use Carbon\Carbon;
 use DB;
+use function GuzzleHttp\Psr7\str;
 
 class ItemService
 {
@@ -122,6 +123,11 @@ class ItemService
                 'listing_status'  =>  ListingType::ACTIVE,
             ]);
 
+            $excluded_shipping_locations = [];
+            foreach ($response->Item->ShippingDetails->ExcludeShipToLocation as $location){
+                $excluded_shipping_locations[] = (string)$location;
+            }
+
             $item->item_details()->create([
                 'item_id'   =>  $item->id,
                 'auto_pay'  =>  (boolean)$response->Item->AutoPay,
@@ -152,6 +158,7 @@ class ItemService
                 'is_shipping_included_in_tax'  =>  (boolean)$response->Item->ShippingDetails->SalesTax->ShippingIncludedInTax,
                 'shipping_type'  =>  (string)$response->Item->ShippingDetails->ShippingType,
                 'ship_to_location'  =>  (string)$response->Item->ShipToLocations,
+                'exclude_ship_to_location'  =>  json_encode($excluded_shipping_locations),
                 'site'  =>  (string)$response->Item->Site,
                 'store_category_id'  =>  (int)$response->Item->Storefront->StoreCategoryID,
                 'store_category2_id'  =>  (int)$response->Item->Storefront->StoreCategory2ID,
@@ -254,6 +261,11 @@ class ItemService
                     'gallery_url'  =>  (string)$response->Item->PictureDetails->GalleryURL,
                 ]);
 
+                $excluded_shipping_locations = [];
+                foreach ($response->Item->ShippingDetails->ExcludeShipToLocation as $location){
+                    $excluded_shipping_locations[] = (string)$location;
+                }
+
                 $item->item_details()->updateOrCreate([
                     'item_id'   =>  $item->id
                 ], [
@@ -285,6 +297,7 @@ class ItemService
                     'is_shipping_included_in_tax'  =>  (boolean)$response->Item->ShippingDetails->SalesTax->ShippingIncludedInTax,
                     'shipping_type'  =>  (string)$response->Item->ShippingDetails->ShippingType,
                     'ship_to_location'  =>  (string)$response->Item->ShipToLocations,
+                    'exclude_ship_to_location'  =>  json_encode($excluded_shipping_locations),
                     'site'  =>  (string)$response->Item->Site,
                     'store_category_id'  =>  (int)$response->Item->Storefront->StoreCategoryID,
                     'store_category2_id'  =>  (int)$response->Item->Storefront->StoreCategory2ID,
@@ -383,6 +396,12 @@ class ItemService
                 'sku'  =>  (string)$response->Item->SKU,
                 'gallery_url'  =>  (string)$response->Item->PictureDetails->GalleryURL,
             ]);
+
+            $excluded_shipping_locations = [];
+            foreach ($response->Item->ShippingDetails->ExcludeShipToLocation as $location){
+                $excluded_shipping_locations[] = (string)$location;
+            }
+
             $item->item_details = (new ItemDetail())->fill([
                 'auto_pay'  =>  (boolean)$response->Item->AutoPay,
                 'country'  =>  (string)$response->Item->Country,
@@ -411,7 +430,7 @@ class ItemService
                 'sales_tax_state'  =>  (string)$response->Item->ShippingDetails->SalesTax->SalesTaxState,
                 'is_shipping_included_in_tax'  =>  (boolean)$response->Item->ShippingDetails->SalesTax->ShippingIncludedInTax,
                 'shipping_type'  =>  (string)$response->Item->ShippingDetails->ShippingType,
-                'ship_to_location'  =>  (string)$response->Item->ShipToLocations,
+                'ship_to_location'  =>  json_encode($excluded_shipping_locations),
                 'site'  =>  (string)$response->Item->Site,
                 'store_category_id'  =>  (int)$response->Item->Storefront->StoreCategoryID,
                 'store_category2_id'  =>  (int)$response->Item->Storefront->StoreCategory2ID,

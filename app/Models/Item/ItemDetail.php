@@ -37,6 +37,7 @@ class ItemDetail extends Model
         'is_shipping_included_in_tax',
         'shipping_type',
         'ship_to_location',
+        'exclude_ship_to_location',
         'site',
         'store_category_id',
         'store_category2_id',

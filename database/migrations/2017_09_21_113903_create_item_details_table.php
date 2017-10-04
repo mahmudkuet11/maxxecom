@@ -44,6 +44,7 @@ class CreateItemDetailsTable extends Migration
             $table->boolean('is_shipping_included_in_tax');
             $table->string('shipping_type');
             $table->string('ship_to_location');
+            $table->text('exclude_ship_to_location');
             $table->string('site');
             $table->integer('store_category_id');
             $table->integer('store_category2_id');
