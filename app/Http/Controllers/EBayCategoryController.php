@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Store;
 use App\Service\EBayCategoryService;
 use Illuminate\Http\Request;
 
@@ -22,5 +23,10 @@ class EBayCategoryController extends Controller
         $catID = $request->get('category_id');
         $siteID = $request->get('site_id');
         return $this->service->getCategoryHierarchyName($catID, $siteID);
+    }
+
+    public function getStoreCategories($store_id){
+        $store = Store::find($store_id);
+        return $this->service->getStoreCategories($store);
     }
 }

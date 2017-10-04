@@ -54,6 +54,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('ebay/find/{store_id}/{item_id}', 'Item\ItemController@findItem')->name('ebay.item.find');
     Route::get('/ebay/{site_id}/category', 'EBayCategoryController@getCategories')->name('ebay.category.get');
     Route::get('/ebay/category/hierarchy-name', 'EBayCategoryController@getCategoryHierarchyName')->name('ebay.category.hierarchy_name');
+    Route::get('/ebay/store/{store_id}/category', 'EBayCategoryController@getStoreCategories')->name('ebay.store.category.get');
 
     Route::get('/store/{id}/settings', 'Store\SettingsController@getSettings')->name('store.settings.get');
 

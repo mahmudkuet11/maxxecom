@@ -4,6 +4,8 @@ namespace App\Service;
 
 
 use App\Models\EbayCategory;
+use App\Models\Store;
+use App\Service\eBay\GetStoreService;
 use Illuminate\Http\Request;
 
 class EBayCategoryService
@@ -37,5 +39,32 @@ class EBayCategoryService
         }else{
             return '';
         }
+    }
+
+    public function getStoreCategories(Store $store){
+        $getStoreService = new GetStoreService();
+        $response = $getStoreService->getStore($store);
+        $categories = [];
+        if((string)$response->Ack == 'Success'){
+            $categoryArray = $response->Store->CustomCategories->CustomCategory;
+            foreach ($categoryArray as $category){
+                $categories[] = $this->geCustomCategoryWithChildCategories($category);
+            }
+        }
+        return $categories;
+    }
+
+    private function geCustomCategoryWithChildCategories($customCategoryObject){
+        $customCategory = [
+            'name'  =>  (string)$customCategoryObject->Name,
+            'id'  =>  (string)$customCategoryObject->CategoryID,
+        ];
+        if($customCategoryObject->ChildCategory){
+            foreach ($customCategoryObject->ChildCategory as $childCategory){
+                $customCategory['children'][] = $this->geCustomCategoryWithChildCategories($childCategory);
+            }
+
+        }
+        return $customCategory;
     }
 }

@@ -80,10 +80,10 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="input_category">Category :</label>
+                                            <label for="input_category">eBay Category :</label>
                                             <div class="input-group">
                                                 <span class="input-group-btn">
-                                                    <button class="btn btn-default" type="button" id="select_ebay_category">Select Category</button>
+                                                    <button class="btn btn-default" type="button" id="select_ebay_category">Select eBay Category</button>
                                                 </span>
                                                 <input type="text" class="form-control" id="input_category" value="" disabled>
                                             </div>
@@ -91,11 +91,23 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="input_store_category_id">Store category :</label>
-                                            <input type="text" class="form-control" id="input_store_category_id" value="">
+                                            <div class="input-group">
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-default" type="button" id="select_ebay_store_category">Select Store Category</button>
+                                                </span>
+                                                <input type="text" class="form-control" id="input_store_category_id" value="" disabled>
+                                            </div>
+                                            <small id="store_category_hierarchy" class="text-success"></small>
                                         </div>
                                         <div class="form-group">
                                             <label for="input_store_category2_id">Store category 2 :</label>
-                                            <input type="text" class="form-control" id="input_store_category2_id" value="">
+                                            <div class="input-group">
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-default" type="button" id="select_ebay_store_category2">Select Store Category 2</button>
+                                                </span>
+                                                <input type="text" class="form-control" id="input_store_category2_id" value="" disabled>
+                                            </div>
+                                            <small id="store_category2_hierarchy" class="text-success"></small>
                                         </div>
                                     </div>
 
@@ -575,6 +587,42 @@
 
                 <div class="ebay_category_tree" data-url="{{ route('ebay.category.get', request('site_id')) }}"></div>
                 <!--<div class="ebay_category_tree"></div>-->
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in" id="select_store_category_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                <div class="ebay_store_category_tree" data-url="{{ route('ebay.store.category.get', request('store_id')) }}"></div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in" id="select_store_category2_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                <div class="ebay_store_category2_tree" data-url="{{ route('ebay.store.category.get', request('store_id')) }}"></div>
 
             </div>
             <div class="modal-footer">
