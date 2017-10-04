@@ -9,6 +9,7 @@
 @parent
 <link rel="stylesheet" type="text/css" href="/app-assets/css/plugins/forms/wizard.min.css">
 <link rel="stylesheet" type="text/css" href="/app-assets/css/plugins/pickers/daterange/daterange.min.css">
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 @endsection
 
 @section('content_header')
@@ -116,7 +117,7 @@
                                             <h4 class="form-section"><i class="icon-file-text"></i> Upload Images</h4>
                                             <div class="row" id="image_container">
                                                 <ul>
-                                                    <li>
+                                                    <li id="upload_btn_li">
                                                         <button type="button" id="upload_image_btn" class="btn btn-primary btn-sm">
                                                             <i class="icon-plus"></i> Upload
                                                         </button>
@@ -656,6 +657,7 @@
 <script src="/app-assets/js/scripts/forms/wizard-steps.min.js" type="text/javascript"></script>
 <script src="https://cdn.ckeditor.com/4.7.3/full/ckeditor.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="/vendor/laravel-filemanager/js/lfm.js"></script>
 <script src="/js/pre_loader.js"></script>
 <script src="/js/ebay-category-select.js"></script>
@@ -670,6 +672,12 @@
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
+        });
+
+        $( "#image_container ul" ).sortable({
+            axis: "x",
+            cursor: "move",
+            items: "> li:not(#upload_btn_li)"
         });
 
     });
