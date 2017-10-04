@@ -88,7 +88,7 @@ class StoreService
                     $orderService->saveOrders($store, $response);
                 }
             }else{
-                throw new \Exception('Failed');
+                throw new \Exception('Failed. Response is not success');
             }
             $pageNum++;
         }while($response->HasMoreOrders == 'true' && ((int)$response->PageNumber <= (int)$response->PaginationResult->TotalNumberOfPages));

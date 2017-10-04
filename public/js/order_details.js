@@ -38,6 +38,7 @@ $(document).ready(function(){
         $el.price_comparison_section.show();
         Invoice.reset();
         Invoice.initInvoice(invoice);
+        Invoice.setPriceToStoreComparisonSection();
     });
 
 
@@ -175,13 +176,11 @@ var Invoice = {
         var handling_cost = 0;
         var fees = parseFloat(sold_price * 0.12).toFixed(2);
         if(price){
-            product_cost = price.price;
-            shipping_cost = price.shipping_cost;
-            handling_cost = price.handling_cost;
-
+            product_cost = parseFloat(price.price);
+            shipping_cost = parseFloat(price.shipping_cost);
+            handling_cost = parseFloat(price.handling_cost);
         }
-        var profit = parseFloat(sold_price - (product_cost + shipping_cost + handling_cost)).toFixed(2);
-
+        var profit = parseFloat(sold_price - (product_cost*1 + shipping_cost*1 + handling_cost*1 + fees*1)).toFixed(2);
         $("input#sold_price_input").val(sold_price);
         $("input#product_cost_input").val(product_cost);
         $("input#shipping_cost_input").val(shipping_cost);
@@ -311,18 +310,19 @@ var Invoice = {
             store_type = 'custom';
             next_state = $("#custom_store_next_state_select").val();
         }
+
         var invoice= {
             sku_id: selected_sku_id,
             store_type: store_type,
             store_name: store_name,
             next_state: next_state,
-            sold_price: $("#sold_price_input").val(),
-            product_cost: $("#product_cost_input").val(),
-            shipping_cost: $("#shipping_cost_input").val(),
-            handling_cost: $("#handling_cost_input").val(),
-            fees: $("#fees_input").val(),
-            profit: this.sold_price - (this.product_cost + this.shipping_cost + this.handling_cost + this.fees)
+            sold_price: parseFloat($("#sold_price_input").val()),
+            product_cost: parseFloat($("#product_cost_input").val()),
+            shipping_cost: parseFloat($("#shipping_cost_input").val()),
+            handling_cost: parseFloat($("#handling_cost_input").val()),
+            fees: parseFloat($("#fees_input").val()),
         };
+        invoice.profit = invoice.sold_price - (invoice.product_cost + invoice.shipping_cost + invoice.handling_cost + invoice.fees);
         return invoice;
     },
     getBySkuID: function(sku_id){
@@ -386,6 +386,23 @@ var Invoice = {
         $("#custom_store_input").val('');
         $("#custom_store_next_state_select").val('');
         $("#invoice_container input").val('');
+    },
+    setPriceToStoreComparisonSection: function(){
+        for(var i in Global.store.price.data){
+            if(Global.store.price.data[i].sku == $("input[name='price_comparison_section']:checked").val()){
+                var ks_qi_price = Global.store.price.data[i].stores['keystone_qi'];
+                var ks_local_price = Global.store.price.data[i].stores['keystone_local'];
+                var pf_price = Global.store.price.data[i].stores['pf'];
+                var amazon_price = Global.store.price.data[i].stores['amazon'];
+                var ebay_price = Global.store.price.data[i].stores['ebay'];
+
+                $("#keystone_qi_price").text(ks_qi_price.price + ks_qi_price.handling_cost + ks_qi_price.shipping_cost);
+                $("#keystone_local_price").text(ks_local_price.price + ks_local_price.handling_cost + ks_local_price.shipping_cost);
+                $("#pf_price").text(pf_price.price + pf_price.handling_cost + pf_price.shipping_cost);
+                $("#amazon_price").text(amazon_price.price + amazon_price.handling_cost + amazon_price.shipping_cost);
+                $("#ebay_price").text(ebay_price.price + ebay_price.handling_cost + ebay_price.shipping_cost);
+            }
+        }
     }
 };
 

@@ -311,16 +311,16 @@
                     </div>
                     <ul class="list-group list-group-flush" id="store_list_ul">
                         <li class="list-group-item" data-store="keystone_qi">
-                            <span class="float-xs-right">$42.98 S&H</span> keystone/QI:
+                            <span class="float-xs-right">$<span id="keystone_qi_price">0</span> S&H</span> keystone/QI:
                         </li>
                         <li class="list-group-item" data-store="keystone_local">
-                            <span class="float-xs-right">$23.53 W/O S&H</span> keystone/ LOCAL:
+                            <span class="float-xs-right">$<span id="keystone_local_price">0</span> W/O S&H</span> keystone/ LOCAL:
                         </li>
                         <li class="list-group-item" data-store="wr">
                             <span class="float-xs-right">Please check price</span> WAREHOUSE/ WR:
                         </li>
                         <li class="list-group-item" data-store="pf">
-                            <span class="float-xs-right">$44.99 S&H</span> perfectfit/PF:
+                            <span class="float-xs-right">$<span id="pf_price">0</span> S&H</span> perfectfit/PF:
                         </li>
                         <li class="list-group-item" data-store="bs">
                             <span class="float-xs-right">Please check price</span> brocksupply/BS:
@@ -338,10 +338,10 @@
                             <span class="float-xs-right">Please check price</span> Partsgeek/PG:
                         </li>
                         <li class="list-group-item" data-store="amazon">
-                            <span class="float-xs-right">$44.99 S&H</span> Amazon:
+                            <span class="float-xs-right">$<span id="amazon_price">0</span> S&H</span> Amazon:
                         </li>
                         <li class="list-group-item" data-store="ebay">
-                            <span class="float-xs-right">$44.99 S&H</span> Ebay:
+                            <span class="float-xs-right">$<span id="ebay_price">0</span> S&H</span> Ebay:
                         </li>
                         <li class="list-group-item" data-store="atd">
                             <span class="float-xs-right">Please check price</span> ATD:
