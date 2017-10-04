@@ -169,7 +169,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                url: '{{ route("orders.all") }}',
+                url: '{{ request()->url() }}',
                 dataSrc: function(json){
                     for(var i in json.data){
                         json.data[i][0] = '<a href="/order/'+ json.data[i][0] +'">#'+ json.data[i][0] +'</a>';

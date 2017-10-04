@@ -5,6 +5,7 @@ namespace App\Models\Order;
 use App\Enum\Acl\Permission;
 use App\Enum\InternalOrderStatus;
 use App\Models\Store;
+use App\Service\Console;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 

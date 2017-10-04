@@ -325,7 +325,6 @@ class OrderService
         $search = $request->get('search')['value'];
 
         $orderBuilder = $orderBuilder->search($search);
-
         $all_orders = $orderBuilder->get();
         $orders = $orderBuilder->skip($start)->take($length)->get();
         $response = [

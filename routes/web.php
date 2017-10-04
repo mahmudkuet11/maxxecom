@@ -77,7 +77,7 @@ Route::get('/store/listing/sync', function(){
 });
 
 Route::get('/test', function(){
-
+    return request()->url();
 });
 
 Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
