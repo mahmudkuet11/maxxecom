@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Item;
 use App\Enum\ListingType;
 use App\Models\Store;
 use App\Service\Item\ListingService;
+use App\Service\Store\SettingsService;
 use App\Service\Store\StoreService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -26,10 +27,12 @@ class ListingController extends Controller
         ]);
     }
 
-    public function getReviseListing($id){
+    public function getReviseListing($id, SettingsService $settingsService){
         $item = $this->service->get($id)->with('store')->first();
+        $settings = $settingsService->getSettings($item->store->id)->get();
         return view('dashboard.item.revise', [
-            'item'  =>  $item
+            'item'  =>  $item,
+            'settings'  =>  $settings
         ]);
     }
 
