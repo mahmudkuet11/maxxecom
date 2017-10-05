@@ -12,6 +12,7 @@ use App\Models\Item\Meta;
 use App\Models\Item\ShippingServiceOption;
 use App\Models\Store;
 use App\Service\Console;
+use App\Service\eBay\EbayRequest;
 use App\Service\eBay\GetItemService;
 use App\Service\eBay\GetMyEbaySellingService;
 use App\Service\Time;
@@ -372,7 +373,7 @@ class ItemService
                 throw $e;
             }
         }
-        throw new \Exception('Item not found');
+        throw new \Exception(json_encode(EbayRequest::parseErrorMessage($response)));
     }
 
     public function findItem(Store $store, $item_id){

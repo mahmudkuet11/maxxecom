@@ -19,12 +19,16 @@ class ListingController extends Controller
         $this->service = $service;
     }
 
-    public function getActiveListings(){
-        $items = $this->service->getAll()->filterByUser()->active()->get();
-        return view('dashboard.item.active-listings', [
-            'active_menu'   =>  'item.listing.active',
-            'items' =>  $items
-        ]);
+    public function getActiveListings(Request $request){
+
+        if($request->ajax()){
+            $items = $this->service->getAll()->filterByUser()->active();
+            return $this->service->prepareOrdersForDataTable($items, $request);
+        }else{
+            return view('dashboard.item.active-listings', [
+                'active_menu'   =>  'item.listing.active'
+            ]);
+        }
     }
 
     public function getReviseListing($id, SettingsService $settingsService){

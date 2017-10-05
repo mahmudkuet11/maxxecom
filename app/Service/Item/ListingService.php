@@ -12,7 +12,9 @@ use App\Service\eBay\EbayRequest;
 use App\Service\eBay\ReviseItemService;
 use App\Service\ListingDescService;
 use App\Service\Store\ItemService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class ListingService
 {
@@ -86,6 +88,35 @@ class ListingService
             'msg'   =>  'Item could not be listed',
             'errors'    =>  EbayRequest::parseErrorMessage($response)
         ];
+    }
+
+    public function prepareOrdersForDataTable(Builder $itemBuilder, Request $request){
+        $start = $request->get('start');
+        $length = $request->get('length');
+        $draw = $request->get('draw');
+        $search = $request->get('search')['value'];
+
+        $itemBuilder = $itemBuilder->search($search);
+        $all_items = $itemBuilder->get();
+        $items = $itemBuilder->skip($start)->take($length)->get();
+        $response = [
+            'draw'  =>  $draw,
+            'recordsTotal'  =>  $all_items->count(),
+            'recordsFiltered'  =>  $all_items->count(),
+            'data'  =>  []
+        ];
+        $items->each(function($item) use (&$response){
+            $response['data'][] = [
+                $item->gallery_url,
+                $item->title,
+                $item->sku,
+                $item->current_price,
+                $item->quantity,
+                $item->end_time,
+                $item->id,
+            ];
+        });
+        return $response;
     }
 
 }

@@ -48,6 +48,15 @@ class Item extends Model
         return $builder->where('listing_status', ListingType::search(ListingType::ACTIVE));
     }
 
+    public function scopeSearch($builder, $search){
+        if($search){
+            $builder = $builder->where('item_id', 'LIKE', "%{$search}%")
+                ->orWhere('title', 'LIKE', "%{$search}%")
+                ->orWhere('sku', 'LIKE', "%{$search}%");
+        }
+        return $builder;
+    }
+
     public function store(){
         return $this->belongsTo(Store::class);
     }
