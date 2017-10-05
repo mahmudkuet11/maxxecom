@@ -72,7 +72,11 @@
                         <a href="#" data-toggle="dropdown" class="dropdown-toggle nav-link dropdown-user-link"><span class="avatar avatar-online"><img src="/app-assets/images/portrait/parts-cargo.png" alt="avatar"><i></i></span><span class="user-name">Parts Cargo</span></a>
                         <div class="dropdown-menu dropdown-menu-right">
                             <a href="#" class="dropdown-item"><i class="icon-head"></i> Edit Profile</a><a href="#" class="dropdown-item"><i class="icon-mail6"></i> My Inbox</a><a href="#" class="dropdown-item"><i class="icon-clipboard2"></i> Task</a><a href="#" class="dropdown-item"><i class="icon-calendar5"></i> Calender</a>
-                            <div class="dropdown-divider"></div><a href="#" class="dropdown-item"><i class="icon-power3"></i> Logout</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" id="logout_btn" class="dropdown-item"><i class="icon-power3"></i> Logout</a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                {{ csrf_field() }}
+                            </form>
                         </div>
                     </li>
                 </ul>
@@ -127,6 +131,15 @@
 <script src="/js/pre_loader.js" type="text/javascript"></script>
 
 @yield('scripts')
+
+<script>
+    $(document).ready(function(){
+        $("#logout_btn").click(function(e){
+            e.preventDefault();
+            $("#logout-form").submit();
+        });
+    });
+</script>
 
 </body>
 
