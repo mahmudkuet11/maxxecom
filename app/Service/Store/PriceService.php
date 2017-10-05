@@ -154,11 +154,13 @@ class PriceService
         $service = new FindItemByKeywordsService();
         $response = $service->findItem($sku);
         if($response->ack == 'Success'){
-            return [
-                'price' =>  (double)$response->searchResult->item[0]->sellingStatus->currentPrice,
-                'shipping_cost'  =>  (double)$response->searchResult->item[0]->shippingInfo->shippingServiceCost,
-                'handling_cost' =>  0
-            ];
+            if($response->searchResult->item){
+                return [
+                    'price' =>  (double)$response->searchResult->item[0]->sellingStatus->currentPrice,
+                    'shipping_cost'  =>  (double)$response->searchResult->item[0]->shippingInfo->shippingServiceCost,
+                    'handling_cost' =>  0
+                ];
+            }
         }
         return [
             'price' =>  0,
