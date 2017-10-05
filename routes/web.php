@@ -82,7 +82,8 @@ Route::get('/store/listing/sync', function(){
 });
 
 Route::get('/test', function(){
-    return request()->url();
+    $s = new \App\Service\Store\PriceService();
+    $s->getAmazonPrice('MB1000298');
 });
 
 Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');

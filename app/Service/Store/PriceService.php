@@ -5,6 +5,8 @@ namespace App\Service\Store;
 use Akeneo\Component\SpreadsheetParser\SpreadsheetParser;
 use App\Enum\Store;
 use App\Models\StorePrice;
+use App\Service\eBay\FindItemByKeywordsService;
+use GuzzleHttp\Client;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 class PriceService
@@ -103,6 +105,45 @@ class PriceService
         ];
     }
     public function getAmazonPrice($sku){
+        $access_key_id = "AKIAIALOI3PCRUWBL5CA";
+        $secret_key = "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";
+        $endpoint = "webservices.amazon.com";
+        $uri = "/onca/xml";
+        $params = array(
+            "Service" => "AWSECommerceService",
+            "Operation" => "ItemSearch",
+            "AWSAccessKeyId" => "AKIAIALOI3PCRUWBL5CA",
+            "AssociateTag" => "vinndo-android-20",
+            "SearchIndex" => "Automotive",
+            "Keywords" => $sku,
+            "ResponseGroup" => "ItemAttributes,Offers,OfferSummary,Tracks",
+            "Availability" => "Available",
+            "Condition" => "New",
+            "Sort" => "price"
+        );
+        if (!isset($params["Timestamp"])) {
+            $params["Timestamp"] = gmdate('Y-m-d\TH:i:s\Z');
+        }
+        ksort($params);
+        $pairs = array();
+        foreach ($params as $key => $value) {
+            array_push($pairs, rawurlencode($key)."=".rawurlencode($value));
+        }
+        $canonical_query_string = join("&", $pairs);
+        $string_to_sign = "GET\n".$endpoint."\n".$uri."\n".$canonical_query_string;
+        $signature = base64_encode(hash_hmac("sha256", $string_to_sign, $secret_key, true));
+        $request_url = 'http://'.$endpoint.$uri.'?'.$canonical_query_string.'&Signature='.rawurlencode($signature);
+
+        $response = simplexml_load_string((new Client())->get($request_url)->getBody()->getContents());
+
+        if((int)$response->Items->TotalResults > 0){
+            return [
+                'price' =>  (double)number_format(((double)$response->Items->Item->OfferSummary->LowestNewPrice->Amount) / 100, 2),
+                'shipping_cost'  =>  0,
+                'handling_cost' =>  0
+            ];
+        }
+
         return [
             'price' =>  0,
             'shipping_cost'  =>  0,
@@ -110,6 +151,15 @@ class PriceService
         ];
     }
     public function getEbayPrice($sku){
+        $service = new FindItemByKeywordsService();
+        $response = $service->findItem($sku);
+        if($response->ack == 'Success'){
+            return [
+                'price' =>  (double)$response->searchResult->item[0]->sellingStatus->currentPrice,
+                'shipping_cost'  =>  (double)$response->searchResult->item[0]->shippingInfo->shippingServiceCost,
+                'handling_cost' =>  0
+            ];
+        }
         return [
             'price' =>  0,
             'shipping_cost'  =>  0,
