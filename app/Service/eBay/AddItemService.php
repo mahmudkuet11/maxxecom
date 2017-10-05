@@ -4,6 +4,7 @@ namespace App\Service\eBay;
 
 
 use App\Models\Store;
+use App\Service\ListingDescService;
 use Illuminate\Http\Request;
 use Spatie\ArrayToXml\ArrayToXml;
 
@@ -97,6 +98,8 @@ class AddItemService extends EbayRequest
             $priority++;
         }
 
+        $listingDescService = new ListingDescService();
+
         $reqArray = [
             'RequesterCredentials'  =>  [
                 'eBayAuthToken' =>  $store->auth_token
@@ -112,7 +115,7 @@ class AddItemService extends EbayRequest
                 'PrimaryCategory'   =>  [
                     'CategoryID'    =>  $request->get('primary_category_id')
                 ],
-                'Description'  =>  $request->get('description'),
+                'Description'  =>  $listingDescService->prepareDescription($request),
                 'ProductListingDetails' =>  [
                     'UPC'  =>  $request->get('upc'),
                     'IncludeStockPhotoURL'  =>  true,
@@ -150,11 +153,14 @@ class AddItemService extends EbayRequest
                 'ShippingDetails'   =>  [
                     'ShippingType'  =>  'Flat',
                     'ShippingServiceOptions'    =>  $shippingServices,
-                    'ExcludeShipToLocation'  =>  $request->get('excluded_shipping_location')
                 ],
                 'Site'  =>  'US'
             ]
         ];
+
+        if(count($request->get('excluded_shipping_location')) > 0){
+            $reqArray['Item']['ShippingDetails']['ExcludeShipToLocation'] = $request->get('excluded_shipping_location');
+        }
 
         $request_body = ArrayToXml::convert($reqArray, [
             'rootElementName'   =>  'AddItemRequest',

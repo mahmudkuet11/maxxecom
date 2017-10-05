@@ -130,7 +130,6 @@ var Listing = {
         });
 
         item.images = images;
-
         $("body").trigger('pre_loader:show');
         $.ajax({
             method: 'POST',

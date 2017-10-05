@@ -2,12 +2,15 @@
 
 namespace App\Service\Item;
 
+use App\Enum\MetaScope;
 use App\Models\Item\Item;
 use App\Models\Item\ItemDetail;
+use App\Models\Item\Meta;
 use App\Models\Store;
 use App\Service\eBay\AddItemService;
 use App\Service\eBay\EbayRequest;
 use App\Service\eBay\ReviseItemService;
+use App\Service\ListingDescService;
 use App\Service\Store\ItemService;
 use Illuminate\Http\Request;
 
@@ -84,4 +87,5 @@ class ListingService
             'errors'    =>  EbayRequest::parseErrorMessage($response)
         ];
     }
+
 }
