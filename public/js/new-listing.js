@@ -98,13 +98,14 @@ var Listing = {
         });
         item.specifics = item_specifics;
         var compatibilities = [];
-        $("#compatibility_list_container table tbody tr").each(function(){
+        Global.$compatibility_list_table.rows().every(function(index, tableLoop, rowLoop){
+            var data = this.data();
             compatibilities.push({
-                make: $(this).find('td:nth-child(1)').text(),
-                model: $(this).find('td:nth-child(2)').text(),
-                year: $(this).find('td:nth-child(3)').text(),
-                trim: $(this).find('td:nth-child(4)').text(),
-                engine: $(this).find('td:nth-child(5)').text(),
+                make: data[0],
+                model: data[1],
+                year: data[2],
+                trim: data[3],
+                engine: data[4],
             });
         });
         item.compatibilities = compatibilities;
@@ -244,29 +245,50 @@ var Listing = {
 };
 
 var Compatibility = {
-    compatibilityRowTemplate: null,
-    $compatibilityRowTbody: null,
+    $compatibilityModal: null,
     init: function(){
-        this.$compatibilityRowTbody = $("#compatibility_list_container table tbody");
-        this.initTemplate();
+        this.$compatibilityModal = $("#add_compatibility_modal");
+        this.listen();
     },
-    initTemplate: function(){
-        this.compatibilityRowTemplate = _.template('<tr>\
-            <td class="text-truncate"><%- Make %></td>\
-            <td class="text-truncate"><%- Model %></td>\
-            <td class="text-truncate"><%- Year %></td>\
-            <td class="text-truncate"><%- Trim %></td>\
-            <td class="text-truncate"><%- Engine %></td>\
-            </tr>');
+    listen: function(){
+        var _this = this;
+        $("#add_compatibility_modal_save_btn").click(function(){
+            var make = _this.$compatibilityModal.find('input[name="make"]').val();
+            var model = _this.$compatibilityModal.find('input[name="model"]').val();
+            var year = _this.$compatibilityModal.find('input[name="year"]').val();
+            var trim = _this.$compatibilityModal.find('input[name="trim"]').val();
+            var engine = _this.$compatibilityModal.find('input[name="engine"]').val();
+
+            if(make != '' && model != '' && year != '' && trim != '' && engine != ''){
+                _this.addRow({
+                    Make: make,
+                    Model: model,
+                    Year: year,
+                    Trim: trim,
+                    Engine: engine
+                });
+                _this.$compatibilityModal.modal('hide');
+            }else{
+                alert('Please enter all information correctly');
+            }
+
+        });
     },
     renderCompatibility: function(compatibilities){
-        this.$compatibilityRowTbody.html('');
-        _.each(compatibilities, _.bind(this.addRow, this));
+        var _this = this;
+        _.each(compatibilities, function(compatibility){
+            var data = JSON.parse(compatibility.value);
+            _this.addRow(data);
+        });
     },
     addRow: function(compatibility){
-        var data = JSON.parse(compatibility.value);
-        var row = this.compatibilityRowTemplate(data);
-        this.$compatibilityRowTbody.append(row);
+        Global.$compatibility_list_table.row.add([
+            compatibility.Make,
+            compatibility.Model,
+            compatibility.Year,
+            compatibility.Trim,
+            compatibility.Engine
+        ]).draw();
     }
 };
 

@@ -161,7 +161,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="card-body collapse in">
-                                                                <table class="table table-hover mb-0">
+                                                                <table class="table table-hover mb-0" id="compatibility_list_table">
                                                                     <thead>
                                                                     <tr>
                                                                         <th>Make</th>
@@ -693,6 +693,40 @@
 </div>
 
 
+<div class="modal fade in" id="add_compatibility_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Add new compatibility</h4>
+            </div>
+            <div class="modal-body">
+                <table>
+                    <tr>
+                        <td>Make</td>
+                        <td>Model</td>
+                        <td>Year</td>
+                        <td>Trim</td>
+                        <td>Engine</td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" class="form-control" placeholder="Make" name="make"></td>
+                        <td><input type="text" class="form-control" placeholder="Model" name="model"></td>
+                        <td><input type="text" class="form-control" placeholder="Yar" name="year"></td>
+                        <td><input type="text" class="form-control" placeholder="Trim" name="trim"></td>
+                        <td><input type="text" class="form-control" placeholder="Engine" name="engine"></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="add_compatibility_modal_save_btn">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @endsection
 
 @section('scripts')
@@ -706,7 +740,8 @@
         post_store_item_url: '{{ route("item.listing.new.store", ["store_id"=>request("store_id")]) }}',
         store_id: parseInt('{{ request("store_id") }}'),
         category_hierarchy_name_url: '{{ route("ebay.category.hierarchy_name") }}',
-        site_id: parseInt('{{ request("site_id") }}')
+        site_id: parseInt('{{ request("site_id") }}'),
+        $compatibility_list_table: null,
     };
 </script>
 
@@ -738,6 +773,11 @@
             cursor: "move",
             items: "> li:not(#upload_btn_li)"
         });
+
+        Global.$compatibility_list_table = $("#compatibility_list_table").DataTable({
+            data: []
+        });
+
 
     });
 </script>
