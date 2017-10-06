@@ -277,7 +277,16 @@
                                                         <span class="custom-control-description ml-0">Paypal</span>
                                                     </label>
                                                 </div>
-                                                <input type="text" id="input_paypal_email" class="form-control" placeholder="Paypal email address">
+                                                <?php $paypal_emails = $settings->where('scope', 'PAYPAL_EMAIL')->where('key', 'paypal_email')->pluck('value')->all(); ?>
+                                                <select name="input_paypal_email" id="input_paypal_email" class="form-control">
+                                                    @foreach($paypal_emails as $email)
+                                                    @if($loop->first)
+                                                    <option value="{{ $email }}" selected="selected">{{ $email }}</option>
+                                                    @else
+                                                    <option value="{{ $email }}">{{ $email }}</option>
+                                                    @endif
+                                                    @endforeach
+                                                </select>
                                                 <!--<p>Additional checkout instructions (shows in your listing)</p>
                                                 <textarea rows="8" class="form-control" id="input_checkout_instruction"></textarea>-->
                                             </div>

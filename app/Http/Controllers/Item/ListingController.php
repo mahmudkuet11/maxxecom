@@ -64,11 +64,13 @@ class ListingController extends Controller
         ]);
     }
 
-    public function getNewListing(Request $request){
+    public function getNewListing(Request $request, SettingsService $settingsService){
         $search = $request->has('store_id') && $request->has('site_id') && $request->has('item_id');
+        $settings = $settingsService->getSettings($request->get('store_id'))->get();
         return view('dashboard.item.new', [
             'active_menu'   =>  'item.listing.find',
-            'search'    =>  $search
+            'search'    =>  $search,
+            'settings'  =>  $settings
         ]);
     }
 
