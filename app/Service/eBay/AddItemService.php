@@ -153,8 +153,10 @@ class AddItemService extends EbayRequest
                 'ShippingDetails'   =>  [
                     'ShippingType'  =>  'Flat',
                     'ShippingServiceOptions'    =>  $shippingServices,
+                    'GlobalShipping'    =>  $request->get('global_shipping'),
                 ],
-                'Site'  =>  'US'
+                'Site'  =>  'US',
+                'UseTaxTable'  =>  $request->get('use_ebay_tax_table')
             ]
         ];
 

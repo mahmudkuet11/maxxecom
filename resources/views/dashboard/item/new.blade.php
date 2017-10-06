@@ -468,6 +468,19 @@
                                                         </div>
                                                     </div>
                                                 </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label class="custom-control custom-checkbox">
+                                                                <input type="checkbox" id="input_global_shipping" checked="" class="custom-control-input">
+                                                                <span class="custom-control-indicator"></span>
+                                                                <span class="custom-control-description">Enable Global Shipping</span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -519,6 +532,20 @@
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <div class="form-group row">
+                                            <label class="col-md-3 label-control" for="projectinput6">Tax</label>
+                                            <div class="col-md-9">
+                                                <div class="form-group">
+                                                    <label class="custom-control custom-checkbox">
+                                                        <input type="checkbox" id="input_use_ebay_tax_table" checked="" class="custom-control-input">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">Use eBay tax table</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <div class="form-group row">
                                             <label class="col-md-3 label-control">Excluded shipping locations</label>
                                             <div class="col-md-9">
@@ -532,7 +559,7 @@
                                                 <?php $countryCodes = \App\Enum\Ebay\CountryCodeType::toArray() ?>
                                                 <select name="input_country" id="input_country" class="form-control">
                                                     @foreach($countryCodes as $k=>$v)
-                                                    <option value="{{ $k }}">{{ $v }}</option>
+                                                    <option value="{{ $k }}" {{ $k == 'US' ? 'selected="selected"' : '' }}>{{ $v }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -540,7 +567,7 @@
                                         <div class="form-group row">
                                             <label class="col-md-3 label-control" for="projectinput6">Item location</label>
                                             <div class="col-md-9">
-                                                <input type="text" class="form-control" id="input_location">
+                                                <input type="text" class="form-control" id="input_location" value="Astoria, New York">
                                             </div>
                                         </div>
                                     </div>

@@ -39,6 +39,7 @@ class CreateItemDetailsTable extends Migration
             $table->decimal('package_length');
             $table->decimal('package_width');
             $table->decimal('package_depth');
+            $table->boolean('use_ebay_tax_table');
             $table->decimal('sales_tax_percent');
             $table->string('sales_tax_state');
             $table->boolean('is_shipping_included_in_tax');

@@ -151,8 +151,10 @@ class ReviseItemService extends EbayRequest
                 ],
                 'ShippingDetails'   =>  [
                     'ShippingType'  =>  'Flat',
-                    'ShippingServiceOptions'    =>  $shippingServices
+                    'ShippingServiceOptions'    =>  $shippingServices,
+                    'GlobalShipping'    =>  $request->get('global_shipping'),
                 ],
+                'UseTaxTable'  =>  $request->get('use_ebay_tax_table')
             ]
         ];
 

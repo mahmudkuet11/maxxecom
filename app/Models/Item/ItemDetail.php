@@ -35,6 +35,7 @@ class ItemDetail extends Model
         'sales_tax_percent',
         'sales_tax_state',
         'is_shipping_included_in_tax',
+        'use_ebay_tax_table',
         'shipping_type',
         'ship_to_location',
         'exclude_ship_to_location',

@@ -70,12 +70,14 @@ var Listing = {
             return_shipping_paid_by: $("#input_return_shipping_paid_by").val(),
             return_policy_desc: $("#return_policy_description").val(),
             restocking_fee: $("#input_restocking_fee").val(),
+            global_shipping: $("#input_global_shipping").prop('checked'),
             shipping_package_type: $("#input_shipping_package_type").val(),
             package_length: $("#input_package_length").val(),
             package_width: $("#input_package_width").val(),
             package_depth: $("#input_package_depth").val(),
             weight_major: $("#input_weight_major").val(),
             weight_minor: $("#input_weight_minor").val(),
+            use_ebay_tax_table: $("#input_use_ebay_tax_table").prop('checked'),
             country: $("#input_country").val(),
             location: $("#input_location").val(),
             max_dispatch_time: $("#input_dispatch_time_max").val(),
@@ -179,6 +181,7 @@ var Listing = {
 
         // step 3
         this.fillUpDomesticShippingServices(item);
+        $("#input_global_shipping").prop('checked', item.is_global_shipping);
         $("#input_dispatch_time_max").val(item.item_details.dispatch_time_max);
         $("#input_shipping_package_type").val(item.item_details.shipping_package);
         $("#input_package_length").val(item.item_details.package_length);
@@ -186,6 +189,7 @@ var Listing = {
         $("#input_package_depth").val(item.item_details.package_depth);
         $("#input_weight_major").val(item.item_details.weight_major);
         $("#input_weight_minor").val(item.item_details.weight_minor);
+        $("#input_use_ebay_tax_table").prop('checked', item.item_details.use_ebay_tax_table);
         $("#input_country").val(item.item_details.country);
         $("#input_location").val(item.item_details.location);
 
