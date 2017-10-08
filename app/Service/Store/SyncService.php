@@ -27,4 +27,5 @@ class SyncService
         }
         return Carbon::now()->subDays(7);
     }
+
 }

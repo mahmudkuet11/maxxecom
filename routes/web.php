@@ -74,12 +74,7 @@ Route::get('/store-price/sync', function(){
     $priceService->saveKeystone();*/
 });
 
-Route::get('/store/listing/sync', function(){
-    dispatch(new \App\Jobs\SyncStoreListing(\App\Models\Store::first()));
-    //dd(\App\Service\Time::getDateFromISO8061Duration(\Carbon\Carbon::now(), 'PT23M'));
-    //(new \App\Service\Store\ItemService())->syncListings(\App\Models\Store::first());
-
-});
+Route::get('/store/{store_id}/listing/sync', 'Item\ListingController@sync')->name('store.listing.sync');
 
 Route::get('/test', function(){
     $s = new \App\Service\Store\PriceService();

@@ -62,8 +62,16 @@ class ItemService
                 throw new EbayResponseException($response);
             }
             $totalPages = (int)$response->PaginationResult->TotalNumberOfPages;
-            Console::writeln("Total: {$totalPages} . Completed: {$pageNum}");
+            $this->listingSyncNotification($store, $totalPages, $pageNum);
         }while((string)$response->HasMoreItems == 'true');
+    }
+
+    private function listingSyncNotification(Store $store, $total, $completed){
+        Console::writeln("Total: {$total} . Completed: {$completed}");
+        \Redis::publish('sync:listing:progress', json_encode([
+            'store_id'    =>  $store->id,
+            'msg'   =>  ''
+        ]));
     }
 
     public function saveItems(Store $store, $itemArray){

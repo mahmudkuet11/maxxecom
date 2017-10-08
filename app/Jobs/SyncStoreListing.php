@@ -29,19 +29,20 @@ class SyncStoreListing implements ShouldQueue
         $this->store = $store;
     }
 
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
     public function handle()
     {
+        \Redis::publish('sync:listing', json_encode([
+            'store_id'    =>  $this->store->id,
+            'msg'   =>  'Store listing has been started.'
+        ]));
         $itemService = new ItemService();
         try {
             $itemService->syncListings($this->store);
         } catch (\Exception $e) {
             Console::writeln($e->getMessage());
             throw $e;
+        }finally{
+            \Cache::forget('sync:listing:' . $this->store->id);
         }
     }
 }

@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Item;
 
 use App\Enum\ListingType;
+use App\Jobs\SyncStoreListing;
 use App\Models\Store;
 use App\Service\Item\ListingService;
 use App\Service\Store\SettingsService;
 use App\Service\Store\StoreService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -77,5 +79,17 @@ class ListingController extends Controller
     public function postNewListing($store_id, Request $request){
         $store = Store::find($store_id);
         return $this->service->postNewListing($store, $request);
+    }
+
+    public function sync($store_id){
+        $store = Store::find($store_id);
+        if( ! \Cache::has('sync:listing:' . $store->id)){
+            dispatch(new SyncStoreListing($store));
+            \Cache::forever('sync:listing:' . $store->id, 'true');
+        }
+        \Redis::publish('sync:listing', json_encode([
+            'store_id'    =>  $store->id,
+            'msg'   =>  'Store listing is on queue. We will send notification after being started.'
+        ]));
     }
 }

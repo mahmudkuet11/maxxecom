@@ -30,6 +30,7 @@
         <div class="col-xs-12">
             <div class="card">
                 <div class="card-header">
+                    <h4 class="card-title">Active Listings</h4>
                     <a class="heading-elements-toggle"><i class="icon-ellipsis font-medium-3"></i></a>
                     <div class="heading-elements">
                         <ul class="list-inline mb-0">
@@ -40,6 +41,20 @@
                     </div>
                 </div>
                 <div class="card-body collapse in">
+                    <div class="card-block">
+                        <?php $stores = auth()->user()->stores; ?>
+                        @foreach($stores as $store)
+                        @if(\Cache::has('sync:listing:' . $store->id))
+                        <div class="progress" data-store-id="{{ $store->id }}">
+                            <div class="progress-bar progress-bar-striped active" role="progressbar"
+                                 aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%">
+                                40%
+                            </div>
+                        </div>
+                        @endif
+                        @endforeach
+                    </div>
+
                     <div class="card-block card-dashboard">
 
                         <table class="table table-striped table-bordered" id="active_listing_table">
