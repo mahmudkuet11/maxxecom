@@ -32,7 +32,7 @@ class CreateItemsTable extends Migration
             $table->mediumText('title');
             $table->string('sku');
             $table->string('gallery_url');
-            $table->enum('listing_status', \App\Enum\ListingType::keys());
+            $table->string('listing_status');
             $table->timestamps();
         });
     }

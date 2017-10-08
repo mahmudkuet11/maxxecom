@@ -5,6 +5,7 @@ namespace App\Service\Store;
 
 use App\Enum\ListingType;
 use App\Enum\MetaScope;
+use App\Exceptions\EbayResponseException;
 use App\Models\Item\Image;
 use App\Models\Item\Item;
 use App\Models\Item\ItemDetail;
@@ -14,11 +15,10 @@ use App\Models\Store;
 use App\Service\Console;
 use App\Service\eBay\EbayRequest;
 use App\Service\eBay\GetItemService;
-use App\Service\eBay\GetMyEbaySellingService;
+use App\Service\eBay\GetSellerListService;
 use App\Service\Time;
 use Carbon\Carbon;
 use DB;
-use function GuzzleHttp\Psr7\str;
 
 class ItemService
 {
@@ -42,35 +42,34 @@ class ItemService
     }
 
     public function syncListings(Store $store){
-        $getMyEbaySellingService = new GetMyEbaySellingService('GetMyeBaySelling');
-        $this->syncActiveListings($store, $getMyEbaySellingService);
+        $getSellerListService = new GetSellerListService();
+        $this->syncActiveListings($store, $getSellerListService);
     }
 
-    public function syncActiveListings(Store $store, GetMyEbaySellingService $getMyEbaySellingService){
-        $pageNum = 1;
-        $now = Carbon::now();
+    public function syncActiveListings(Store $store, GetSellerListService $getSellerListService){
+        $pageNum = 0;
+        $endFrom = Carbon::today();
+        $endTo = Carbon::today()->addDays(40);
         do{
-            $response = $getMyEbaySellingService->getActiveList($store, $pageNum);
-            $server_time = Carbon::parse((string)$response->Timestamp);
-            if($response->Ack == 'Success' || $response->Ack == 'Warning'){
-                $itemArray = $response->ActiveList->ItemArray;
-                if($itemArray){
-                    $this->saveItems($store, $itemArray, ListingType::ACTIVE, $server_time);
-                }
-                Console::writeln($response->ActiveList->PaginationResult->TotalNumberOfPages . "/" . $pageNum);
-            }else{
-                throw new \Exception('Failed to get data from ebay');
-            }
             $pageNum++;
-        }while($pageNum <= (int)$response->ActiveList->PaginationResult->TotalNumberOfEntries);
-
-        Item::where('updated_at', '<', $now)->delete();
+            $response = $getSellerListService->getListingsBetweenEndTime($store, $endFrom, $endTo, $pageNum);
+            if($response->Ack == 'Success'){
+                $itemArray = $response->ItemArray;
+                if($itemArray){
+                    $this->saveItems($store, $itemArray);
+                }
+            }else{
+                throw new EbayResponseException($response);
+            }
+            $totalPages = (int)$response->PaginationResult->TotalNumberOfPages;
+            Console::writeln("Total: {$totalPages} . Completed: {$pageNum}");
+        }while((string)$response->HasMoreItems == 'true');
     }
 
-    public function saveItems(Store $store, $itemArray, $status, Carbon $server_time){
+    public function saveItems(Store $store, $itemArray){
         foreach ($itemArray->Item as $item){
             try {
-                Item::updateOrCreate([
+                Item::create([
                     'store_id'  =>  $store->id,
                     'item_id'  =>  $item->ItemID,
                 ], [
@@ -83,16 +82,17 @@ class ItemService
                     'listing_type'  =>  (string)$item->ListingType,
                     'quantity'  =>  (int)$item->Quantity,
                     'current_price'  =>  (double)$item->SellingStatus->CurrentPrice,
-                    'shipping_service_cost'  =>  (double)$item->ShippingDetails->ShippingServiceOptions->ShippingServiceCost,
-                    'shipping_type'  =>  (string)$item->ShippingDetails->ShippingType->GlobalShipping,
-                    'end_time'  =>  Time::getDateFromISO8061Duration($server_time, (string)$item->TimeLeft),
+                    'shipping_service_cost'  =>  0,
+                    'shipping_type'  =>  '',
+                    'end_time'  =>  Carbon::parse($item->ListingDetails->EndTime)->toDateTimeString(),
                     'title'  =>  (string)$item->Title,
                     'sku'  =>  (string)$item->SKU,
                     'gallery_url'  =>  (string)$item->PictureDetails->GalleryURL,
-                    'listing_status'  =>  $status,
+                    'listing_status'  =>  (string)$item->SellingStatus->ListingStatus,
                 ]);
             } catch (\Exception $e) {
-                Console::writeln($e->getMessage());
+                Console::writeln("File: {$e->getFile()} Line: {$e->getLine()} Message: {$e->getMessage()}");
+                \Log::error("File: {$e->getFile()} Line: {$e->getLine()} Message: {$e->getMessage()}");
             }
         }
     }

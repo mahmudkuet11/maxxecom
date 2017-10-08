@@ -17,7 +17,7 @@ class SyncStoreListing implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $store;
-    public $tries = 2;
+    public $tries = 1;
 
     /**
      * Create a new job instance.
@@ -43,6 +43,5 @@ class SyncStoreListing implements ShouldQueue
             Console::writeln($e->getMessage());
             throw $e;
         }
-
     }
 }
