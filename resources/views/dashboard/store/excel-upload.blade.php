@@ -45,12 +45,12 @@
             </div>
             <div class="card-body collapse in">
                 <div class="card-block">
-                    @if(isset($status, $msg))
+                    @if(session('status') && session('msg'))
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="alert alert-dismissible alert-{{ $status == 'success' ? 'success' : '' }}">
+                            <div class="alert alert-dismissible alert-{{ session('status') == 'success' ? 'success' : '' }}">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                {{ msg }}
+                                {{ session('msg') }}
                             </div>
                         </div>
                     </div>

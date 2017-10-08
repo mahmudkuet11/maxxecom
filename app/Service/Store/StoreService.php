@@ -120,6 +120,6 @@ class StoreService
     }
 
     public function saveExcel(Request $request){
-        return $request->file('excel')->move('/public/upload/price', $request->get('name'));
+        return $request->file('excel')->move(public_path('/upload/price'), $request->get('name'));
     }
 }
